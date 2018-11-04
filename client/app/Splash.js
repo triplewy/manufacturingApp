@@ -11,18 +11,12 @@ export default class Splash extends React.Component {
 
   render() {
     return (
-      <View>
-        <View style={{marginTop: 40, borderBottomWidth: 1, borderColor: '#ccc', marginHorizontal: 40}}>
-          <Text style={{textAlign: 'center', fontSize: 32, fontWeight: 'bold', padding: 10}}>Feed</Text>
-        </View>
+      <View style={{backgroundColor: '#FF8300', justifyContent: 'center', alignItems: 'center', flex: 1}}>
+        <Text style={{textAlign: 'center', fontSize: 48, fontWeight: 'bold', color: 'white'}}>Streamline</Text>
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  list: {
-    flexDirection: 'row',
-    flexWrap: 'wrap'
-  },
 })

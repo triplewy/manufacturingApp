@@ -33,8 +33,9 @@ export default class GridItem extends React.Component {
 
 const styles = StyleSheet.create({
   gridItem: {
-    margin: 50,
-    alignItems: 'center'
+    margin: 30,
+    alignItems: 'center',
+    width: 130
   },
   icon: {
     backgroundColor: 'white',

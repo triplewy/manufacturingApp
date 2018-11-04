@@ -47,6 +47,7 @@ export default class Grid extends React.Component {
             renderItem={this.renderItem}
             keyExtractor={(item, index) => index.toString()}
             numColumns={4}
+            contentContainerStyle={{alignItems: 'center'}}
           />
         </ScrollView>
       )
@@ -61,5 +62,5 @@ export default class Grid extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  
+
 })

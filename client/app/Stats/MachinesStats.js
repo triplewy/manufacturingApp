@@ -53,7 +53,7 @@ export default class MachinesStats extends React.Component {
     return (
       <View style={{alignItems: 'center', height: 300}}>
         <Text style={{flex: 1}}>{downtime}</Text>
-        <View style={{height: height, width: (win.width - 100) / 7.0, backgroundColor: 'red', marginHorizontal: 5}} />
+        <View style={{height: height, width: (win.width - 100) / 7.0, backgroundColor: 'red', marginHorizontal: 5, borderRadius: 4}} />
         <Text style={{marginTop: 10}}>{item.item.machine}</Text>
       </View>
     )

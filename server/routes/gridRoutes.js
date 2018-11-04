@@ -5,7 +5,7 @@ module.exports = function(conn, loggedIn) {
     gridRoutes.get('/', (req, res) => {
       console.log('- Request received:', req.method.cyan, '/api/grid');
       // const userId = req.user
-      conn.query('SELECT * FROM machines WHERE lineId IN (SELECT lineId FROM assemblyLines)', {}, function(err, result) {
+      conn.query('SELECT * FROM machines WHERE lineId IN (SELECT lineId FROM assemblyLines) ORDER BY name', {}, function(err, result) {
         if (err) {
           console.log(err);
         } else {

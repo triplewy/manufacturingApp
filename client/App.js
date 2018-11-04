@@ -9,11 +9,13 @@ import accountIcon from './app/icons/account-icon.png'
 import Splash from './app/Splash'
 import Login from './app/Auth/Login'
 import Name from './app/Auth/Name'
+import ForgotPassword from './app/Auth/ForgotPassword'
 import Grid from './app/Grid'
 import Input from './app/Input'
 import Downtime from './app/Downtime'
 import Machinery from './app/Machinery'
 import Stats from './app/Stats/Stats'
+import DayStats from './app/Stats/DayStats'
 import Account from './app/Account'
 import Reports from './app/Reports'
 
@@ -54,7 +56,8 @@ export default class App extends React.Component {
     const AuthNavigation = createStackNavigator(
       {
         Login: Login,
-        Name: Name
+        Name: Name,
+        ForgotPassword: ForgotPassword
       },
       {
         headerMode: 'none',
@@ -85,7 +88,7 @@ export default class App extends React.Component {
       {
         navigationOptions: {
           headerStyle: {
-            height: 60
+            height: 50
           },
           headerTitleStyle: {
             fontSize: 21,
@@ -107,7 +110,7 @@ export default class App extends React.Component {
       {
         navigationOptions: {
           headerStyle: {
-            height: 60
+            height: 50
           },
           headerTitleStyle: {
             fontSize: 21,
@@ -124,12 +127,15 @@ export default class App extends React.Component {
           navigationOptions: {
             title: 'Stats'
           }
+        },
+        DayStats: {
+          screen: DayStats,
         }
       },
       {
         navigationOptions: {
           headerStyle: {
-            height: 60
+            height: 50
           },
           headerTitleStyle: {
             fontSize: 21,
@@ -151,7 +157,7 @@ export default class App extends React.Component {
       {
         navigationOptions: {
           headerStyle: {
-            height: 60
+            height: 50
           },
           headerTitleStyle: {
             fontSize: 21,
@@ -168,49 +174,49 @@ export default class App extends React.Component {
             Inputs: {
               screen: InputsNavigator,
               navigationOptions: {
-                tabBarIcon: () => (<Image source={editIcon} style={{width: 50, height: 50, alignItems: 'center'}} />)
+                tabBarIcon: () => (<Image source={editIcon} style={{width: 30, height: 30, alignItems: 'center'}} />)
               }
             },
             Reports: {
               screen: ReportsNavigator,
               navigationOptions: {
-                tabBarIcon: () => (<Image source={reportIcon} style={{width: 50, height: 50, alignItems: 'center'}} />)
+                tabBarIcon: () => (<Image source={reportIcon} style={{width: 30, height: 30, alignItems: 'center'}} />)
               }
             },
             Stats: {
               screen: StatsNavigator,
               navigationOptions: {
-                tabBarIcon: () => (<Image source={statsIcon} style={{width: 50, height: 50, alignItems: 'center'}} />)
+                tabBarIcon: () => (<Image source={statsIcon} style={{width: 30, height: 30, alignItems: 'center'}} />)
               }
             },
             Account: {
               screen: AccountNavigator,
               navigationOptions: {
-                tabBarIcon: () => (<Image source={accountIcon} style={{width: 50, height: 50, alignItems: 'center'}} />)
+                tabBarIcon: () => (<Image source={accountIcon} style={{width: 30, height: 30, alignItems: 'center'}} />)
               }
             }
           },
           {
             tabBarPosition: 'bottom',
             animationEnabled: true,
-            activeTintColor: '#2EC4B6',
+            activeTintColor: '#FF8300',
             inactiveTintColor: '#666',
             tabBarOptions: {
               showIcon: true,
               showLabel: true,
               style: {
-                height: 100
+                height: 70
               },
               tabStyle: {
                 flexDirection: 'column',
-                flex: 1,
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                paddingVertical: 5
               },
               labelStyle: {
-                fontSize: 16,
+                fontSize: 14,
                 marginLeft: 0,
-                marginTop: 5
+                padding: 0
               }
             }
           }

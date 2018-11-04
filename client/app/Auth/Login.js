@@ -46,7 +46,7 @@ export default class Login extends React.Component {
           <Text style={styles.title}>Sign in</Text>
           <TextInput placeholder='Username' autoCapitalize='none' autoCorrect={false} style={styles.textInput} value={this.state.username} onChangeText={(text) => this.setState({username: text})}/>
           <TextInput placeholder='Password' secureTextEntry autoCapitalize='none' autoCorrect={false} style={styles.textInput} value={this.state.password} onChangeText={(text) => this.setState({password: text})}/>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('ForgotPassword')}>
             <Text style={{color: 'white', marginVertical: 20}}>Forgot password?</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={this.login}>
@@ -61,6 +61,7 @@ export default class Login extends React.Component {
   }
 }
 
+const win = Dimensions.get('window');
 const styles = StyleSheet.create({
   title: {
     color: '#888888',
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   textInput: {
-    width: 500,
+    width: win.width - 100,
     borderBottomWidth: 5,
     borderColor: 'white',
     padding: 12,

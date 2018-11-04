@@ -16,8 +16,18 @@ export default class TotalStats extends React.Component {
     this.fetchTotalStats()
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.refreshing && this.props.refreshing !== prevProps.refreshing) {
+      this.fetchTotalStats()
+    }
+  }
+
   fetchTotalStats() {
-    fetch(global.API_URL + '/api/stats/totalDowntime', {
+    var query = global.API_URL + '/api/stats/totalDowntime/' + this.props.timePeriod
+    if (this.props.date) {
+      query += '/' + this.props.date
+    }
+    fetch(query, {
       credentials: 'include'
     })
     .then(res => res.json())
@@ -31,12 +41,24 @@ export default class TotalStats extends React.Component {
   }
 
   render() {
+    const hours = Math.floor(this.state.downtime / 60)
+    const minutes = this.state.downtime % 60
     return (
       <View style={styles.statsView}>
         <Text style={{marginBottom: 20, color: 'gray', fontSize: 18}}>Total Downtime</Text>
         <View style={{flexDirection: 'row'}}>
-          <Text style={{fontSize: 24, fontWeight: '600'}}>{this.state.downtime}</Text>
-          <Text style={{fontSize: 24, fontWeight: '600', marginLeft: 5}}>Minutes</Text>
+          {hours !== 0 ?
+            <View style={{flexDirection: 'row', marginRight: 10}}>
+              <Text style={{fontSize: 24, fontWeight: '600', color: '#FF8300'}}>{hours}</Text>
+              <Text style={{fontSize: 24, fontWeight: '600', marginLeft: 5, color: '#FF8300'}}>Hours</Text>
+            </View>
+          :
+            null
+          }
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{fontSize: 24, fontWeight: '600', color: '#FF8300'}}>{minutes}</Text>
+            <Text style={{fontSize: 24, fontWeight: '600', marginLeft: 5, color: '#FF8300'}}>Minutes</Text>
+          </View>
         </View>
       </View>
     )

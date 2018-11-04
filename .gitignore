@@ -3,5 +3,8 @@ node_modules/**/*
 npm-debug.*
 node_modules
 /server/.env
-/client/global.js
 /server/dump.rdb
+/client/global.js
+/client/android/*
+/client/ios/*
+/client/third-party/*

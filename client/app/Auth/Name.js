@@ -55,6 +55,7 @@ export default class Name extends React.Component {
   }
 }
 
+const win = Dimensions.get('window');
 const styles = StyleSheet.create({
   title: {
     color: '#888888',
@@ -70,7 +71,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   textInput: {
-    width: 500,
+    width: win.width - 100,
     borderBottomWidth: 5,
     borderColor: 'white',
     padding: 12,

@@ -6,7 +6,7 @@ export default class Account extends React.Component {
     super(props);
 
     this.state = {
-      company: ''
+      account: {}
     };
 
     this.fetchAccount = this.fetchAccount.bind(this)
@@ -24,7 +24,7 @@ export default class Account extends React.Component {
     .then(res => res.json())
     .then(data => {
       console.log(data);
-      this.setState({company: data.companyName})
+      this.setState({account: data})
     })
     .catch((error) => {
       console.error(error);
@@ -55,10 +55,22 @@ export default class Account extends React.Component {
 
   render() {
     return (
-      <View>
+      <ScrollView>
         <View style={styles.wrapper}>
-          <Text style={{fontSize: 24, margin: 10}}>{this.state.company}</Text>
-          <Text style={{fontSize: 18, margin: 10}}>Line #</Text>
+          <Text style={{fontSize: 24, margin: 10}}>{this.state.account.companyName}</Text>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{fontSize: 18, margin: 10}}>Day Shift:</Text>
+            <Text style={{fontSize: 18, margin: 10}}>{this.state.account.morningShift + 'AM - ' + (this.state.account.eveningShift - 12) + 'PM'}</Text>
+          </View>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{fontSize: 18, margin: 10}}>Night Shift:</Text>
+            <Text style={{fontSize: 18, margin: 10}}>{(this.state.account.eveningShift - 12) + 'PM - ' + this.state.account.morningShift + 'AM'}</Text>
+          </View>
+          {this.state.account.lineNumbers ?
+            <Text style={{fontSize: 18, margin: 10}}>{'Line ' + this.state.account.lineNumbers.join()}</Text>
+            :
+            null
+          }
           <Text style={{fontSize: 18, margin: 10}}>Name</Text>
         </View>
         <View style={styles.wrapper}>
@@ -71,8 +83,7 @@ export default class Account extends React.Component {
             <Text style={{fontSize: 18, margin: 10, color: 'red'}}>Logout</Text>
           </View>
       </TouchableOpacity>
-
-      </View>
+      </ScrollView>
     )
   }
 }
