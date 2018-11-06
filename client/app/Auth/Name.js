@@ -1,5 +1,6 @@
 import React from 'react';
 import { Dimensions, SafeAreaView, View, Text, TextInput, StyleSheet, TouchableOpacity, Button } from 'react-native';
+import { setName } from '../Storage'
 
 export default class Name extends React.Component {
   constructor(props) {
@@ -27,7 +28,16 @@ export default class Name extends React.Component {
     .then(res => res.json())
     .then(data => {
       if (data.message === 'success') {
-        this.props.navigation.navigate('Tabs')
+        setName(this.state.name).then(data => {
+          if (data.message === 'success') {
+            this.props.navigation.navigate('Tabs')
+          } else {
+            console.log(data);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
       } else {
         console.log(data);
       }

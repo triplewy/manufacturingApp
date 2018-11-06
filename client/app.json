@@ -1,4 +1,7 @@
 {
   "displayName": "manufacturingApp",
-  "name": "manufacturingApp"
+  "name": "manufacturingApp",
+  "expo": {
+    "sdkVersion": "31.0.0"
+  }
 }

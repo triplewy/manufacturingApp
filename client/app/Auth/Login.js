@@ -1,5 +1,6 @@
 import React from 'react';
 import { Dimensions, SafeAreaView, View, Text, TextInput, StyleSheet, TouchableOpacity, Button } from 'react-native';
+import {setCookie} from '../Storage'
 
 export default class Login extends React.Component {
   constructor(props) {
@@ -14,7 +15,6 @@ export default class Login extends React.Component {
   }
 
   login(e) {
-    console.log(global.API_URL);
     fetch(global.API_URL + '/api/auth/signin', {
       method: 'POST',
       headers: {
@@ -27,7 +27,24 @@ export default class Login extends React.Component {
         password: this.state.password
       })
     })
-    .then(res => res.json())
+    .then(res => {
+      console.log(res);
+      if (res.headers.get("set-cookie")) {
+        console.log("set cookie is", res.headers.get("set-cookie"));
+        return setCookie(res.headers.get("set-cookie")).then(data => {
+          if (data.message === 'success') {
+            return res.json()
+          } else {
+            console.log(data);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
+      } else {
+        return res.json()
+      }
+    })
     .then(data => {
       if (data.message === 'not logged in') {
       } else {

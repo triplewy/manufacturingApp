@@ -1,6 +1,7 @@
 import React from 'react';
-import {ScrollView, Dimensions, View, Image, StyleSheet, FlatList, Text, TouchableHighlight, TouchableOpacity} from 'react-native';
+import {ScrollView, Dimensions, View, Image, ImageBackground, StyleSheet, FlatList, Text, TouchableHighlight, TouchableOpacity} from 'react-native';
 import Modal from 'react-native-modal'
+import closeIcon from './icons/close-icon.png'
 
 export default class ReportItem extends React.Component {
   constructor(props) {
@@ -18,11 +19,12 @@ export default class ReportItem extends React.Component {
   }
 
   renderItem(item) {
+    const win = Dimensions.get('window');
     return (
       <TouchableOpacity onPress={() => this.selectImage(item.item.url)}>
         <Image
           source={{uri: item.item.url}}
-          style={{width: 150, height: 150, margin: 10, borderRadius: 8}}
+          style={{width: (win.width - 100) / 4, height: (win.width - 100) / 4, margin: 10, borderRadius: 8}}
         />
       </TouchableOpacity>
     )
@@ -46,7 +48,7 @@ export default class ReportItem extends React.Component {
               <Text style={{marginRight: 5, fontSize: 18}}>Line</Text>
               <Text style={{fontSize: 18}}>{this.props.lineId}</Text>
             </View>
-            <Text>Line Leader Name</Text>
+            <Text>{this.props.leaderName}</Text>
           </View>
           <View>
             <View>
@@ -59,7 +61,6 @@ export default class ReportItem extends React.Component {
             </View>
           </View>
           <View style={{flex: 1}}>
-            {/* <Text style={{marginLeft: 5, fontSize: 18, textAlign: 'right', marginBottom: 20}}>Downtime</Text> */}
             <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
               <Text style={{fontSize: 32, fontWeight: '600', color: '#FF8300'}}>{this.props.downtime}</Text>
               <View style={{justifyContent: 'flex-end'}}>
@@ -78,7 +79,7 @@ export default class ReportItem extends React.Component {
             <Text style={{fontSize: 18}}>{this.props.description}</Text>
             <FlatList
               horizontal
-              scrollEnabled
+              scrollEnabled={false}
               data={this.props.images}
               renderItem={this.renderItem}
               keyExtractor={(item, index) => index.toString()}
@@ -90,11 +91,23 @@ export default class ReportItem extends React.Component {
               onSwipe={() => this.setState({ showModal: false })}
               swipeDirection='up'
             >
+
               <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                <Image
+                <ImageBackground
+                  resizeMode={'contain'}
                   source={{uri: this.state.selectedImage}}
-                  style={{width: win.width - 40, height: (win.width - 40) * this.state.imageHeight / this.state.imageWidth, borderRadius: 8}}
-                />
+                  imageStyle={{borderRadius: 8}}
+                  style={{width: win.width - 40, height: (win.width - 40) * this.state.imageHeight / this.state.imageWidth}}
+                >
+                  <TouchableOpacity onPress={() => this.setState({showModal: false})}>
+                    <View style={{position: 'absolute', top: 10, left: 10}}>
+                      <Image
+                        source={closeIcon}
+                        style={{width: 50, height: 50}}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </ImageBackground>
               </View>
             </Modal>
           </View>

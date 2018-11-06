@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { createBottomTabNavigator, createMaterialTopTabNavigator, createSwitchNavigator, createStackNavigator, NavigationActions } from 'react-navigation'
 import './global.js'
+import {getCookie, setCookie} from './app/Storage'
 import editIcon from './app/icons/edit-icon.png'
 import reportIcon from './app/icons/report-icon.png'
 import statsIcon from './app/icons/stats-icon.png'
@@ -12,8 +13,6 @@ import Name from './app/Auth/Name'
 import ForgotPassword from './app/Auth/ForgotPassword'
 import Grid from './app/Grid'
 import Input from './app/Input'
-import Downtime from './app/Downtime'
-import Machinery from './app/Machinery'
 import Stats from './app/Stats/Stats'
 import DayStats from './app/Stats/DayStats'
 import Account from './app/Account'
@@ -36,27 +35,56 @@ export default class App extends React.Component {
   }
 
   sessionLogin() {
-    fetch(global.API_URL + '/api/sessionLogin', {
-      credentials: 'include'
+    getCookie().then(cookie => {
+      console.log("cookie is", cookie);
+      fetch(global.API_URL + '/api/sessionLogin', {
+        method: 'GET',
+        credentials: 'include',
+      })
+      .then(res => {
+        if (res.headers.get("set-cookie")) {
+          console.log("set cookie is", res.headers.get("set-cookie"));
+          return setCookie(res.headers.get("set-cookie")).then(data => {
+            if (data.message === 'success') {
+              return res.json()
+            } else {
+              console.log(data);
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          })
+        } else {
+          return res.json()
+        }
+      })
+      .then(data => {
+        console.log(data);
+        if (data.message === 'not logged in') {
+          this.setState({loggedIn: false, isLoading: false})
+        } else {
+          this.setState({loggedIn: true, isLoading: false})
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      })
     })
-    .then(res => res.json())
-    .then(data => {
-      if (data.message === 'not logged in') {
-        this.setState({loggedIn: false, isLoading: false})
-      } else {
-        this.setState({loggedIn: true, isLoading: false})
-      }
+    .catch(err => {
+      console.log(err);
     })
-    .catch((error) => {
-      console.error(error);
-    });
   }
 
   render() {
     const AuthNavigation = createStackNavigator(
       {
         Login: Login,
-        Name: Name,
+        Name: {
+          screen: Name,
+          navigationOptions: {
+            gesturesEnabled: false,
+          }
+        },
         ForgotPassword: ForgotPassword
       },
       {
@@ -224,7 +252,7 @@ export default class App extends React.Component {
         Auth: AuthNavigation,
       },
       {
-        initialRouteName: this.props.loggedIn ? 'Auth' : 'Tabs'
+        initialRouteName: this.state.loggedIn ? 'Tabs' : 'Auth'
       }
     )
 

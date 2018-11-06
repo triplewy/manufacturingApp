@@ -1,6 +1,8 @@
 import React from 'react';
-import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Text, TouchableHighlight, TouchableOpacity} from 'react-native';
+import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Text, Dimensions, TouchableOpacity} from 'react-native';
 import ReportItem from './ReportItem'
+import ChooseModal from './ChooseModal'
+import Modal from 'react-native-modal'
 
 export default class Reports extends React.Component {
   constructor(props) {
@@ -8,30 +10,52 @@ export default class Reports extends React.Component {
 
     this.state = {
       reports: [],
-      refreshing: false
+      lines: [{name: 'All Lines'}],
+      refreshing: false,
     };
 
     this.fetchReports = this.fetchReports.bind(this)
+    this.fetchLines = this.fetchLines.bind(this)
     this.renderItem = this.renderItem.bind(this)
   }
 
   componentDidMount() {
     this.fetchReports()
+    this.fetchLines()
   }
 
-  fetchReports() {
+  fetchReports(index) {
+    var url = global.API_URL + '/api/reports'
+    if (index) {
+      url += '/line/' + this.state.lines[index].lineId
+    }
+
     this.setState({refreshing: true})
-    fetch(global.API_URL + '/api/reports', {
-      credentials: 'include'
-    })
+    fetch(url, { credentials: 'include' })
     .then(res => res.json())
     .then(data => {
-      console.log(data);
       this.setState({reports: data, refreshing: false})
     })
     .catch((error) => {
       console.error(error);
     });
+  }
+
+  fetchLines() {
+    fetch(global.API_URL + '/api/account/lines', {
+      credentials: 'include'
+    })
+    .then(res => res.json())
+    .then(data => {
+      var lines = []
+      for (var i = 0; i < data.length; i++) {
+        lines.push({name: 'Line ' + data[i].lineId, lineId: data[i].lineId})
+      }
+      this.setState({lines: this.state.lines.concat(lines)})
+    })
+    .catch((error) => {
+      console.error(error);
+    })
   }
 
   renderItem(item) {
@@ -41,36 +65,42 @@ export default class Reports extends React.Component {
   }
 
   render() {
-    if (this.state.reports.length > 0) {
-      return (
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this.fetchReports.bind(this)}
-            />
-          }
-        >
+    return (
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this.fetchReports.bind(this)}
+          />
+        }
+      >
+        <ChooseModal items={this.state.lines} selectItem={this.fetchReports} />
+        {this.state.reports.length > 0 ?
           <FlatList
             data={this.state.reports}
             renderItem={this.renderItem}
             keyExtractor={(item, index) => item.downtimeId.toString()}
           />
-        </ScrollView>
-      )
-    } else {
-      return (
-        <SafeAreaView style={{alignItems: 'center'}}>
-          <Text>Loading</Text>
-        </SafeAreaView>
-      )
-    }
+        :
+          null
+        }
+      </ScrollView>
+    )
   }
 }
 
 const styles = StyleSheet.create({
-  list: {
-    flexDirection: 'row',
-    flexWrap: 'wrap'
+  timePeriodTitle: {
+    flex: 1,
+    fontSize: 24,
   },
+  timePeriodToggle: {
+    fontSize: 21,
+    padding: 20
+  },
+  statsView: {
+    backgroundColor: 'white',
+    padding: 20,
+    marginBottom: 40
+  }
 })

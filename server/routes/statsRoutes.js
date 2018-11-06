@@ -2,10 +2,12 @@ module.exports = function(conn, loggedIn) {
     'use strict';
     var statsRoutes = require('express').Router();
 
-    statsRoutes.get('/totalDowntime/:timePeriod', (req, res) => {
+    statsRoutes.get('/totalDowntime/:timePeriod', loggedIn, (req, res) => {
       console.log('- Request received:', req.method.cyan, '/api/stats/totalDowntime/' + req.params.timePeriod);
+      const userId = req.user
       const timePeriodQuery = parseTotalTimePeriod(req.params.timePeriod * 1)
-      conn.query('SELECT SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate <= CURRENT_TIMESTAMP' + timePeriodQuery, {}, function(err, result) {
+      conn.query('SELECT SUM(downtime) AS totalDowntime FROM downtime WHERE lineId IN (SELECT lineId FROM assemblyLines WHERE userId = :userId) ' +
+      'AND createdDate <= CURRENT_TIMESTAMP' + timePeriodQuery, {userId: userId}, function(err, result) {
         if (err) {
           console.log(err);
         } else {
@@ -27,10 +29,11 @@ module.exports = function(conn, loggedIn) {
     //   })
     // })
 
-    statsRoutes.get('/downtime/time/:timePeriod', (req, res) => {
+    statsRoutes.get('/downtime/time/:timePeriod', loggedIn, (req, res) => {
       console.log('- Request received:', req.method.cyan, '/api/stats/downtime/time/' + req.params.timePeriod);
+      const userId = req.user
       const timePeriodQuery = parseTimePeriod(req.params.timePeriod * 1)
-      conn.query(timePeriodQuery, {}, function(err, result) {
+      conn.query(timePeriodQuery, {userId: userId}, function(err, result) {
         if (err) {
           console.log(err);
         } else {
@@ -39,31 +42,31 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
-    statsRoutes.get('/downtime/lines', (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/lines');
-      conn.query(
-      'SELECT a.*, SUM(b.downtime) AS totalDowntime FROM assemblyLines AS a ' +
-      'JOIN downtime AS b ON b.lineId = a.lineId GROUP BY a.lineId', {}, function(err, result) {
-        if (err) {
-          console.log(err);
-        } else {
-          res.send(result)
-        }
-      })
-    })
-
-    statsRoutes.get('/downtime/machines', (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/machines');
-      conn.query(
-      'SELECT a.*, SUM(b.downtime) AS totalDowntime FROM machines AS a ' +
-      'JOIN downtime AS b ON b.machineId = a.machineId GROUP BY a.machineId', {}, function(err, result) {
-        if (err) {
-          console.log(err);
-        } else {
-          res.send(result)
-        }
-      })
-    })
+    // statsRoutes.get('/downtime/lines', (req, res) => {
+    //   console.log('- Request received:', req.method.cyan, '/api/stats/downtime/lines');
+    //   conn.query(
+    //   'SELECT a.*, SUM(b.downtime) AS totalDowntime FROM assemblyLines AS a ' +
+    //   'JOIN downtime AS b ON b.lineId = a.lineId GROUP BY a.lineId', {}, function(err, result) {
+    //     if (err) {
+    //       console.log(err);
+    //     } else {
+    //       res.send(result)
+    //     }
+    //   })
+    // })
+    //
+    // statsRoutes.get('/downtime/machines', (req, res) => {
+    //   console.log('- Request received:', req.method.cyan, '/api/stats/downtime/machines');
+    //   conn.query(
+    //   'SELECT a.*, SUM(b.downtime) AS totalDowntime FROM machines AS a ' +
+    //   'JOIN downtime AS b ON b.machineId = a.machineId GROUP BY a.machineId', {}, function(err, result) {
+    //     if (err) {
+    //       console.log(err);
+    //     } else {
+    //       res.send(result)
+    //     }
+    //   })
+    // })
 
     statsRoutes.get('/downtime/day/machines/:date', (req, res) => {
       console.log('- Request received:', req.method.cyan, '/api/stats/downtime/day/machines/' + req.params.date);
@@ -151,30 +154,30 @@ module.exports = function(conn, loggedIn) {
       switch (timePeriod) {
         case 0:
           return (
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 23 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 23 HOUR)) UNION ALL ' +
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 22 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 22 HOUR)) UNION ALL ' +
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 21 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 21 HOUR)) UNION ALL ' +
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 20 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 20 HOUR)) UNION ALL ' +
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 19 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 19 HOUR)) UNION ALL ' +
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 18 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 18 HOUR)) UNION ALL ' +
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 17 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 17 HOUR)) UNION ALL ' +
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 16 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 16 HOUR)) UNION ALL ' +
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 15 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 15 HOUR)) UNION ALL ' +
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 14 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 14 HOUR)) UNION ALL ' +
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 13 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 13 HOUR)) UNION ALL ' +
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 12 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 12 HOUR)) UNION ALL ' +
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 11 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 11 HOUR)) UNION ALL ' +
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 10 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 10 HOUR)) UNION ALL ' +
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 9 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 9 HOUR)) UNION ALL ' +
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 8 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 8 HOUR)) UNION ALL ' +
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 7 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 7 HOUR)) UNION ALL ' +
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 6 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 6 HOUR)) UNION ALL ' +
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 5 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 5 HOUR)) UNION ALL ' +
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 4 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 4 HOUR)) UNION ALL ' +
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 3 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 3 HOUR)) UNION ALL ' +
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 2 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 2 HOUR)) UNION ALL ' +
-            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 HOUR)) UNION ALL ' +
-            'SELECT CURRENT_TIMESTAMP AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE HOUR(createdDate) = HOUR(CURRENT_TIMESTAMP) ORDER BY time ASC')
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 23 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 23 HOUR)) UNION ALL ' +
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 22 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 22 HOUR)) UNION ALL ' +
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 21 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 21 HOUR)) UNION ALL ' +
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 20 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 20 HOUR)) UNION ALL ' +
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 19 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 19 HOUR)) UNION ALL ' +
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 18 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 18 HOUR)) UNION ALL ' +
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 17 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 17 HOUR)) UNION ALL ' +
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 16 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 16 HOUR)) UNION ALL ' +
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 15 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 15 HOUR)) UNION ALL ' +
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 14 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 14 HOUR)) UNION ALL ' +
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 13 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 13 HOUR)) UNION ALL ' +
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 12 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 12 HOUR)) UNION ALL ' +
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 11 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 11 HOUR)) UNION ALL ' +
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 10 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 10 HOUR)) UNION ALL ' +
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 9 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 9 HOUR)) UNION ALL ' +
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 8 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 8 HOUR)) UNION ALL ' +
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 7 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 7 HOUR)) UNION ALL ' +
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 6 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 6 HOUR)) UNION ALL ' +
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 5 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 5 HOUR)) UNION ALL ' +
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 4 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 4 HOUR)) UNION ALL ' +
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 3 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 3 HOUR)) UNION ALL ' +
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 2 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 2 HOUR)) UNION ALL ' +
+            'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 HOUR) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 HOUR)) UNION ALL ' +
+            'SELECT CURRENT_TIMESTAMP AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(createdDate) = HOUR(CURRENT_TIMESTAMP) ORDER BY time ASC')
         case 1:
           return (
             'SELECT DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 6 DAY) AS time, SUM(downtime) AS totalDowntime FROM downtime WHERE DATE(createdDate) = DATE(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 6 DAY)) UNION ALL ' +

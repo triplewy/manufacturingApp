@@ -2,7 +2,7 @@ module.exports = function(conn, loggedIn, upload) {
     'use strict';
     var inputRoutes = require('express').Router();
 
-    inputRoutes.post('/submit', (req, res) => {
+    inputRoutes.post('/submit', loggedIn, (req, res) => {
       console.log('- Request received:', req.method.cyan, '/api/input/submit');
       upload(req, res, function(err) {
         if (err) {

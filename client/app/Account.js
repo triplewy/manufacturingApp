@@ -1,11 +1,13 @@
 import React from 'react';
 import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Text, TouchableHighlight, TouchableOpacity} from 'react-native';
+import { getName } from './Storage'
 
 export default class Account extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      name: '',
       account: {}
     };
 
@@ -14,6 +16,9 @@ export default class Account extends React.Component {
   }
 
   componentDidMount() {
+    getName().then(name => {
+      this.setState({name: name})
+    })
     this.fetchAccount()
   }
 
@@ -57,7 +62,7 @@ export default class Account extends React.Component {
     return (
       <ScrollView>
         <View style={styles.wrapper}>
-          <Text style={{fontSize: 24, margin: 10}}>{this.state.account.companyName}</Text>
+          <Text style={{fontSize: 32, margin: 10}}>{this.state.account.companyName}</Text>
           <View style={{flexDirection: 'row'}}>
             <Text style={{fontSize: 18, margin: 10}}>Day Shift:</Text>
             <Text style={{fontSize: 18, margin: 10}}>{this.state.account.morningShift + 'AM - ' + (this.state.account.eveningShift - 12) + 'PM'}</Text>
@@ -66,12 +71,14 @@ export default class Account extends React.Component {
             <Text style={{fontSize: 18, margin: 10}}>Night Shift:</Text>
             <Text style={{fontSize: 18, margin: 10}}>{(this.state.account.eveningShift - 12) + 'PM - ' + this.state.account.morningShift + 'AM'}</Text>
           </View>
+        </View>
+        <View style={styles.wrapper}>
+          <Text style={{fontSize: 24, margin: 10}}>{this.state.name}</Text>
           {this.state.account.lineNumbers ?
             <Text style={{fontSize: 18, margin: 10}}>{'Line ' + this.state.account.lineNumbers.join()}</Text>
             :
             null
           }
-          <Text style={{fontSize: 18, margin: 10}}>Name</Text>
         </View>
         <View style={styles.wrapper}>
           <Text style={{fontSize: 24, margin: 10}}>Contact</Text>

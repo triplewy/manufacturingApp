@@ -8,13 +8,11 @@ export default class GridItem extends React.Component {
 
     this.state = {
     };
-
   }
 
   render() {
-    console.log(this.props.name);
     return (
-      <TouchableOpacity onPress={() => this.props.navigation.navigate('Input', {machineId: this.props.machineId, title: this.props.name})}>
+      <TouchableOpacity onPress={() => this.props.navigation.navigate('Input', {machineId: this.props.machineId, title: this.props.name, lineId: this.props.lineId})}>
         <View style={styles.gridItem}>
           <View styles={styles.icon}>
             <Image

@@ -3,12 +3,14 @@ import {Animated, Easing, Dimensions, ScrollView, View, Image, ImageBackground, 
 import plusIcon from './icons/plus-icon.png'
 import ImagePicker from 'react-native-image-picker';
 import deleteIcon from './icons/delete-icon.png'
+import { getName } from './Storage'
 
 export default class Input extends React.Component {
   constructor(props) {
     super(props);
     this.widthValue = new Animated.Value(0)
     this.state = {
+      name: '',
       downtime: null,
       description: '',
       submitted: false,
@@ -22,6 +24,12 @@ export default class Input extends React.Component {
     this.renderItem = this.renderItem.bind(this)
     this.submut = this.submit.bind(this)
     this.upload = this.upload.bind(this)
+  }
+
+  componentDidMount() {
+    getName().then(name => {
+      this.setState({name: name})
+    })
   }
 
   handleDowntimeChange(text) {
@@ -122,11 +130,11 @@ export default class Input extends React.Component {
           </View>
           <View style={{flexDirection: 'row'}}>
             <Text style={styles.lockedInputLabel}>Line:</Text>
-            <Text style={styles.lockedText}>1</Text>
+            <Text style={styles.lockedText}>{this.props.navigation.state.params.lineId}</Text>
           </View>
           <View style={{flexDirection: 'row'}}>
             <Text style={{fontSize: 18, color: '#888888'}}>Line Leader:</Text>
-            <Text style={styles.lockedText}>Jon Pensler</Text>
+            <Text style={styles.lockedText}>{this.state.name}</Text>
           </View>
         </View>
         <View style={styles.inputView}>
