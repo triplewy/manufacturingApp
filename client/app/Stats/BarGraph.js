@@ -80,7 +80,6 @@ export default class BarGraph extends React.Component {
       <View style={styles.statsView}>
         <View style={{flexDirection: 'row'}}>
           <Text style={{marginBottom: 20, color: 'gray', fontSize: 18}}>{this.props.title}</Text>
-          <Text style={{flex: 1, textAlign: 'right', color: 'gray', fontSize: 18}}>{'<- Scroll ->'}</Text>
         </View>
         <FlatList
           horizontal

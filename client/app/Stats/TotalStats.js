@@ -69,6 +69,6 @@ const styles = StyleSheet.create({
   statsView: {
     backgroundColor: 'white',
     padding: 20,
-    marginBottom: 40
+    marginBottom: 60
   }
 })

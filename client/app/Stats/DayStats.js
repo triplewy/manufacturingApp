@@ -2,36 +2,12 @@ import React from 'react';
 import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Text, TouchableHighlight, TouchableOpacity, Dimensions} from 'react-native';
 import BarGraph from './BarGraph'
 import TotalStats from './TotalStats'
+import { parseTime } from '../ParseTime.js'
 
 export default class DayStats extends React.Component {
   static navigationOptions = ({ navigation }) => {
     const {state}  = navigation;
-    var currDate = ''
-    switch (state.params.timePeriod) {
-      case 0:
-        options = {hour: 'numeric', hour12: true }
-        currDate = new Date(state.params.date).toLocaleString('en-US', options)
-        break;
-      case 1:
-        options = {weekday: 'long', month: 'long', day: 'numeric'}
-        currDate = new Date(state.params.date).toLocaleDateString('en-US', options)
-        break;
-      case 2:
-        options = {weekday: 'long', month: 'long', day: 'numeric'}
-        currDate = new Date(state.params.date).toLocaleDateString('en-US', options)
-        break;
-      case 3:
-        options = {month: 'long'}
-        currDate = new Date(state.params.date).toLocaleDateString('en-US', options)
-        break;
-      case 4:
-        options = {year: 'numeric'}
-        currDate = new Date(state.params.date).toLocaleDateString('en-US', options)
-        break;
-      default:
-        options = {weekday: 'long', month: 'long', day: 'numeric'}
-        currDate = new Date(state.params.date).toLocaleDateString('en-US', options)
-    }
+    const currDate = parseTime(state.params.timePeriod, state.params.date)
     return {
       title: `${currDate}`,
     }
@@ -68,9 +44,9 @@ export default class DayStats extends React.Component {
             </View>
           </View>
         </View>
-        <BarGraph title='Lines' api_url='/api/stats/downtime/day/lines/' date={this.props.navigation.state.params.date} />
-        <BarGraph title='Machines' api_url='/api/stats/downtime/day/machines/' date={this.props.navigation.state.params.date} />
-        <BarGraph title='Shifts' api_url='/api/stats/downtime/day/shifts/' date={this.props.navigation.state.params.date} />
+        <BarGraph title='Lines' api_url={'/api/stats/downtime/lines/' + this.props.navigation.state.params.timePeriod + '/'} date={this.props.navigation.state.params.date} />
+        <BarGraph title='Machines' api_url={'/api/stats/downtime/machines/' + this.props.navigation.state.params.timePeriod + '/'} date={this.props.navigation.state.params.date} />
+        <BarGraph title='Shifts' api_url={'/api/stats/downtime/shifts/' + this.props.navigation.state.params.timePeriod + '/'} date={this.props.navigation.state.params.date} />
       </ScrollView>
     )
   }

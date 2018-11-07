@@ -10,7 +10,7 @@ export default class Reports extends React.Component {
 
     this.state = {
       reports: [],
-      lines: [{name: 'All Lines'}],
+      lines: [{name: 'ALL LINES'}],
       refreshing: false,
     };
 
@@ -49,7 +49,7 @@ export default class Reports extends React.Component {
     .then(data => {
       var lines = []
       for (var i = 0; i < data.length; i++) {
-        lines.push({name: 'Line ' + data[i].lineId, lineId: data[i].lineId})
+        lines.push({name: 'LINE ' + data[i].lineId, lineId: data[i].lineId})
       }
       this.setState({lines: this.state.lines.concat(lines)})
     })

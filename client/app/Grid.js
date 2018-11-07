@@ -1,5 +1,5 @@
 import React from 'react';
-import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Text, Dimensions, TouchableOpacity} from 'react-native';
+import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Text, Dimensions, TouchableOpacity, Platform} from 'react-native';
 import GridItem from './GridItem'
 import ChooseModal from './ChooseModal'
 import { getCookie } from './Storage'
@@ -47,7 +47,7 @@ export default class Grid extends React.Component {
     .then(data => {
       var lines = []
       for (var i = 0; i < data.length; i++) {
-        lines.push({name: 'Line ' + data[i].lineId, lineId: data[i].lineId})
+        lines.push({name: 'LINE ' + data[i].lineId, lineId: data[i].lineId})
       }
       this.setState({lines: lines})
     })
@@ -63,6 +63,10 @@ export default class Grid extends React.Component {
   }
 
   render() {
+    var columns = 4
+    if (!Platform.isPad) {
+      columns = 3
+    }
     return (
       <ScrollView>
         <ChooseModal items={this.state.lines} selectItem={this.fetchGrid} />
@@ -72,7 +76,7 @@ export default class Grid extends React.Component {
               data={this.state.grid}
               renderItem={this.renderItem}
               keyExtractor={(item, index) => index.toString()}
-              numColumns={4}
+              numColumns={columns}
               contentContainerStyle={{alignItems: 'center'}}
             />
             :
@@ -96,6 +100,5 @@ const styles = StyleSheet.create({
   statsView: {
     backgroundColor: 'white',
     padding: 20,
-    marginBottom: 40
   }
 })

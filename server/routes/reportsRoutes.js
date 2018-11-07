@@ -5,7 +5,7 @@ module.exports = function(conn, loggedIn) {
     reportsRoutes.get('/', loggedIn, (req, res) => {
       console.log('- Request received:', req.method.cyan, '/api/reports');
       const userId = req.user
-      conn.query('SELECT a.*, a.createdDate AS reportedDate, b.*, c.*, d.images, (SELECT name FROM usersNames WHERE userId = :userId ORDER BY loggedInDate DESC LIMIT 1) AS leaderName ' +
+      conn.query('SELECT a.*, a.createdDate AS reportedDate, b.*, c.*, d.images, (SELECT name FROM usersNames WHERE userId = :userId AND loggedInDate < a.createdDate ORDER BY loggedInDate DESC LIMIT 1) AS leaderName ' +
       'FROM downtime AS a ' +
       'JOIN machines AS b ON b.machineId = a.machineId ' +
       'JOIN assemblyLines AS c ON c.lineId = b.lineId ' +
@@ -28,7 +28,7 @@ module.exports = function(conn, loggedIn) {
     reportsRoutes.get('/line/:lineId', loggedIn, (req, res) => {
       console.log('- Request received:', req.method.cyan, '/api/reports/line/' + req.params.lineId);
       const userId = req.user
-      conn.query('SELECT a.*, a.createdDate AS reportedDate, b.*, c.*, d.images, (SELECT name FROM usersNames WHERE userId = :userId ORDER BY loggedInDate DESC LIMIT 1) AS leaderName ' +
+      conn.query('SELECT a.*, a.createdDate AS reportedDate, b.*, c.*, d.images, (SELECT name FROM usersNames WHERE userId = :userId AND loggedInDate < a.createdDate ORDER BY loggedInDate DESC LIMIT 1) AS leaderName ' +
       'FROM downtime AS a ' +
       'JOIN machines AS b ON b.machineId = a.machineId ' +
       'JOIN assemblyLines AS c ON c.lineId = b.lineId ' +

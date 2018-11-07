@@ -83,7 +83,7 @@ export default class Account extends React.Component {
         <View style={styles.wrapper}>
           <Text style={{fontSize: 24, margin: 10}}>Contact</Text>
           <Text style={{fontSize: 18, margin: 10}}>Phone #: 888-888-8888</Text>
-          <Text style={{fontSize: 18, margin: 10}}>Email: help@bigbooties.com</Text>
+          <Text style={{fontSize: 18, margin: 10}}>Email: help@example.com</Text>
         </View>
         <TouchableOpacity onPress={this.logout}>
           <View style={styles.wrapper}>

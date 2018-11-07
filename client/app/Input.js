@@ -1,8 +1,9 @@
 import React from 'react';
-import {Animated, Easing, Dimensions, ScrollView, View, Image, ImageBackground, RefreshControl, FlatList, StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpacity} from 'react-native';
+import {Animated, Easing, Dimensions, ScrollView, View, Image, ImageBackground, RefreshControl, FlatList, StyleSheet, Text, TextInput, Alert, TouchableOpacity} from 'react-native';
 import plusIcon from './icons/plus-icon.png'
 import ImagePicker from 'react-native-image-picker';
 import deleteIcon from './icons/delete-icon.png'
+import ImageModal from './ImageModal'
 import { getName } from './Storage'
 
 export default class Input extends React.Component {
@@ -15,7 +16,10 @@ export default class Input extends React.Component {
       description: '',
       submitted: false,
       progress: 0,
-      images: []
+      images: [],
+
+      showModal: false,
+      selectedImage: null
     };
 
     this.handleDowntimeChange = this.handleDowntimeChange.bind(this)
@@ -24,6 +28,7 @@ export default class Input extends React.Component {
     this.renderItem = this.renderItem.bind(this)
     this.submut = this.submit.bind(this)
     this.upload = this.upload.bind(this)
+    this.toggleModal = this.toggleModal.bind(this)
   }
 
   componentDidMount() {
@@ -37,25 +42,35 @@ export default class Input extends React.Component {
   }
 
   addImage() {
-    ImagePicker.showImagePicker(null, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-      } else {
-        const source = { uri: response.uri };
-        // You can also display the image using data:
-        // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+    if (this.state.images.length > 3) {
+      Alert.alert(
+        'Exceeded photos limit',
+        'Max 4 photos',
+        [
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ],
+        { cancelable: false }
+      )
+    } else {
+      ImagePicker.showImagePicker(null, (response) => {
+        if (response.didCancel) {
+          console.log('User cancelled image picker');
+        } else if (response.error) {
+          console.log('ImagePicker Error: ', response.error);
+        } else if (response.customButton) {
+          console.log('User tapped custom button: ', response.customButton);
+        } else {
+          const source = { uri: response.uri };
+          // You can also display the image using data:
+          // const source = { uri: 'data:image/jpeg;base64,' + response.data };
 
-        this.setState({images: this.state.images.concat(source)})
-      }
-    })
+          this.setState({images: this.state.images.concat(source)})
+        }
+      })
+    }
   }
 
   deleteImage(index) {
-    console.log("helllllooooo");
     var temp = this.state.images
     temp.splice(index, 1)
     this.setState({images: temp})
@@ -63,19 +78,20 @@ export default class Input extends React.Component {
 
   renderItem(item) {
     return (
-      <ImageBackground
-        source={{uri: item.item.uri}}
-        resizeMode={'contain'}
-        style={{width: 150, height: 150, margin: 20}}
-        imageStyle={{borderRadius: 8}}
-      >
-        <TouchableOpacity onPress={this.deleteImage.bind(this,item.index)}>
-          <Image
-            source={deleteIcon}
-            style={{position: 'absolute', width: 40, height: 40, right: -20, top: 0}}
-          />
-        </TouchableOpacity>
-      </ImageBackground>
+      <TouchableOpacity onPress={() => this.setState({selectedImage: item.item.uri, showModal: true})}>
+        <ImageBackground
+          source={{uri: item.item.uri}}
+          style={{width: 100, height: 100, margin: 20}}
+          imageStyle={{borderRadius: 8}}
+        >
+          <TouchableOpacity onPress={this.deleteImage.bind(this,item.index)}>
+            <Image
+              source={deleteIcon}
+              style={{position: 'absolute', width: 40, height: 40, right: -20, top: -20}}
+            />
+          </TouchableOpacity>
+        </ImageBackground>
+      </TouchableOpacity>
     )
   }
 
@@ -117,12 +133,21 @@ export default class Input extends React.Component {
     xhr.send(formData)
   }
 
+  toggleModal() {
+    this.setState({showModal: !this.state.showModal})
+  }
+
   render() {
     var options = { weekday: 'long', month: 'short', day: 'numeric' };
     var currDate = new Date().toLocaleDateString('en-US', options)
-    console.log(this.state.images.length);
     return (
       <ScrollView>
+        <View style={{alignItems: 'center', justifyContent: 'center', margin: 20}}>
+          <Image
+            source={{uri: this.props.navigation.state.params.icon_url}}
+            style={{width: 100, height: 100, borderRadius: 8}}
+          />
+        </View>
         <View style={styles.inputView}>
           <View style={{flexDirection: 'row'}}>
             <Text style={styles.lockedInputLabel}>Production Day:</Text>
@@ -138,21 +163,21 @@ export default class Input extends React.Component {
           </View>
         </View>
         <View style={styles.inputView}>
-          <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginVertical: 10}}>
             <Text style={styles.inputLabel}>Downtime:</Text>
-            <TextInput keyboardType='numeric' returnKeyType='done' maxLength={3} style={[styles.textInput, {color: this.state.downtime ? 'black' : '#888888'}]} placeholder='0' value={this.state.downtime} onChangeText={(text) => this.handleDowntimeChange(text)}/>
+            <TextInput keyboardType='numeric' returnKeyType='done' maxLength={3} style={[styles.textInput, {borderColor: this.state.downtime ? '#83D3D6' : 'red'}]} placeholder='0' value={this.state.downtime} onChangeText={(text) => this.handleDowntimeChange(text)}/>
             <Text style={{marginLeft: 10, fontSize: 18, color: this.state.downtime ? 'black' : '#888888'}}>Minutes</Text>
           </View>
         </View>
         <View style={styles.inputView}>
           <Text style={styles.inputLabel}>Description:</Text>
-          <TextInput multiline={true} numberOfLines={10} style={styles.textarea} value={this.state.description} onChangeText={(text) => this.setState({description: text})}/>
+          <TextInput multiline={true} numberOfLines={10} placeholder='Type the description of the downtime here...' style={[styles.textarea, {borderColor: this.state.description ? '#83D3D6' : 'red'}]} value={this.state.description} onChangeText={(text) => this.setState({description: text})}/>
         </View>
         <Text style={{textAlign: 'center', fontSize: 18, marginBottom: 30, paddingHorizontal: 20}}>Add photos to your description (Optional. Max 4 photos)</Text>
         <View style={[styles.inputView, {flexDirection: 'row', alignItems: 'center'}]}>
           <TouchableOpacity onPress={this.addImage.bind(this)}>
             <View style={styles.addButton}>
-              <Image source={plusIcon} style={{width: 50, height: 50}}/>
+              <Image source={plusIcon} style={{width: 40, height: 40}}/>
             </View>
           </TouchableOpacity>
           <FlatList
@@ -163,6 +188,7 @@ export default class Input extends React.Component {
             keyExtractor={(item, index) => index.toString()}
             key={this.state.images.length}
           />
+          <ImageModal selectedImage={this.state.selectedImage} showModal={this.state.showModal} toggleModal={this.toggleModal} />
         </View>
         <TouchableOpacity onPress={this.submit.bind(this)} disabled={!(this.state.downtime && this.state.description) || this.state.submitted}>
           <View style={{backgroundColor: (this.state.downtime && this.state.description) ? '#83D3D6' : '#f1f1f1', alignItems: 'center', justifyContent: 'center', height: 80}}>
@@ -191,7 +217,6 @@ const styles = StyleSheet.create({
   inputLabel: {
     flex: 1,
     fontSize: 18,
-    marginBottom: 20
   },
   lockedText: {
     fontSize: 18,
@@ -203,13 +228,18 @@ const styles = StyleSheet.create({
   },
   textInput: {
     fontSize: 18,
-    width: 50,
-    textAlign: 'right',
+    width: 60,
+    borderWidth: 2,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 10,
+    textAlign: 'center'
   },
   textarea: {
     alignItems: 'center',
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#ccc',
+    marginVertical: 20,
     padding: 12,
     fontSize: 18,
     borderRadius: 4,

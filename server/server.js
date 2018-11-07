@@ -83,7 +83,7 @@ var conn = mysql.createConnection({
   user     : process.env.MYSQL_USER,
   password : process.env.MYSQL_PASSWORD,
   database : process.env.MYSQL_DATABASE,
-  timezone: '-05:00'
+  timezone: 'utc'
 });
 
 // conn.query('SET foreign_key_checks = 0')

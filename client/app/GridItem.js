@@ -1,5 +1,5 @@
 import React from 'react';
-import {ScrollView, View, StyleSheet, Text, Image, TouchableHighlight, TouchableOpacity} from 'react-native';
+import {ScrollView, View, Platform, Dimensions, StyleSheet, Text, Image, TouchableHighlight, TouchableOpacity} from 'react-native';
 import machineIcon from './icons/machine-icon.png'
 
 export default class GridItem extends React.Component {
@@ -11,14 +11,15 @@ export default class GridItem extends React.Component {
   }
 
   render() {
+    const win = Dimensions.get('window');
     return (
-      <TouchableOpacity onPress={() => this.props.navigation.navigate('Input', {machineId: this.props.machineId, title: this.props.name, lineId: this.props.lineId})}>
+      <TouchableOpacity onPress={() => this.props.navigation.navigate('Input', {...this.props})}>
         <View style={styles.gridItem}>
           <View styles={styles.icon}>
             <Image
               source={{uri: this.props.icon_url}}
               resizeMode={'contain'}
-              style={{width: 90, height: 90, borderRadius: 8}}
+              style={styles.image}
             />
           </View>
           <Text style={styles.iconTitle}>{this.props.name}</Text>
@@ -29,11 +30,18 @@ export default class GridItem extends React.Component {
   }
 }
 
+const win = Dimensions.get('window');
+var imageWidth = 8
+var gridWidth = 6
+if (!Platform.isPad) {
+  imageWidth = 6
+  gridWidth = 4
+}
 const styles = StyleSheet.create({
   gridItem: {
-    margin: 30,
+    margin: win.width / 25,
     alignItems: 'center',
-    width: 130
+    width: win.width / gridWidth
   },
   icon: {
     backgroundColor: 'white',
@@ -43,5 +51,10 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 16,
     alignItems: 'center'
+  },
+  image: {
+    width: win.width / imageWidth,
+    height: win.width / imageWidth,
+    borderRadius: 8
   }
 })

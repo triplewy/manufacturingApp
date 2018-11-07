@@ -109,7 +109,7 @@ export default class App extends React.Component {
         Input: {
           screen: Input,
           navigationOptions: ({ navigation }) => ({
-            title: `${navigation.state.params.title}`,
+            title: `${navigation.state.params.name}`,
           }),
         },
       },
@@ -202,34 +202,32 @@ export default class App extends React.Component {
             Inputs: {
               screen: InputsNavigator,
               navigationOptions: {
-                tabBarIcon: () => (<Image source={editIcon} style={{width: 30, height: 30, alignItems: 'center'}} />)
+                tabBarIcon: () => (<Image source={editIcon} style={{width: 40, height: 40, alignItems: 'center'}} />)
               }
             },
             Reports: {
               screen: ReportsNavigator,
               navigationOptions: {
-                tabBarIcon: () => (<Image source={reportIcon} style={{width: 30, height: 30, alignItems: 'center'}} />)
+                tabBarIcon: () => (<Image source={reportIcon} style={{width: 40, height: 40, alignItems: 'center'}} />)
               }
             },
             Stats: {
               screen: StatsNavigator,
               navigationOptions: {
-                tabBarIcon: () => (<Image source={statsIcon} style={{width: 30, height: 30, alignItems: 'center'}} />)
+                tabBarIcon: () => (<Image source={statsIcon} style={{width: 40, height: 40, alignItems: 'center'}} />)
               }
             },
             Account: {
               screen: AccountNavigator,
               navigationOptions: {
-                tabBarIcon: () => (<Image source={accountIcon} style={{width: 30, height: 30, alignItems: 'center'}} />)
+                tabBarIcon: () => (<Image source={accountIcon} style={{width: 40, height: 40, alignItems: 'center'}} />)
               }
             }
           },
           {
-            tabBarPosition: 'bottom',
-            animationEnabled: true,
-            activeTintColor: '#FF8300',
-            inactiveTintColor: '#666',
             tabBarOptions: {
+              activeTintColor: '#FF8300',
+              inactiveTintColor: 'gray',
               showIcon: true,
               showLabel: true,
               style: {

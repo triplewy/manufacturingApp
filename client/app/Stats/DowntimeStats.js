@@ -1,5 +1,6 @@
 import React from 'react';
 import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Text, TouchableHighlight, TouchableOpacity, Dimensions} from 'react-native';
+import { parseTime } from '../ParseTime.js'
 
 export default class DowntimeStats extends React.Component {
   constructor(props) {
@@ -52,33 +53,8 @@ export default class DowntimeStats extends React.Component {
 
   renderItem(item) {
     const win = Dimensions.get('window');
-    var currDate = ''
-    var options = {}
-    switch (this.props.timePeriod) {
-      case 0:
-        options = {hour: 'numeric', hour12: true }
-        currDate = new Date(item.item.time).toLocaleString('en-US', options)
-        break;
-      case 1:
-        options = {weekday: 'short', month: 'short', day: 'numeric'}
-        currDate = new Date(item.item.time).toLocaleDateString('en-US', options)
-        break;
-      case 2:
-        options = {weekday: 'short', month: 'short', day: 'numeric'}
-        currDate = new Date(item.item.time).toLocaleDateString('en-US', options)
-        break;
-      case 3:
-        options = {month: 'short'}
-        currDate = new Date(item.item.time).toLocaleDateString('en-US', options)
-        break;
-      case 4:
-        options = {year: 'numeric'}
-        currDate = new Date(item.item.time).toLocaleDateString('en-US', options)
-        break;
-      default:
-        options = {weekday: 'short', month: 'short', day: 'numeric'}
-        currDate = new Date(item.item.time).toLocaleDateString('en-US', options)
-    }
+    var currDate = parseTime(this.props.timePeriod, item.item.time)
+
     var downtime = 0
     if (item.item.downtime) {
       downtime = item.item.downtime

@@ -7,7 +7,7 @@ export default class ChooseModal extends React.Component {
     super(props);
 
     this.state = {
-      selectedItem: 0,
+      selectedItem: this.props.defaultIndex ? this.props.defaultIndex : 0,
       showModal: false
     };
 
@@ -62,7 +62,7 @@ export default class ChooseModal extends React.Component {
 const styles = StyleSheet.create({
   timePeriodTitle: {
     flex: 1,
-    fontSize: 24,
+    fontSize: 18,
   },
   timePeriodToggle: {
     fontSize: 21,
