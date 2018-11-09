@@ -52,10 +52,19 @@ export default class Name extends React.Component {
       <View style={{justifyContent: 'center', flex: 1}}>
         <View style={styles.inputView}>
           <Text style={styles.title}>Name</Text>
-          <TextInput placeholder='Name' autoCapitalize='none' autoCorrect={false} style={styles.textInput} value={this.state.name} onChangeText={(text) => this.setState({name: text})}/>
-          <TouchableOpacity onPress={this.postName}>
-            <View style={styles.loginButton}>
-              <Text style={styles.loginButtonText}>Done</Text>
+          <TextInput
+            placeholder='Name'
+            autoCapitalize='none'
+            autoCorrect={false}
+            style={styles.textInput}
+            value={this.state.name}
+            onChangeText={(text) => this.setState({name: text})}
+            returnKeyType="done"
+            onSubmitEditing={this.postName}
+          />
+          <TouchableOpacity onPress={this.postName} disabled={this.state.name.length === 0}>
+            <View style={[styles.loginButton, {backgroundColor: this.state.name.length > 0 ? 'blue' : 'white'}]}>
+              <Text style={[styles.loginButtonText, {color: this.state.name.length > 0 ? 'white' : '#f1f1f1'}]}>Done</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -93,12 +102,10 @@ const styles = StyleSheet.create({
     margin: 40,
     alignItems: 'center',
     width: 200,
-    backgroundColor: 'blue',
     borderRadius: 24
   },
   loginButtonText: {
     padding: 15,
     fontSize: 18,
-    color: 'white'
   }
 })

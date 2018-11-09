@@ -1,17 +1,18 @@
 import React from 'react';
-import { Dimensions, SafeAreaView, View, Text, TextInput, StyleSheet, TouchableOpacity, Button } from 'react-native';
+import { Dimensions, SafeAreaView, View, Text, TextInput, StyleSheet, TouchableOpacity, Animated, Easing } from 'react-native';
 import {setCookie} from '../Storage'
 
 export default class Login extends React.Component {
   constructor(props) {
     super(props);
-
+    this.fadeValue = new Animated.Value(0)
     this.state = {
       username: '',
-      password: ''
+      password: '',
     };
 
     this.login = this.login.bind(this)
+    this.loginFail = this.loginFail.bind(this)
   }
 
   login(e) {
@@ -42,11 +43,18 @@ export default class Login extends React.Component {
           console.log(err);
         })
       } else {
-        return res.json()
+        if (res.status === 401) {
+          return {message: 'not logged in'}
+        } else {
+          return res.json()
+        }
       }
     })
     .then(data => {
+      console.log(data);
       if (data.message === 'not logged in') {
+        // this.setState({failedLogin: 1})
+        this.loginFail()
       } else {
         this.props.navigation.navigate('Name')
       }
@@ -56,13 +64,42 @@ export default class Login extends React.Component {
     });
   }
 
+  loginFail() {
+    this.fadeValue.setValue(0)
+    Animated.timing(
+      this.fadeValue,
+      {
+        toValue: 1,
+        duration: 1000,
+        easing: Easing.ease
+      }
+    ).start()
+  }
+
   render() {
     return (
       <View style={{justifyContent: 'center', flex: 1}}>
         <View style={styles.inputView}>
           <Text style={styles.title}>Sign in</Text>
-          <TextInput placeholder='Username' autoCapitalize='none' autoCorrect={false} style={styles.textInput} value={this.state.username} onChangeText={(text) => this.setState({username: text})}/>
-          <TextInput placeholder='Password' secureTextEntry autoCapitalize='none' autoCorrect={false} style={styles.textInput} value={this.state.password} onChangeText={(text) => this.setState({password: text})}/>
+          <TextInput
+            placeholder='Username'
+            autoCapitalize='none'
+            autoCorrect={false}
+            style={styles.textInput}
+            value={this.state.username}
+            onChangeText={(text) => this.setState({username: text})}
+          />
+          <TextInput
+            placeholder='Password'
+            secureTextEntry
+            autoCapitalize='none'
+            autoCorrect={false}
+            returnKeyType="go"
+            style={styles.textInput}
+            value={this.state.password}
+            onChangeText={(text) => this.setState({password: text})}
+            onSubmitEditing={this.login}
+          />
           <TouchableOpacity onPress={() => this.props.navigation.navigate('ForgotPassword')}>
             <Text style={{color: 'white', marginVertical: 20}}>Forgot password?</Text>
           </TouchableOpacity>
@@ -71,6 +108,9 @@ export default class Login extends React.Component {
               <Text style={styles.loginButtonText}>Continue</Text>
             </View>
           </TouchableOpacity>
+          <Animated.View style={{marginTop: 30, opacity: this.fadeValue}}>
+            <Text style={{color: 'white', fontSize: 18, fontWeight: 'bold', textAlign: 'center'}}>Incorrect username or password</Text>
+          </Animated.View>
         </View>
 
       </View>

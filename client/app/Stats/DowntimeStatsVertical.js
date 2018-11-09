@@ -3,7 +3,7 @@ import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Te
 import { parseTime } from '../ParseTime.js'
 import { downtimeString } from '../DowntimeString.js'
 
-export default class DowntimeStats extends React.Component {
+export default class DowntimeStatsVertical extends React.Component {
   constructor(props) {
     super(props);
     this.fadeValue = new Animated.Value(0)
@@ -54,9 +54,11 @@ export default class DowntimeStats extends React.Component {
   }
 
   fetchDowntimeStats() {
-    fetch(global.API_URL + '/api/stats/downtime/time/' + this.props.timePeriod, {
-      credentials: 'include'
-    })
+    var url = global.API_URL + '/api/stats/downtime/time/' + this.props.timePeriod
+    if (this.props.line) {
+      url += '/line/' + this.props.line.lineId
+    }
+    fetch(url, {credentials: 'include'})
     .then(res => res.json())
     .then(data => {
       console.log(data);
@@ -81,23 +83,24 @@ export default class DowntimeStats extends React.Component {
     if (item.item.downtime) {
       downtime = item.item.downtime
     }
-    const width = downtime / this.state.totalDowntime * (win.width - 40)
+    const height = downtime / this.state.totalDowntime * 400
     const parsedDowntime = downtimeString(downtime)
 
     if (downtime !== 0) {
       return (
-        <View style={{marginBottom: 20}}>
-          <View style={{flexDirection: 'row', marginBottom: 5}}>
-            <Text style={{color: 'gray', flex: 1}}>{currDate}</Text>
-            <Text style={{color: 'gray'}}>{parsedDowntime}</Text>
+        <View style={{marginBottom: 20, alignItems: 'center', justifyContent: 'center', width: 80, marginRight: 10}}>
+          <View style={{flex:1}} />
+          <View style={{marginBottom: 5}}>
+            <Text style={{color: 'gray', textAlign: 'center'}}>{parsedDowntime}</Text>
           </View>
-          <TouchableOpacity onPress={() => this.props.navigation.navigate('DayStats', {date: item.item.time, timePeriod: this.props.timePeriod, downtime: downtime})}>
-            <View style={{height: 50, width: width, backgroundColor: '#FF8300', borderRadius: 4, alignItems: 'center', justifyContent: 'center'}}>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('DayStats', {date: item.item.time, timePeriod: this.props.timePeriod, downtime: downtime, line: this.props.line})}>
+            <View style={{height: height, width: 70, backgroundColor: '#FF8300', borderRadius: 4, alignItems: 'center', justifyContent: 'center'}}>
               <Animated.View style={{opacity: this.fadeValue}}>
                 <Text style={{color: 'white', fontWeight: 'bold'}}>{Math.round(downtime / this.state.totalDowntime * 100) + '%'}</Text>
               </Animated.View>
             </View>
           </TouchableOpacity>
+          <Text style={{color: 'gray', marginTop: 10}}>{currDate}</Text>
         </View>
       )
     } else {
@@ -112,6 +115,8 @@ export default class DowntimeStats extends React.Component {
       <View style={styles.statsView}>
         <Text style={{marginBottom: 10, color: 'gray', fontSize: 18}}>Downtime</Text>
         <FlatList
+          horizontal
+          scrollEnabled
           data={this.state.downtime}
           renderItem={this.renderItem}
           keyExtractor={(item, index) => index.toString()}

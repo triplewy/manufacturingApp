@@ -1,8 +1,10 @@
 import React from 'react';
 import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Text, TouchableHighlight, TouchableOpacity, Dimensions} from 'react-native';
 import BarGraph from './BarGraph'
+import BarGraphVertical from './BarGraphVertical'
 import TotalStats from './TotalStats'
 import { parseTime } from '../ParseTime.js'
+import { downtimeString } from '../DowntimeString.js'
 
 export default class DayStats extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -17,36 +19,36 @@ export default class DayStats extends React.Component {
     super(props);
 
     this.state = {
-
+      colors: null
     };
+
+    this.updateColors = this.updateColors.bind(this)
+  }
+
+  updateColors(colors) {
+    this.setState({colors: colors})
   }
 
   render() {
+    const params = this.props.navigation.state.params
     const downtime = this.props.navigation.state.params.downtime
-    const hours = Math.floor(downtime / 60)
-    const minutes = downtime % 60
+    const parsedDowntime = downtimeString(downtime)
     return (
       <ScrollView>
         <View style={styles.statsView}>
           <Text style={{marginBottom: 20, color: 'gray', fontSize: 18}}>Total Downtime</Text>
-          <View style={{flexDirection: 'row'}}>
-            {hours !== 0 ?
-              <View style={{flexDirection: 'row', marginRight: 10}}>
-                <Text style={{fontSize: 24, fontWeight: '600', color: '#FF8300'}}>{hours}</Text>
-                <Text style={{fontSize: 24, fontWeight: '600', marginLeft: 5, color: '#FF8300'}}>Hours</Text>
-              </View>
-            :
-              null
-            }
-            <View style={{flexDirection: 'row'}}>
-              <Text style={{fontSize: 24, fontWeight: '600', color: '#FF8300'}}>{minutes}</Text>
-              <Text style={{fontSize: 24, fontWeight: '600', marginLeft: 5, color: '#FF8300'}}>Minutes</Text>
-            </View>
-          </View>
+          <Text style={{fontSize: 24, fontWeight: '600', color: '#FF8300'}}>{parsedDowntime}</Text>
         </View>
-        <BarGraph title='Lines' api_url={'/api/stats/downtime/lines/' + this.props.navigation.state.params.timePeriod + '/'} date={this.props.navigation.state.params.date} />
-        <BarGraph title='Machines' api_url={'/api/stats/downtime/machines/' + this.props.navigation.state.params.timePeriod + '/'} date={this.props.navigation.state.params.date} />
-        <BarGraph title='Shifts' api_url={'/api/stats/downtime/shifts/' + this.props.navigation.state.params.timePeriod + '/'} date={this.props.navigation.state.params.date} />
+        <BarGraphVertical
+          title='Machines'
+          api_url={params.line ?
+            '/api/stats/downtime/machines/line/' + params.line.lineId + '/' + params.timePeriod + '/' + params.date
+            :
+            '/api/stats/downtime/machines/' + params.timePeriod + '/' + params.date
+          }
+          lineColors={this.state.colors}
+        />
+        <BarGraph title='Shifts' api_url={'/api/stats/downtime/shifts/' + params.timePeriod + '/'} date={params.date} />
       </ScrollView>
     )
   }

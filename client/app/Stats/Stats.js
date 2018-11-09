@@ -3,9 +3,9 @@ import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Te
 import ChooseModal from '../ChooseModal'
 import TotalStats from './TotalStats'
 import BarGraph from './BarGraph'
+import BarGraphVertical from './BarGraphVertical'
 import DowntimeStats from './DowntimeStats'
-import LinesStats from './LinesStats'
-import MachinesStats from './MachinesStats'
+import DowntimeStatsVertical from './DowntimeStatsVertical'
 
 export default class Stats extends React.Component {
   constructor(props) {
@@ -13,30 +13,54 @@ export default class Stats extends React.Component {
 
     this.state = {
       timePeriod: 1,
+      lines: [],
+      line: null,
       refreshing: false
     };
 
-    this.toggleModal = this.toggleModal.bind(this)
-    this.selectTimePeriod = this.selectTimePeriod.bind(this)
+    this.fetchLines = this.fetchLines.bind(this)
     this.refreshStats = this.refreshStats.bind(this)
+    this.refreshLine = this.refreshLine.bind(this)
   }
 
-  toggleModal(visible) {
-    this.setState({showModal: !this.state.showModal});
+  componentDidMount() {
+    this.fetchLines()
   }
 
-  selectTimePeriod(index) {
-    this.setState({timePeriod: index, showModal: false})
-    this.refreshStats()
+  fetchLines() {
+    fetch(global.API_URL + '/api/account/lines', {
+      credentials: 'include'
+    })
+    .then(res => res.json())
+    .then(data => {
+      var lines = []
+      for (var i = 0; i < data.length; i++) {
+        lines.push({name: 'LINE ' + data[i].lineId, lineId: data[i].lineId})
+      }
+      this.setState({lines: this.state.lines.concat(lines)})
+    })
+    .catch((error) => {
+      console.error(error);
+    })
   }
 
   refreshStats(index) {
-
     var timePeriod = index
     if (typeof timePeriod === 'undefined') {
       timePeriod = this.state.timePeriod
     }
     this.setState({refreshing: true, timePeriod: timePeriod})
+    setTimeout(() => {
+      this.setState({refreshing: false})
+    }, 2000)
+  }
+
+  refreshLine(index) {
+    var line = index
+    if (typeof line === 'undefined') {
+      line = this.state.line
+    }
+    this.setState({refreshing: true, line: line})
     setTimeout(() => {
       this.setState({refreshing: false})
     }, 2000)
@@ -58,8 +82,30 @@ export default class Stats extends React.Component {
           selectItem={this.refreshStats}
           defaultIndex={1}
         />
-        <TotalStats refreshing={this.state.refreshing} timePeriod={this.state.timePeriod} />
-        <DowntimeStats refreshing={this.state.refreshing} timePeriod={this.state.timePeriod} navigation={this.props.navigation} />
+        <ChooseModal
+          items={this.state.lines}
+          selectItem={this.refreshLine}
+        />
+        <TotalStats
+          refreshing={this.state.refreshing}
+          timePeriod={this.state.timePeriod}
+          line={this.state.lines[this.state.line]}
+        />
+        <DowntimeStatsVertical
+          refreshing={this.state.refreshing}
+          timePeriod={this.state.timePeriod}
+          line={this.state.lines[this.state.line]}
+          navigation={this.props.navigation}
+        />
+        <BarGraphVertical
+          title='Machines'
+          api_url={this.state.line ?
+            '/api/stats/downtime/machines/' + this.state.timePeriod + '/line/' + this.state.lines[this.state.line].lineId
+            :
+            '/api/stats/downtime/machines/' + this.state.timePeriod
+          }
+          refreshing={this.state.refreshing}
+        />
       </ScrollView>
     )
   }

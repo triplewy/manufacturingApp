@@ -2,7 +2,7 @@ import React from 'react';
 import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Text, TouchableHighlight, TouchableOpacity, Dimensions} from 'react-native';
 import { downtimeString } from '../DowntimeString.js'
 
-export default class BarGraph extends React.Component {
+export default class BarGraphVertical extends React.Component {
   constructor(props) {
     super(props);
 
@@ -20,17 +20,21 @@ export default class BarGraph extends React.Component {
     this.fetchStats()
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.refreshing && this.props.refreshing !== prevProps.refreshing) {
+      this.fetchStats()
+    }
+  }
+
   fetchStats() {
-    fetch(global.API_URL + this.props.api_url + this.props.date, {
-      credentials: 'include'
-    })
+    fetch(global.API_URL + this.props.api_url, {credentials: 'include'})
     .then(res => res.json())
     .then(data => {
       if (data.length > 0) {
         var arr = []
         var average = 0
         var lineColors = []
-        var colors = ['blue', 'yellow', 'green', '#FF8300']
+        var colors = ['blue', 'yellow', '#5CA5C9', '#FF8300']
 
         for (var i = 0; i < data.length; i++) {
           if (this.props.title === 'Lines') {
@@ -56,18 +60,19 @@ export default class BarGraph extends React.Component {
   renderItem(item) {
     const win = Dimensions.get('window');
     const downtime = item.item.totalDowntime
-    const width = downtime / this.state.totalDowntime * (win.width - 40)
+    const height = downtime / this.state.totalDowntime * 400
     const parsedDowntime = downtimeString(downtime)
 
     return (
-      <View style={{marginBottom: 20}}>
-        <View style={{flexDirection: 'row', marginBottom: 5}}>
-          <Text style={{color: 'gray', flex: 1}}>{item.item.name}</Text>
-          <Text style={{color: 'gray'}}>{parsedDowntime}</Text>
+      <View style={{marginBottom: 20, alignItems: 'center', justifyContent: 'center', width: 70, marginRight: 10}}>
+        <View style={{flex: 1}} />
+        <View style={{marginBottom: 5}}>
+          <Text style={{color: 'gray', textAlign: 'center'}}>{parsedDowntime}</Text>
         </View>
-        <View style={{height: 50, width: width, backgroundColor: this.props.lineColors ? this.props.lineColors[item.item.lineId] : '#FF8300', borderRadius: 4, alignItems: 'center', justifyContent: 'center'}}>
+        <View style={{height: height, width: 70, backgroundColor: this.props.lineColors ? this.props.lineColors[item.item.lineId] : '#FF8300', borderRadius: 4, alignItems: 'center', justifyContent: 'center'}}>
           <Text style={{color: 'white', fontWeight: 'bold'}}>{Math.round(downtime / this.state.totalDowntime * 100) + '%'}</Text>
         </View>
+        <Text style={{color: 'gray', marginTop: 10}}>{item.item.name.substring(0,6)}</Text>
       </View>
     )
   }
@@ -79,6 +84,8 @@ export default class BarGraph extends React.Component {
           <Text style={{marginBottom: 10, color: 'gray', fontSize: 18}}>{this.props.title}</Text>
         </View>
         <FlatList
+          horizontal
+          scrollEnabled
           data={this.state.data}
           renderItem={this.renderItem}
           keyExtractor={(item, index) => index.toString()}

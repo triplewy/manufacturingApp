@@ -116,10 +116,10 @@ export default class App extends React.Component {
       {
         navigationOptions: {
           headerStyle: {
-            height: 50
+            height: 40
           },
           headerTitleStyle: {
-            fontSize: 21,
+            fontSize: 18,
             fontWeight: '400'
           }
         }
@@ -138,10 +138,10 @@ export default class App extends React.Component {
       {
         navigationOptions: {
           headerStyle: {
-            height: 50
+            height: 40
           },
           headerTitleStyle: {
-            fontSize: 21,
+            fontSize: 18,
             fontWeight: '400'
           }
         }
@@ -163,10 +163,10 @@ export default class App extends React.Component {
       {
         navigationOptions: {
           headerStyle: {
-            height: 50
+            height: 40
           },
           headerTitleStyle: {
-            fontSize: 21,
+            fontSize: 18,
             fontWeight: '400'
           }
         }
@@ -185,10 +185,10 @@ export default class App extends React.Component {
       {
         navigationOptions: {
           headerStyle: {
-            height: 50
+            height: 40
           },
           headerTitleStyle: {
-            fontSize: 21,
+            fontSize: 18,
             fontWeight: '400'
           }
         }

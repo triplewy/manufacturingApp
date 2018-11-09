@@ -19,8 +19,8 @@ export default class Grid extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchGrid()
     this.fetchLines()
+    this.fetchGrid()
   }
 
   fetchGrid(index) {

@@ -1,5 +1,6 @@
 import React from 'react';
 import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Text, TouchableHighlight, TouchableOpacity, Dimensions} from 'react-native';
+import { downtimeString } from '../DowntimeString.js'
 
 export default class TotalStats extends React.Component {
   constructor(props) {
@@ -24,12 +25,10 @@ export default class TotalStats extends React.Component {
 
   fetchTotalStats() {
     var query = global.API_URL + '/api/stats/totalDowntime/' + this.props.timePeriod
-    if (this.props.date) {
-      query += '/' + this.props.date
+    if (this.props.line) {
+      query += '/' + this.props.line.lineId
     }
-    fetch(query, {
-      credentials: 'include'
-    })
+    fetch(query, {credentials: 'include'})
     .then(res => res.json())
     .then(data => {
       console.log(data);
@@ -41,25 +40,12 @@ export default class TotalStats extends React.Component {
   }
 
   render() {
-    const hours = Math.floor(this.state.downtime / 60)
-    const minutes = this.state.downtime % 60
+    const parsedDowntime = downtimeString(this.state.downtime)
+
     return (
       <View style={styles.statsView}>
         <Text style={{marginBottom: 20, color: 'gray', fontSize: 18}}>Total Downtime</Text>
-        <View style={{flexDirection: 'row'}}>
-          {hours !== 0 ?
-            <View style={{flexDirection: 'row', marginRight: 10}}>
-              <Text style={{fontSize: 24, fontWeight: '600', color: '#FF8300'}}>{hours}</Text>
-              <Text style={{fontSize: 24, fontWeight: '600', marginLeft: 5, color: '#FF8300'}}>Hours</Text>
-            </View>
-          :
-            null
-          }
-          <View style={{flexDirection: 'row'}}>
-            <Text style={{fontSize: 24, fontWeight: '600', color: '#FF8300'}}>{minutes}</Text>
-            <Text style={{fontSize: 24, fontWeight: '600', marginLeft: 5, color: '#FF8300'}}>Minutes</Text>
-          </View>
-        </View>
+        <Text style={{fontSize: 24, fontWeight: '600', color: '#FF8300'}}>{parsedDowntime}</Text>
       </View>
     )
   }

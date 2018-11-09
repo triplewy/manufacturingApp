@@ -1,5 +1,6 @@
 import React from 'react';
-import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Text, TouchableHighlight, TouchableOpacity} from 'react-native';
+import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Text, Image, TouchableOpacity, Linking, Alert} from 'react-native';
+import machineIcon from './icons/machine-icon.png'
 import { getName } from './Storage'
 
 export default class Account extends React.Component {
@@ -12,6 +13,10 @@ export default class Account extends React.Component {
     };
 
     this.fetchAccount = this.fetchAccount.bind(this)
+    this.linkPhone = this.linkPhone.bind(this)
+    this.linkText = this.linkText.bind(this)
+    this.linkEmail = this.linkEmail.bind(this)
+    this.logoutAlert = this.logoutAlert.bind(this)
     this.logout = this.logout.bind(this)
   }
 
@@ -34,6 +39,48 @@ export default class Account extends React.Component {
     .catch((error) => {
       console.error(error);
     });
+  }
+
+  linkPhone() {
+    Linking.canOpenURL('tel:6177770615').then(supported => {
+      if (!supported) {
+        console.log('Can\'t handle url: ' + url);
+      } else {
+        return Linking.openURL('tel:6177770615');
+      }
+    }).catch(err => console.log('An error occurred', err));
+  }
+
+  linkText() {
+    Linking.canOpenURL('sms:6177770615').then(supported => {
+      if (!supported) {
+        console.log('Can\'t handle url: ' + url);
+      } else {
+        return Linking.openURL('sms:6177770615');
+      }
+    }).catch(err => console.log('An error occurred', err));
+  }
+
+  linkEmail() {
+    Linking.canOpenURL('mailto:help@example.com').then(supported => {
+      if (!supported) {
+        console.log('Can\'t handle url: ' + url);
+      } else {
+        return Linking.openURL('mailto:help@example.com');
+      }
+    }).catch(err => console.log('An error occurred', err));
+  }
+
+  logoutAlert() {
+    Alert.alert(
+      'Logout',
+      'Are you sure?',
+      [
+        {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+        {text: 'Logout', onPress: () => this.logout(), style: 'destructive'},
+      ],
+      { cancelable: false }
+    )
   }
 
   logout() {
@@ -61,6 +108,12 @@ export default class Account extends React.Component {
   render() {
     return (
       <ScrollView>
+        <View style={{alignItems: 'center', justifyContent: 'center', margin: 20}}>
+          <Image
+            source={machineIcon}
+            style={{width: 100, height: 100, borderRadius: 8}}
+          />
+        </View>
         <View style={styles.wrapper}>
           <Text style={{fontSize: 32, margin: 10}}>{this.state.account.companyName}</Text>
           <View style={{flexDirection: 'row'}}>
@@ -75,17 +128,36 @@ export default class Account extends React.Component {
         <View style={styles.wrapper}>
           <Text style={{fontSize: 24, margin: 10}}>{this.state.name}</Text>
           {this.state.account.lineNumbers ?
-            <Text style={{fontSize: 18, margin: 10}}>{'Line ' + this.state.account.lineNumbers.join()}</Text>
+            <View style={{flexDirection: 'row', marginVertical: 10}}>
+              <Text style={{fontSize: 18, marginRight: 5}}>{this.state.account.lineNumbers.length > 1 ? 'Lines' : 'Line'}</Text>
+              <Text style={{fontSize: 18}}>{this.state.account.lineNumbers.join()}</Text>
+            </View>
             :
             null
           }
         </View>
         <View style={styles.wrapper}>
           <Text style={{fontSize: 24, margin: 10}}>Contact</Text>
-          <Text style={{fontSize: 18, margin: 10}}>Phone #: 888-888-8888</Text>
-          <Text style={{fontSize: 18, margin: 10}}>Email: help@example.com</Text>
+          <View style={{flexDirection: 'row', marginVertical: 10}}>
+            <Text style={{fontSize: 18}}>Call:</Text>
+            <TouchableOpacity onPress={this.linkPhone}>
+              <Text style={{fontSize: 18, marginLeft: 5, color: '#337ab7'}}>888-888-8888</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{flexDirection: 'row', marginVertical: 10}}>
+            <Text style={{fontSize: 18}}>Text:</Text>
+            <TouchableOpacity onPress={this.linkText}>
+              <Text style={{fontSize: 18, marginLeft: 5, color: '#337ab7'}}>888-888-8888</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{flexDirection: 'row', marginVertical: 10}}>
+            <Text style={{fontSize: 18}}>Email:</Text>
+            <TouchableOpacity onPress={this.linkEmail}>
+              <Text style={{fontSize: 18, marginLeft: 5, color: '#337ab7'}}>help@example.com</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <TouchableOpacity onPress={this.logout}>
+        <TouchableOpacity onPress={this.logoutAlert}>
           <View style={styles.wrapper}>
             <Text style={{fontSize: 18, margin: 10, color: 'red'}}>Logout</Text>
           </View>

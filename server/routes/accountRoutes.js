@@ -23,7 +23,7 @@ module.exports = function(conn, loggedIn) {
       console.log('- Request received:', req.method.cyan, '/api/account/lines');
       const userId = req.user
       conn.query(
-      'SELECT lineId FROM assemblyLines WHERE userId = :userId', {userId: userId}, function(err, result) {
+      'SELECT lineId FROM assemblyLines WHERE userId = :userId ORDER BY lineId ASC', {userId: userId}, function(err, result) {
         if (err) {
           console.log(err);
         } else {
