@@ -6,6 +6,7 @@ import BarGraph from './BarGraph'
 import BarGraphVertical from './BarGraphVertical'
 import DowntimeStats from './DowntimeStats'
 import DowntimeStatsVertical from './DowntimeStatsVertical'
+import { fetchLines } from '../fetchLines.js'
 
 export default class Stats extends React.Component {
   constructor(props) {
@@ -18,29 +19,13 @@ export default class Stats extends React.Component {
       refreshing: false
     };
 
-    this.fetchLines = this.fetchLines.bind(this)
     this.refreshStats = this.refreshStats.bind(this)
     this.refreshLine = this.refreshLine.bind(this)
   }
 
   componentDidMount() {
-    this.fetchLines()
-  }
-
-  fetchLines() {
-    fetch(global.API_URL + '/api/account/lines', {
-      credentials: 'include'
-    })
-    .then(res => res.json())
-    .then(data => {
-      var lines = []
-      for (var i = 0; i < data.length; i++) {
-        lines.push({name: 'LINE ' + data[i].lineId, lineId: data[i].lineId})
-      }
-      this.setState({lines: this.state.lines.concat(lines)})
-    })
-    .catch((error) => {
-      console.error(error);
+    fetchLines().then(data => {
+      this.setState({lines: this.state.lines.concat(data)})
     })
   }
 

@@ -47,7 +47,7 @@ export default class ReportItem extends React.Component {
       <View style={styles.wrapper}>
         <View style={{flexDirection: 'row', padding: 20}}>
           <View style={{flex: 1}}>
-            <Text style={{color: 'gray', fontSize: 18, marginBottom: 20}}>{this.props.leaderName}</Text>
+            <Text style={{color: 'gray', fontSize: 18, marginBottom: 20}}>{this.props.lineLeaderName}</Text>
             <View style={{flexDirection: 'row'}}>
               <Text style={{marginRight: 5, fontSize: 24}}>Line</Text>
               <Text style={{fontSize: 24}}>{this.props.lineId}</Text>
@@ -58,7 +58,7 @@ export default class ReportItem extends React.Component {
               source={{uri: this.props.icon_url}}
               style={{width: 80, height: 80, borderRadius: 8}}
             />
-            <Text style={{fontSize: 18, marginTop: 5}}>{this.props.name}</Text>
+            <Text style={{fontSize: 18, marginTop: 5}}>{this.props.machineName}</Text>
           </View>
           <View style={{flex: 1}}>
             <Text style={{marginBottom: 20, fontSize: 18, textAlign: 'right', color: 'gray'}}>{date}</Text>

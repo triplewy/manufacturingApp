@@ -33,7 +33,7 @@ export default class ChooseModal extends React.Component {
       })
 
       return (
-        <View style={{marginVertical: 30, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+        <View style={{marginVertical: 20, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
           <Text style={styles.timePeriodTitle}>{this.props.items[this.state.selectedItem].name}</Text>
           <TouchableOpacity onPress={() => this.setState({ showModal: true })}>
             <View style={{backgroundColor: '#FF8300', borderRadius: 8}}>

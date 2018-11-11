@@ -101,6 +101,7 @@ export default class Input extends React.Component {
     for (var i = 0; i < this.state.images.length; i++) {
       formData.append('image', {uri: this.state.images[i].uri, name: "file"})
     }
+    formData.append('lineLeaderName', this.state.name)
     formData.append('machineId', navigationProps.machineId);
     formData.append('downtime', this.state.downtime);
     formData.append('description', this.state.description);
@@ -155,7 +156,7 @@ export default class Input extends React.Component {
           </View>
           <View style={{flexDirection: 'row'}}>
             <Text style={styles.lockedInputLabel}>Line:</Text>
-            <Text style={styles.lockedText}>{this.props.navigation.state.params.lineId}</Text>
+            <Text style={styles.lockedText}>{this.props.navigation.state.params.lineName}</Text>
           </View>
           <View style={{flexDirection: 'row'}}>
             <Text style={{fontSize: 18, color: '#888888'}}>Line Leader:</Text>

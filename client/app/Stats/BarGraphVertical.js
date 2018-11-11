@@ -72,7 +72,9 @@ export default class BarGraphVertical extends React.Component {
         <View style={{height: height, width: 70, backgroundColor: this.props.lineColors ? this.props.lineColors[item.item.lineId] : '#FF8300', borderRadius: 4, alignItems: 'center', justifyContent: 'center'}}>
           <Text style={{color: 'white', fontWeight: 'bold'}}>{Math.round(downtime / this.state.totalDowntime * 100) + '%'}</Text>
         </View>
-        <Text style={{color: 'gray', marginTop: 10}}>{item.item.name.substring(0,6)}</Text>
+        <View style={{height: 40}}>
+          <Text style={{color: 'gray', marginTop: 10, fontSize: 12}}>{item.item.name}</Text>
+        </View>
       </View>
     )
   }

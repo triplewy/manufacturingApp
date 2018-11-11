@@ -3,6 +3,7 @@ import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Te
 import GridItem from './GridItem'
 import ChooseModal from './ChooseModal'
 import { getCookie } from './Storage'
+import { fetchLines } from './fetchLines.js'
 
 export default class Grid extends React.Component {
   constructor(props) {
@@ -14,13 +15,14 @@ export default class Grid extends React.Component {
     };
 
     this.fetchGrid = this.fetchGrid.bind(this)
-    this.fetchLines = this.fetchLines.bind(this)
     this.renderItem = this.renderItem.bind(this)
   }
 
   componentDidMount() {
-    this.fetchLines()
     this.fetchGrid()
+    fetchLines().then(data => {
+      this.setState({lines: data})
+    })
   }
 
   fetchGrid(index) {
@@ -33,23 +35,6 @@ export default class Grid extends React.Component {
     .then(res => res.json())
     .then(data => {
       this.setState({grid: data})
-    })
-    .catch((error) => {
-      console.error(error);
-    })
-  }
-
-  fetchLines() {
-    fetch(global.API_URL + '/api/account/lines', {
-      credentials: 'include'
-    })
-    .then(res => res.json())
-    .then(data => {
-      var lines = []
-      for (var i = 0; i < data.length; i++) {
-        lines.push({name: 'LINE ' + data[i].lineId, lineId: data[i].lineId})
-      }
-      this.setState({lines: lines})
     })
     .catch((error) => {
       console.error(error);

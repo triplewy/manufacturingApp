@@ -3,31 +3,38 @@ import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Te
 import ReportItem from './ReportItem'
 import ChooseModal from './ChooseModal'
 import Modal from 'react-native-modal'
+import { fetchLines } from './fetchLines.js'
 
 export default class Reports extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       reports: [],
       lines: [{name: 'ALL LINES'}],
+      line: 0,
+      page: 0,
       refreshing: false,
     };
 
     this.fetchReports = this.fetchReports.bind(this)
-    this.fetchLines = this.fetchLines.bind(this)
+    this.updatePage = this.updatePage.bind(this)
     this.renderItem = this.renderItem.bind(this)
   }
 
   componentDidMount() {
     this.fetchReports()
-    this.fetchLines()
+    fetchLines().then(data => {
+      this.setState({lines: this.state.lines.concat(data)})
+    })
   }
 
   fetchReports(index) {
     var url = global.API_URL + '/api/reports'
     if (index) {
-      url += '/line/' + this.state.lines[index].lineId
+      this.setState({line: index, page: 0, reports: []})
+      url += '/line/' + this.state.lines[index].lineId + '/page=0'
+    } else {
+      url += '/page=' + this.state.page
     }
 
     this.setState({refreshing: true})
@@ -41,21 +48,23 @@ export default class Reports extends React.Component {
     });
   }
 
-  fetchLines() {
-    fetch(global.API_URL + '/api/account/lines', {
-      credentials: 'include'
-    })
+  updatePage() {
+    var url = global.API_URL + '/api/reports'
+    if (this.state.line) {
+      url += '/line/' + this.state.lines[this.state.line].lineId
+    }
+    url += '/page=' + (this.state.page + 1)
+
+    this.setState({refreshing: true})
+    fetch(url, { credentials: 'include' })
     .then(res => res.json())
     .then(data => {
-      var lines = []
-      for (var i = 0; i < data.length; i++) {
-        lines.push({name: 'LINE ' + data[i].lineId, lineId: data[i].lineId})
-      }
-      this.setState({lines: this.state.lines.concat(lines)})
+      this.setState({reports: data.concat(data), refreshing: false, page: this.state.page + 1})
     })
     .catch((error) => {
       console.error(error);
-    })
+    });
+
   }
 
   renderItem(item) {
@@ -66,25 +75,26 @@ export default class Reports extends React.Component {
 
   render() {
     return (
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={this.state.refreshing}
-            onRefresh={this.fetchReports.bind(this)}
-          />
-        }
-      >
-        <ChooseModal items={this.state.lines} selectItem={this.fetchReports} />
+      <View>
+        <ChooseModal
+          items={this.state.lines}
+          selectItem={this.fetchReports}
+          setLine={this.setLine}
+        />
         {this.state.reports.length > 0 ?
           <FlatList
             data={this.state.reports}
             renderItem={this.renderItem}
             keyExtractor={(item, index) => item.downtimeId.toString()}
+            onRefresh={this.fetchReports.bind(this)}
+            refreshing={this.state.refreshing}
+            onEndReached={this.updatePage.bind(this)}
+            onEndReachedThreshold={0.5}
           />
         :
           null
         }
-      </ScrollView>
+      </View>
     )
   }
 }

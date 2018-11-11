@@ -88,7 +88,7 @@ export default class DowntimeStatsVertical extends React.Component {
 
     if (downtime !== 0) {
       return (
-        <View style={{marginBottom: 20, alignItems: 'center', justifyContent: 'center', width: 80, marginRight: 10}}>
+        <View style={{marginBottom: 20, alignItems: 'center', justifyContent: 'center', width: 80}}>
           <View style={{flex:1}} />
           <View style={{marginBottom: 5}}>
             <Text style={{color: 'gray', textAlign: 'center'}}>{parsedDowntime}</Text>

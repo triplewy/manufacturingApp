@@ -115,7 +115,7 @@ export default class Account extends React.Component {
           />
         </View>
         <View style={styles.wrapper}>
-          <Text style={{fontSize: 32, margin: 10}}>{this.state.account.companyName}</Text>
+          <Text style={{fontSize: 32, margin: 10, color: 'gray'}}>{this.state.account.companyName}</Text>
           <View style={{flexDirection: 'row'}}>
             <Text style={{fontSize: 18, margin: 10}}>Day Shift:</Text>
             <Text style={{fontSize: 18, margin: 10}}>{this.state.account.morningShift + 'AM - ' + (this.state.account.eveningShift - 12) + 'PM'}</Text>
@@ -126,15 +126,23 @@ export default class Account extends React.Component {
           </View>
         </View>
         <View style={styles.wrapper}>
-          <Text style={{fontSize: 24, margin: 10}}>{this.state.name}</Text>
           {this.state.account.lineNumbers ?
-            <View style={{flexDirection: 'row', marginVertical: 10}}>
-              <Text style={{fontSize: 18, marginRight: 5}}>{this.state.account.lineNumbers.length > 1 ? 'Lines' : 'Line'}</Text>
-              <Text style={{fontSize: 18}}>{this.state.account.lineNumbers.join()}</Text>
+            <View style={{marginVertical: 10, alignItems: 'center'}}>
+              <Text style={{fontSize: 24, marginBottom: 10, color: 'gray'}}>{this.state.account.lineNumbers.length > 1 ? 'Lines' : 'Line'}</Text>
+              <Text style={{fontSize: 18}}>{this.state.account.lineNumbers.join(', ')}</Text>
             </View>
             :
             null
           }
+        </View>
+        <View style={styles.wrapper}>
+          <Text style={{fontSize: 24, margin: 10, color: 'gray'}}>Line Leader</Text>
+          <Text style={{fontSize: 24, margin: 10}}>{this.state.name}</Text>
+          <TouchableOpacity>
+            <View style={{backgroundColor: '#FF8300', borderRadius: 8, marginVertical: 10}}>
+              <Text style={{fontSize: 18, paddingVertical: 10, paddingHorizontal: 15, color: 'white'}}>Change Name</Text>
+            </View>
+          </TouchableOpacity>
         </View>
         <View style={styles.wrapper}>
           <Text style={{fontSize: 24, margin: 10}}>Contact</Text>
