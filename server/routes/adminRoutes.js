@@ -21,14 +21,40 @@ module.exports = function(conn, loggedIn, csvUpload) {
       }
     })
 
+    adminRoutes.get('/unregisteredUsers', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/admin/companies');
+      const userId = req.user
+      if (userId == 1) {
+        conn.query('SELECT a.*, b.username AS name FROM users AS a JOIN logins AS b ON b.userId = a.userId WHERE a.companyId IS NULL', [], function(err, result) {
+          if (err) {
+            console.log(err);
+          } else {
+            for (var i = 0; i < result.length; i++) {
+              if (result[i].userId == 1) {
+                result.splice(i,1)
+              }
+            }
+            res.send(result)
+          }
+        })
+      } else {
+        res.send({message: 'Unauthorized Access'})
+      }
+    })
+
     adminRoutes.get('/company/:companyId/users', loggedIn, (req, res) => {
       console.log('- Request received:', req.method.cyan, '/api/admin/companies/' + req.params.companyId + '/users');
       const userId = req.user
       if (userId == 1) {
-        conn.query('SELECT *, userId AS id, userId AS name FROM users WHERE companyId = :companyId', {companyId: req.params.companyId}, function(err, result) {
+        conn.query('SELECT a.*, a.userId AS id, b.username AS name FROM users AS a JOIN logins AS b ON b.userId = a.userId WHERE a.companyId = :companyId', {companyId: req.params.companyId}, function(err, result) {
           if (err) {
             console.log(err);
           } else {
+            for (var i = 0; i < result.length; i++) {
+              if (result[i].id == 1) {
+                result.splice(i,1)
+              }
+            }
             res.send(result)
           }
         })
@@ -69,12 +95,39 @@ module.exports = function(conn, loggedIn, csvUpload) {
       }
     })
 
+    adminRoutes.post('/registerUser', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/admin/registerUser');
+      const userId = req.user
+      if (userId == 1) {
+        conn.query('UPDATE users SET companyId = :companyId WHERE userId = :userId', {companyId: req.body.companyId, userId: req.body.userId}, function(err, result) {
+          if (err) {
+            console.log(err);
+          } else {
+            var assemblyLineUsers = []
+            for (var i = 0; i < req.body.lineIds.length; i++) {
+              assemblyLineUsers.push([req.body.userId, req.body.lineIds[i]])
+            }
+            conn.query('INSERT INTO assemblyLineUsers (userId, lineId) VALUES ?', [assemblyLineUsers], function(err, result) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log("Registered user successfully");
+                res.send({message: 'success'})
+              }
+            })
+          }
+        })
+      } else {
+        res.send({message: 'Unauthorized Access'})
+      }
+    })
+
     adminRoutes.post('/company/:companyId/lines/new', loggedIn, (req, res) => {
       console.log('- Request received:', req.method.cyan, '/api/admin/company/' + req.params.companyId + '/lines/new');
       const userId = req.user
       const companyId = req.params.companyId
       if (userId == 1) {
-        conn.query('INSERT INTO assemblyLines (companyId, userId, name) VALUES (?,?,?)', [companyId, userId, req.body.name], function(err, result) {
+        conn.query('INSERT INTO assemblyLines (companyId, name, availableMin, morningShift, eveningShift) VALUES (?,?,?,?,?)', [companyId, req.body.name, req.body.availableMin, req.body.morningShift, req.body.eveningShift], function(err, result) {
           if (err) {
             console.log(err);
           } else {
@@ -131,7 +184,7 @@ module.exports = function(conn, loggedIn, csvUpload) {
               let record
               while (record = parser.read()) {
                 // date, lineLeaderName, downtime, description, machineId
-                var downtimeEntry = [parseDate(record[0]), record[5], record[7], record[9], record[6]]
+                var downtimeEntry = [parseDate(record[0], record[1]), record[5], record[7], record[9], record[6]]
 
                 if (!machines[record[6]]) {
                   machines[record[6]] = record[2].substring(2)
@@ -204,11 +257,18 @@ module.exports = function(conn, loggedIn, csvUpload) {
       }
     })
 
-    function parseDate(date) {
-      var output = ''
+    function parseDate(date, shift) {
       const dateArr1 = date.split(' ')
       const dateArr2 = dateArr1[1].split('/')
-      return '20' + dateArr2[1] + '-10-' + dateArr1[0]
+
+      var output = '20' + dateArr2[1] + '-10-' + dateArr1[0]
+      if (shift == 'Day') {
+        output += 'T10:00'
+      } else {
+        output += 'T22:00'
+      }
+
+      return output
     }
 
     function insertLine(companyId, lineName) {

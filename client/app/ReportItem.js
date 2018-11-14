@@ -3,7 +3,7 @@ import {ScrollView, Dimensions, View, Image, ImageBackground, StyleSheet, FlatLi
 import ImageModal from './ImageModal'
 import { downtimeString } from './DowntimeString.js'
 
-export default class ReportItem extends React.Component {
+export default class ReportItem extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -13,7 +13,6 @@ export default class ReportItem extends React.Component {
     };
 
     this.renderItem = this.renderItem.bind(this)
-    // this.selectImage = this.selectImage.bind(this)
     this.toggleModal = this.toggleModal.bind(this)
   }
 
@@ -28,10 +27,6 @@ export default class ReportItem extends React.Component {
       </TouchableOpacity>
     )
   }
-
-  // selectImage(uri) {
-  //   Image.getSize(uri, (width, height) => {this.setState({showModal: true, selectedImage: uri, imageWidth: width, imageHeight: height})})
-  // }
 
   toggleModal() {
     this.setState({showModal: !this.state.showModal})
@@ -50,7 +45,7 @@ export default class ReportItem extends React.Component {
             <Text style={{color: 'gray', fontSize: 18, marginBottom: 20}}>{this.props.lineLeaderName}</Text>
             <View style={{flexDirection: 'row'}}>
               <Text style={{marginRight: 5, fontSize: 24}}>Line</Text>
-              <Text style={{fontSize: 24}}>{this.props.lineId}</Text>
+              <Text style={{fontSize: 24}}>{this.props.name}</Text>
             </View>
           </View>
           <View style={{alignItems: 'center'}}>

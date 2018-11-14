@@ -2,13 +2,14 @@ import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { createBottomTabNavigator, createMaterialTopTabNavigator, createSwitchNavigator, createStackNavigator, NavigationActions } from 'react-navigation'
 import './global.js'
-import {getCookie, setCookie} from './app/Storage'
+import { getCookie, setCookie, getName } from './app/Storage'
 import editIcon from './app/icons/edit-icon.png'
 import reportIcon from './app/icons/report-icon.png'
 import statsIcon from './app/icons/stats-icon.png'
 import accountIcon from './app/icons/account-icon.png'
 import Splash from './app/Splash'
 import Login from './app/Auth/Login'
+import CreateAccount from './app/Auth/CreateAccount'
 import Name from './app/Auth/Name'
 import ForgotPassword from './app/Auth/ForgotPassword'
 import Grid from './app/Grid'
@@ -24,6 +25,7 @@ export default class App extends React.Component {
 
     this.state = {
       loggedIn: false,
+      hasName: false,
       isLoading: true,
     }
 
@@ -63,7 +65,13 @@ export default class App extends React.Component {
         if (data.message === 'not logged in') {
           this.setState({loggedIn: false, isLoading: false})
         } else {
-          this.setState({loggedIn: true, isLoading: false})
+          getName().then(name => {
+            if (name === '') {
+              this.setState({loggedIn: true, hasName: false, isLoading: false})
+            } else {
+              this.setState({loggedIn: true, hasName: true, isLoading: false})
+            }
+          })
         }
       })
       .catch((error) => {
@@ -79,13 +87,8 @@ export default class App extends React.Component {
     const AuthNavigation = createStackNavigator(
       {
         Login: Login,
-        Name: {
-          screen: Name,
-          navigationOptions: {
-            gesturesEnabled: false,
-          }
-        },
-        ForgotPassword: ForgotPassword
+        ForgotPassword: ForgotPassword,
+        CreateAccount: CreateAccount,
       },
       {
         headerMode: 'none',
@@ -195,62 +198,65 @@ export default class App extends React.Component {
       }
     )
 
-    const Tabs = createSwitchNavigator(
+    const Tabs = createBottomTabNavigator(
       {
-        Tabs: createBottomTabNavigator(
-          {
-            Inputs: {
-              screen: InputsNavigator,
-              navigationOptions: {
-                tabBarIcon: () => (<Image source={editIcon} style={{width: 40, height: 40, alignItems: 'center'}} />)
-              }
-            },
-            Reports: {
-              screen: ReportsNavigator,
-              navigationOptions: {
-                tabBarIcon: () => (<Image source={reportIcon} style={{width: 40, height: 40, alignItems: 'center'}} />)
-              }
-            },
-            Stats: {
-              screen: StatsNavigator,
-              navigationOptions: {
-                tabBarIcon: () => (<Image source={statsIcon} style={{width: 40, height: 40, alignItems: 'center'}} />)
-              }
-            },
-            Account: {
-              screen: AccountNavigator,
-              navigationOptions: {
-                tabBarIcon: () => (<Image source={accountIcon} style={{width: 40, height: 40, alignItems: 'center'}} />)
-              }
-            }
-          },
-          {
-            tabBarOptions: {
-              activeTintColor: '#FF8300',
-              inactiveTintColor: 'gray',
-              showIcon: true,
-              showLabel: true,
-              style: {
-                height: 70
-              },
-              tabStyle: {
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                paddingVertical: 5
-              },
-              labelStyle: {
-                fontSize: 14,
-                marginLeft: 0,
-                padding: 0
-              }
-            }
+        Inputs: {
+          screen: InputsNavigator,
+          navigationOptions: {
+            tabBarIcon: () => (<Image source={editIcon} style={{width: 40, height: 40, alignItems: 'center'}} />)
           }
-        ),
-        Auth: AuthNavigation,
+        },
+        Reports: {
+          screen: ReportsNavigator,
+          navigationOptions: {
+            tabBarIcon: () => (<Image source={reportIcon} style={{width: 40, height: 40, alignItems: 'center'}} />)
+          }
+        },
+        Stats: {
+          screen: StatsNavigator,
+          navigationOptions: {
+            tabBarIcon: () => (<Image source={statsIcon} style={{width: 40, height: 40, alignItems: 'center'}} />)
+          }
+        },
+        Account: {
+          screen: AccountNavigator,
+          navigationOptions: {
+            tabBarIcon: () => (<Image source={accountIcon} style={{width: 40, height: 40, alignItems: 'center'}} />)
+          }
+        }
       },
       {
-        initialRouteName: this.state.loggedIn ? 'Tabs' : 'Auth'
+        tabBarOptions: {
+          activeTintColor: '#FF8300',
+          inactiveTintColor: 'gray',
+          showIcon: true,
+          showLabel: true,
+          style: {
+            height: 70
+          },
+          tabStyle: {
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingVertical: 5
+          },
+          labelStyle: {
+            fontSize: 14,
+            marginLeft: 0,
+            padding: 0
+          }
+        }
+      }
+    )
+
+    const AppNavigator = createSwitchNavigator(
+      {
+        Auth: AuthNavigation,
+        Name: Name,
+        Tabs: Tabs,
+      },
+      {
+        initialRouteName: this.state.loggedIn ? (this.state.hasName ? 'Tabs' : 'Name') : 'Auth'
       }
     )
 
@@ -260,7 +266,7 @@ export default class App extends React.Component {
       )
     } else {
       return (
-        <Tabs loggedIn={this.state.loggedIn} />
+        <AppNavigator />
       )
     }
   }

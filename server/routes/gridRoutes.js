@@ -5,7 +5,7 @@ module.exports = function(conn, loggedIn) {
     gridRoutes.get('/', loggedIn, (req, res) => {
       console.log('- Request received:', req.method.cyan, '/api/grid');
       const userId = req.user
-      conn.query('SELECT a.*, b.name AS lineName FROM machines AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.lineId = (SELECT lineId FROM assemblyLines WHERE userId = :userId ORDER BY lineId ASC LIMIT 1) ORDER BY a.name', {userId: userId}, function(err, result) {
+      conn.query('SELECT a.*, b.name AS lineName FROM machines AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.lineId = (SELECT lineId FROM assemblyLineUsers WHERE userId = :userId ORDER BY lineId ASC LIMIT 1) ORDER BY a.name', {userId: userId}, function(err, result) {
         if (err) {
           console.log(err);
         } else {

@@ -46,9 +46,12 @@ export default class DayStats extends React.Component {
             :
             '/api/stats/downtime/machines/' + params.timePeriod + '/' + params.date
           }
-          lineColors={this.state.colors}
         />
-        <BarGraph title='Shifts' api_url={'/api/stats/downtime/shifts/' + params.timePeriod + '/'} date={params.date} />
+        {params.line ?
+          <BarGraph title='Shifts' api_url={'/api/stats/downtime/shifts/line=' + params.line.lineId + '/' + params.timePeriod + '/' + params.date} />
+          :
+          null
+        }
       </ScrollView>
     )
   }

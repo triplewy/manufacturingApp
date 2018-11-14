@@ -3,7 +3,7 @@ module.exports = function(conn) {
 
     var bcrypt = require('bcrypt')
 
-    conn.query('INSERT INTO companies (name, morningShift, eveningShift) VALUES (?,?,?)', ['Test Factory', 8, 20], function(err, result) {
+    conn.query('INSERT INTO companies (name) VALUES (?)', ['Korex'], function(err, result) {
       if (err) {
         console.log(err);
       } else {
@@ -11,7 +11,7 @@ module.exports = function(conn) {
       }
     })
 
-    conn.query('INSERT INTO users (companyId) VALUES (?)', [1], function(err, result) {
+    conn.query('INSERT INTO users () VALUES ()', [], function(err, result) {
       if (err) {
         console.log(err);
       } else {

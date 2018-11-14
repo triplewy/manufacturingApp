@@ -30,27 +30,15 @@ export default class BarGraphVertical extends React.Component {
     fetch(global.API_URL + this.props.api_url, {credentials: 'include'})
     .then(res => res.json())
     .then(data => {
-      if (data.length > 0) {
-        var arr = []
-        var average = 0
-        var lineColors = []
-        var colors = ['blue', 'yellow', '#5CA5C9', '#FF8300']
+      var arr = []
+      var average = 0
 
-        for (var i = 0; i < data.length; i++) {
-          if (this.props.title === 'Lines') {
-            const color = colors.pop()
-            lineColors[data[i].lineId] = color
-          }
-          arr.push(data[i])
-          average += data[i].totalDowntime
-        }
-
-        this.setState({data: arr, totalDowntime: average, average: average/7})
-
-        if (lineColors.length > 0) {
-          this.props.updateColors(lineColors)
-        }
+      for (var i = 0; i < data.length; i++) {
+        arr.push(data[i])
+        average += data[i].totalDowntime
       }
+
+      this.setState({data: arr, totalDowntime: average, average: average/7})
     })
     .catch((error) => {
       console.error(error);

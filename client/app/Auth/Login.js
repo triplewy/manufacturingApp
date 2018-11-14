@@ -108,6 +108,11 @@ export default class Login extends React.Component {
               <Text style={styles.loginButtonText}>Continue</Text>
             </View>
           </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('CreateAccount')}>
+            <View style={{margin: 20}}>
+              <Text style={{color: 'white', fontSize: 24}}>Create Account</Text>
+            </View>
+          </TouchableOpacity>
           <Animated.View style={{marginTop: 30, opacity: this.fadeValue}}>
             <Text style={{color: 'white', fontSize: 18, fontWeight: 'bold', textAlign: 'center'}}>Incorrect username or password</Text>
           </Animated.View>
@@ -145,7 +150,7 @@ const styles = StyleSheet.create({
   loginButton: {
     alignItems: 'center',
     width: 200,
-    backgroundColor: 'blue',
+    backgroundColor: '#83D3D6',
     borderRadius: 24
   },
   loginButtonText: {

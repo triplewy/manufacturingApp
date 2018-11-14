@@ -1,7 +1,7 @@
 import React from 'react';
 import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Text, Image, TouchableOpacity, Linking, Alert} from 'react-native';
 import machineIcon from './icons/machine-icon.png'
-import { getName } from './Storage'
+import { getName, setName } from './Storage'
 
 export default class Account extends React.Component {
   constructor(props) {
@@ -16,6 +16,7 @@ export default class Account extends React.Component {
     this.linkPhone = this.linkPhone.bind(this)
     this.linkText = this.linkText.bind(this)
     this.linkEmail = this.linkEmail.bind(this)
+    this.changeName = this.changeName.bind(this)
     this.logoutAlert = this.logoutAlert.bind(this)
     this.logout = this.logout.bind(this)
   }
@@ -71,10 +72,20 @@ export default class Account extends React.Component {
     }).catch(err => console.log('An error occurred', err));
   }
 
+  changeName() {
+    setName('').then(data => {
+      if (data.message === 'success') {
+        this.props.navigation.navigate('Name')
+      } else {
+        console.log('error is', data);
+      }
+    })
+  }
+
   logoutAlert() {
     Alert.alert(
-      'Logout',
-      'Are you sure?',
+      'Change lines',
+      'Changing lines will log you out. Are you sure?',
       [
         {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
         {text: 'Logout', onPress: () => this.logout(), style: 'destructive'},
@@ -116,33 +127,38 @@ export default class Account extends React.Component {
         </View>
         <View style={styles.wrapper}>
           <Text style={{fontSize: 32, margin: 10, color: 'gray'}}>{this.state.account.companyName}</Text>
-          <View style={{flexDirection: 'row'}}>
+          {/* <View style={{flexDirection: 'row'}}>
             <Text style={{fontSize: 18, margin: 10}}>Day Shift:</Text>
             <Text style={{fontSize: 18, margin: 10}}>{this.state.account.morningShift + 'AM - ' + (this.state.account.eveningShift - 12) + 'PM'}</Text>
           </View>
           <View style={{flexDirection: 'row'}}>
             <Text style={{fontSize: 18, margin: 10}}>Night Shift:</Text>
             <Text style={{fontSize: 18, margin: 10}}>{(this.state.account.eveningShift - 12) + 'PM - ' + this.state.account.morningShift + 'AM'}</Text>
-          </View>
-        </View>
-        <View style={styles.wrapper}>
-          {this.state.account.lineNumbers ?
-            <View style={{marginVertical: 10, alignItems: 'center'}}>
-              <Text style={{fontSize: 24, marginBottom: 10, color: 'gray'}}>{this.state.account.lineNumbers.length > 1 ? 'Lines' : 'Line'}</Text>
-              <Text style={{fontSize: 18}}>{this.state.account.lineNumbers.join(', ')}</Text>
-            </View>
-            :
-            null
-          }
+          </View> */}
         </View>
         <View style={styles.wrapper}>
           <Text style={{fontSize: 24, margin: 10, color: 'gray'}}>Line Leader</Text>
           <Text style={{fontSize: 24, margin: 10}}>{this.state.name}</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={this.changeName}>
             <View style={{backgroundColor: '#FF8300', borderRadius: 8, marginVertical: 10}}>
               <Text style={{fontSize: 18, paddingVertical: 10, paddingHorizontal: 15, color: 'white'}}>Change Name</Text>
             </View>
           </TouchableOpacity>
+        </View>
+        <View style={styles.wrapper}>
+          {this.state.account.lineNumbers ?
+            <View style={{marginVertical: 10, alignItems: 'center'}}>
+              <Text style={{fontSize: 24, margin: 10, color: 'gray'}}>{this.state.account.lineNumbers.length > 1 ? 'Lines' : 'Line'}</Text>
+              <Text style={{fontSize: 18, margin: 10}}>{this.state.account.lineNumbers.join(', ')}</Text>
+              <TouchableOpacity onPress={this.logoutAlert}>
+                <View style={{backgroundColor: '#FF8300', borderRadius: 8, marginVertical: 10}}>
+                  <Text style={{fontSize: 18, paddingVertical: 10, paddingHorizontal: 15, color: 'white'}}>Change Lines</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            :
+            null
+          }
         </View>
         <View style={styles.wrapper}>
           <Text style={{fontSize: 24, margin: 10}}>Contact</Text>
@@ -165,11 +181,11 @@ export default class Account extends React.Component {
             </TouchableOpacity>
           </View>
         </View>
-        <TouchableOpacity onPress={this.logoutAlert}>
+        {/* <TouchableOpacity onPress={this.logoutAlert}>
           <View style={styles.wrapper}>
             <Text style={{fontSize: 18, margin: 10, color: 'red'}}>Logout</Text>
           </View>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       </ScrollView>
     )
   }

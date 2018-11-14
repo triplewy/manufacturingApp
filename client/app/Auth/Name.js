@@ -14,47 +14,54 @@ export default class Name extends React.Component {
   }
 
   postName(e) {
-    fetch(global.API_URL + '/api/auth/name', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({
-        name: this.state.name,
-      })
-    })
-    .then(res => res.json())
-    .then(data => {
+    setName(this.state.name).then(data => {
       if (data.message === 'success') {
-        setName(this.state.name).then(data => {
-          if (data.message === 'success') {
-            this.props.navigation.navigate('Tabs')
-          } else {
-            console.log(data);
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        })
+        this.props.navigation.navigate('Tabs')
       } else {
         console.log(data);
       }
     })
-    .catch(function(err) {
-        console.log(err);
-    });
+    // fetch(global.API_URL + '/api/auth/name', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   credentials: 'include',
+    //   body: JSON.stringify({
+    //     name: this.state.name,
+    //   })
+    // })
+    // .then(res => res.json())
+    // .then(data => {
+    //   if (data.message === 'success') {
+    //     setName(this.state.name).then(data => {
+    //       if (data.message === 'success') {
+    //         this.props.navigation.navigate('Tabs')
+    //       } else {
+    //         console.log(data);
+    //       }
+    //     })
+    //     .catch(err => {
+    //       console.log(err);
+    //     })
+    //   } else {
+    //     console.log(data);
+    //   }
+    // })
+    // .catch(function(err) {
+    //     console.log(err);
+    // });
   }
 
   render() {
     return (
-      <View style={{justifyContent: 'center', flex: 1}}>
+      <View style={{justifyContent: 'center', flex: 1, backgroundColor: '#FF8300'}}>
         <View style={styles.inputView}>
           <Text style={styles.title}>Name</Text>
           <TextInput
             placeholder='Name'
-            autoCapitalize='none'
+            autoCapitalize='words'
             autoCorrect={false}
             style={styles.textInput}
             value={this.state.name}

@@ -25,6 +25,14 @@ export default class DowntimeStatsVertical extends React.Component {
     this.fadeIn()
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.line !== prevProps.line) {
+      this.fetchDowntimeStats()
+    } else if (this.props.refreshing && this.props.refreshing !== prevProps.refreshing) {
+      this.fetchDowntimeStats()
+    }
+  }
+
   fadeIn() {
     Animated.timing(
       this.fadeValue,
@@ -47,43 +55,42 @@ export default class DowntimeStatsVertical extends React.Component {
     ).start(() => this.fadeIn())
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.refreshing && this.props.refreshing !== prevProps.refreshing) {
-      this.fetchDowntimeStats()
-    }
-  }
-
   fetchDowntimeStats() {
-    var url = global.API_URL + '/api/stats/downtime/time/' + this.props.timePeriod
     if (this.props.line) {
+      var url = global.API_URL + '/api/stats/downtime/time/' + this.props.timePeriod
       url += '/line/' + this.props.line.lineId
+      fetch(url, {credentials: 'include'})
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        var downtime = []
+        var average = 0
+        for (var i = 0; i < data.length; i++) {
+          downtime.push({time: data[i].time, downtime: data[i].totalDowntime, availableMin: data[i].availableMin})
+          average += data[i].totalDowntime
+        }
+        this.setState({downtime: downtime, totalDowntime: average, average: average/data.length})
+      })
+      .catch((error) => {
+        console.error(error);
+      });
     }
-    fetch(url, {credentials: 'include'})
-    .then(res => res.json())
-    .then(data => {
-      console.log(data);
-      var downtime = []
-      var average = 0
-      for (var i = 0; i < data.length; i++) {
-        downtime.push({time: data[i].time, downtime: data[i].totalDowntime})
-        average += data[i].totalDowntime
-      }
-      this.setState({downtime: downtime, totalDowntime: average, average: average/data.length})
-    })
-    .catch((error) => {
-      console.error(error);
-    });
   }
 
   renderItem(item) {
     const win = Dimensions.get('window');
-    var currDate = parseTime(this.props.timePeriod, item.item.time)
-
+    const currDate = parseTime(this.props.timePeriod, item.item.time)
+    var availableMin = item.item.availableMin * 2
+    if (this.props.timePeriod === 3) {
+      availableMin *= 30
+    } else if (this.props.timePeriod === 4) {
+      availableMin *= 365
+    }
     var downtime = 0
     if (item.item.downtime) {
       downtime = item.item.downtime
     }
-    const height = downtime / this.state.totalDowntime * 400
+    const height = downtime / availableMin * 400
     const parsedDowntime = downtimeString(downtime)
 
     if (downtime !== 0) {
@@ -96,11 +103,15 @@ export default class DowntimeStatsVertical extends React.Component {
           <TouchableOpacity onPress={() => this.props.navigation.navigate('DayStats', {date: item.item.time, timePeriod: this.props.timePeriod, downtime: downtime, line: this.props.line})}>
             <View style={{height: height, width: 70, backgroundColor: '#FF8300', borderRadius: 4, alignItems: 'center', justifyContent: 'center'}}>
               <Animated.View style={{opacity: this.fadeValue}}>
-                <Text style={{color: 'white', fontWeight: 'bold'}}>{Math.round(downtime / this.state.totalDowntime * 100) + '%'}</Text>
+                <Text style={{color: 'white', fontWeight: 'bold'}}>{Math.round(downtime / availableMin * 100) + '%'}</Text>
               </Animated.View>
             </View>
           </TouchableOpacity>
-          <Text style={{color: 'gray', marginTop: 10}}>{currDate}</Text>
+          <View style={{alignItems: 'center'}}>
+            <Text style={{color: 'gray', marginTop: 10}}>{currDate}</Text>
+            {/* <Text style={{color: 'gray', marginTop: 10}}>{currDate.substring(0,3)}</Text>
+            <Text style={{color: 'gray'}}>{currDate.substring(5)}</Text> */}
+          </View>
         </View>
       )
     } else {

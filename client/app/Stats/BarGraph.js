@@ -21,31 +21,19 @@ export default class BarGraph extends React.Component {
   }
 
   fetchStats() {
-    fetch(global.API_URL + this.props.api_url + this.props.date, {
-      credentials: 'include'
-    })
+    fetch(global.API_URL + this.props.api_url, {credentials: 'include'})
     .then(res => res.json())
     .then(data => {
       if (data.length > 0) {
         var arr = []
         var average = 0
-        var lineColors = []
-        var colors = ['blue', 'yellow', 'green', '#FF8300']
 
         for (var i = 0; i < data.length; i++) {
-          if (this.props.title === 'Lines') {
-            const color = colors.pop()
-            lineColors[data[i].lineId] = color
-          }
           arr.push(data[i])
           average += data[i].totalDowntime
         }
 
         this.setState({data: arr, totalDowntime: average, average: average/7})
-
-        if (lineColors.length > 0) {
-          this.props.updateColors(lineColors)
-        }
       }
     })
     .catch((error) => {
@@ -65,7 +53,7 @@ export default class BarGraph extends React.Component {
           <Text style={{color: 'gray', flex: 1}}>{item.item.name}</Text>
           <Text style={{color: 'gray'}}>{parsedDowntime}</Text>
         </View>
-        <View style={{height: 50, width: width, backgroundColor: this.props.lineColors ? this.props.lineColors[item.item.lineId] : '#FF8300', borderRadius: 4, alignItems: 'center', justifyContent: 'center'}}>
+        <View style={{height: 50, width: width, backgroundColor: '#FF8300', borderRadius: 4, alignItems: 'center', justifyContent: 'center'}}>
           <Text style={{color: 'white', fontWeight: 'bold'}}>{Math.round(downtime / this.state.totalDowntime * 100) + '%'}</Text>
         </View>
       </View>

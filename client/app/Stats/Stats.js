@@ -25,7 +25,7 @@ export default class Stats extends React.Component {
 
   componentDidMount() {
     fetchLines().then(data => {
-      this.setState({lines: this.state.lines.concat(data)})
+      this.setState({lines: this.state.lines.concat(data), line: 0})
     })
   }
 

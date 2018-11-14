@@ -166,13 +166,13 @@ export default class Input extends React.Component {
         <View style={styles.inputView}>
           <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginVertical: 10}}>
             <Text style={styles.inputLabel}>Downtime:</Text>
-            <TextInput keyboardType='numeric' returnKeyType='done' maxLength={3} style={[styles.textInput, {borderColor: this.state.downtime ? '#83D3D6' : 'red'}]} placeholder='0' value={this.state.downtime} onChangeText={(text) => this.handleDowntimeChange(text)}/>
+            <TextInput keyboardType='numeric' returnKeyType='done' maxLength={3} style={[styles.textInput, {borderColor: this.state.downtime ? '#83D3D6' : '#FF8300'}]} placeholder='0' value={this.state.downtime} onChangeText={(text) => this.handleDowntimeChange(text)}/>
             <Text style={{marginLeft: 10, fontSize: 18, color: this.state.downtime ? 'black' : '#888888'}}>Minutes</Text>
           </View>
         </View>
         <View style={styles.inputView}>
           <Text style={styles.inputLabel}>Description:</Text>
-          <TextInput multiline={true} numberOfLines={10} placeholder='Type the description of the downtime here...' style={[styles.textarea, {borderColor: this.state.description ? '#83D3D6' : 'red'}]} value={this.state.description} onChangeText={(text) => this.setState({description: text})}/>
+          <TextInput multiline={true} numberOfLines={10} placeholder='Type the description of the downtime here...' style={[styles.textarea, {borderColor: this.state.description ? '#83D3D6' : '#FF8300'}]} value={this.state.description} onChangeText={(text) => this.setState({description: text})}/>
         </View>
         <Text style={{textAlign: 'center', fontSize: 18, marginBottom: 30, paddingHorizontal: 20}}>Add photos to your description (Optional. Max 4 photos)</Text>
         <View style={[styles.inputView, {flexDirection: 'row', alignItems: 'center'}]}>
