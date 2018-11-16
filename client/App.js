@@ -37,49 +37,27 @@ export default class App extends React.Component {
   }
 
   sessionLogin() {
-    getCookie().then(cookie => {
-      console.log("cookie is", cookie);
-      fetch(global.API_URL + '/api/sessionLogin', {
-        method: 'GET',
-        credentials: 'include',
-      })
-      .then(res => {
-        if (res.headers.get("set-cookie")) {
-          console.log("set cookie is", res.headers.get("set-cookie"));
-          return setCookie(res.headers.get("set-cookie")).then(data => {
-            if (data.message === 'success') {
-              return res.json()
-            } else {
-              console.log(data);
-            }
-          })
-          .catch(err => {
-            console.log(err);
-          })
-        } else {
-          return res.json()
-        }
-      })
-      .then(data => {
-        console.log(data);
-        if (data.message === 'not logged in') {
-          this.setState({loggedIn: false, isLoading: false})
-        } else {
-          getName().then(name => {
-            if (name === '') {
-              this.setState({loggedIn: true, hasName: false, isLoading: false})
-            } else {
-              this.setState({loggedIn: true, hasName: true, isLoading: false})
-            }
-          })
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      })
+    fetch(global.API_URL + '/api/sessionLogin', {
+      method: 'GET',
+      credentials: 'include',
     })
-    .catch(err => {
-      console.log(err);
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+      if (data.message === 'not logged in') {
+        this.setState({loggedIn: false, isLoading: false})
+      } else {
+        getName().then(name => {
+          if (name === '') {
+            this.setState({loggedIn: true, hasName: false, isLoading: false})
+          } else {
+            this.setState({loggedIn: true, hasName: true, isLoading: false})
+          }
+        })
+      }
+    })
+    .catch((error) => {
+      console.error(error);
     })
   }
 

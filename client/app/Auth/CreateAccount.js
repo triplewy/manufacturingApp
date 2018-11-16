@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dimensions, SafeAreaView, View, Text, TextInput, StyleSheet, TouchableOpacity, Animated, Easing } from 'react-native';
-import { setCookie } from '../Storage'
+import { setCookie, clearCookies } from '../Storage'
 import validator from 'validator';
 import owasp from 'owasp-password-strength-test'
 
@@ -79,58 +79,64 @@ export default class CreateAccount extends React.Component {
   }
 
   signup(e) {
-    fetch(global.API_URL + '/api/auth/signup', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({
-        username: this.state.username,
-        password: this.state.password
-      })
-    })
-    .then(res => {
-      console.log(res);
-      if (res.headers.get("set-cookie")) {
-        console.log("set cookie is", res.headers.get("set-cookie"));
-        return setCookie(res.headers.get("set-cookie")).then(data => {
-          if (data.message === 'success') {
-            return res.json()
+    clearCookies().then(data => {
+      if (data.message === 'success') {
+        fetch(global.API_URL + '/api/auth/signup', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            username: this.state.username,
+            password: this.state.password
+          })
+        })
+        .then(res => {
+          console.log(res);
+          if (res.headers.get("set-cookie")) {
+            console.log("set cookie is", res.headers.get("set-cookie"));
+            return setCookie(res.headers.get("set-cookie")).then(data => {
+              if (data.message === 'success') {
+                return res.json()
+              } else {
+                console.log(data);
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            })
           } else {
-            console.log(data);
+            if (res.status === 401) {
+              return {message: 'not logged in'}
+            } else {
+              return res.json()
+            }
           }
         })
-        .catch(err => {
-          console.log(err);
+        .then(data => {
+          console.log(data);
+          if (data.message === 'not logged in') {
+            console.log("signup error");
+          } else {
+            this.props.navigation.navigate('Name')
+          }
         })
+        .catch(function(err) {
+            console.log(err);
+        });
       } else {
-        if (res.status === 401) {
-          return {message: 'not logged in'}
-        } else {
-          return res.json()
-        }
+        console.log(data);
       }
     })
-    .then(data => {
-      console.log(data);
-      if (data.message === 'not logged in') {
-        console.log("signup error");
-      } else {
-        this.props.navigation.navigate('Name')
-      }
-    })
-    .catch(function(err) {
-        console.log(err);
-    });
   }
 
   render() {
     return (
       <View style={{justifyContent: 'center', flex: 1}}>
         <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-          <Text style={{color: 'white', padding: 30, fontSize: 18}}>Back</Text>
+          <Text style={{color: 'white', marginTop: 20, marginLeft: 10, fontSize: 18}}>Back</Text>
         </TouchableOpacity>
         <View style={styles.inputView}>
           <Text style={styles.title}>Create Account</Text>
@@ -183,9 +189,9 @@ const styles = StyleSheet.create({
   title: {
     color: '#888888',
     color: 'white',
-    fontSize: 48,
+    fontSize: 36,
     fontWeight: '600',
-    marginBottom: 20
+    marginBottom: 10
   },
   inputView: {
     flex: 1,
@@ -199,12 +205,13 @@ const styles = StyleSheet.create({
     padding: 12,
     color: 'white',
     fontSize: 24,
-    margin: 20
+    margin: 10
   },
   loginButton: {
     alignItems: 'center',
     width: 200,
-    borderRadius: 24
+    borderRadius: 24,
+    marginTop: 20
   },
   loginButtonText: {
     padding: 15,

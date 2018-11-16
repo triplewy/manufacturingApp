@@ -4,7 +4,21 @@ import CookieManager from 'react-native-cookies'
 export function setCookie(cookie) {
   return new Promise(function(resolve, reject) {
     AsyncStorage.setItem('cookie', cookie).then(() => {
-      return resolve({message: 'success'})
+      CookieManager.set({
+        name: 'connect.sid',
+        value: cookie.substring(12),
+        domain: '10.38.17.49',
+        origin: '10.38.17.49',
+        path: '/',
+        version: '1',
+        expiration: '2020-01-01T12:00:00.00-00:00'
+      }).then((res) => {
+        console.log("connect sid is", res);
+        return resolve({message: 'success'})
+      })
+      .catch(err => {
+        return reject(err)
+      })
     })
     .catch(err => {
       return reject(err)
@@ -65,4 +79,18 @@ export function getName() {
       return reject(err)
     })
   })
+}
+
+export function clearCookies() {
+  return new Promise(function(resolve, reject) {
+    CookieManager.clearAll()
+    .then((res) => {
+      console.log('CookieManager.clearAll =>', res);
+      return resolve({message: 'success'})
+    })
+    .catch(err => {
+      return reject(err)
+    })
+  })
+
 }

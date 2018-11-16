@@ -99,16 +99,15 @@ var conn = mysql.createConnection({
 
 conn.query('CREATE TABLE IF NOT EXISTS companies (companyId INTEGER AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL UNIQUE, createdDate DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL)')
 conn.query('CREATE TABLE IF NOT EXISTS users (userId INTEGER AUTO_INCREMENT PRIMARY KEY, companyId INTEGER, createdDate DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, FOREIGN KEY(companyId) REFERENCES companies(companyId))')
-conn.query('CREATE TABLE IF NOT EXISTS logins (loginId INTEGER AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255) NOT NULL, userId INTEGER NOT NULL, passwordHash CHAR(60), FOREIGN KEY (userId) REFERENCES users(userId))')
+conn.query('CREATE TABLE IF NOT EXISTS logins (loginId INTEGER AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255) NOT NULL, userId INTEGER NOT NULL, passwordHash CHAR(60), FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE CASCADE)')
 conn.query('CREATE TABLE IF NOT EXISTS assemblyLines (lineId INTEGER AUTO_INCREMENT PRIMARY KEY, companyId INTEGER NOT NULL, name VARCHAR(255) NOT NULL, availableMin INTEGER NOT NULL, morningShift INTEGER NOT NULL, eveningShift INTEGER NOT NULL, createdDate DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, FOREIGN KEY (companyId) REFERENCES companies(companyId))')
-conn.query('CREATE TABLE IF NOT EXISTS assemblyLineUsers (lineId INTEGER NOT NULL, userId INTEGER NOT NULL, FOREIGN KEY(lineId) REFERENCES assemblyLines(lineId), FOREIGN KEY(userId) REFERENCES users(userId), UNIQUE(lineId, userId))')
+conn.query('CREATE TABLE IF NOT EXISTS assemblyLineUsers (lineId INTEGER NOT NULL, userId INTEGER NOT NULL, FOREIGN KEY(lineId) REFERENCES assemblyLines(lineId), FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE, UNIQUE(lineId, userId))')
 conn.query('CREATE TABLE IF NOT EXISTS machines (machineId INTEGER AUTO_INCREMENT PRIMARY KEY, lineId INTEGER NOT NULL, name VARCHAR(255) NOT NULL, icon_url VARCHAR(255) NOT NULL, createdDate DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,  FOREIGN KEY(lineId) REFERENCES assemblyLines(lineId))')
 conn.query('CREATE TABLE IF NOT EXISTS downtime (downtimeId INTEGER AUTO_INCREMENT PRIMARY KEY, machineId INTEGER NOT NULL, lineId INTEGER NOT NULL, lineLeaderName VARCHAR(255) NOT NULL, downtime INTEGER NOT NULL, description TEXT, createdDate DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, FOREIGN KEY(machineId) REFERENCES machines(machineId), FOREIGN KEY(lineId) REFERENCES assemblyLines(lineId))')
 conn.query('CREATE TABLE IF NOT EXISTS downtimeImages (downtimeImageId INTEGER AUTO_INCREMENT PRIMARY KEY, downtimeId INTEGER NOT NULL, imageUrl VARCHAR(255) NOT NULL, createdDate DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, FOREIGN KEY(downtimeId) REFERENCES downtime(downtimeId))')
-// conn.query('CREATE TABLE IF NOT EXISTS usersNames (usersNamesId INTEGER AUTO_INCREMENT PRIMARY KEY, userId INTEGER NOT NULL, name VARCHAR(255) NOT NULL, loggedInDate DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, FOREIGN KEY(userId) REFERENCES users(userId))')
 
-// conn.query('CREATE TRIGGER before_downtime_insert BEFORE INSERT ON downtime FOR EACH ROW BEGIN ' +
-// 'SET NEW.lineId = (SELECT lineId FROM machines WHERE machineId = NEW.machineId); END;')
+conn.query('CREATE TRIGGER before_downtime_insert BEFORE INSERT ON downtime FOR EACH ROW BEGIN ' +
+'SET NEW.lineId = (SELECT lineId FROM machines WHERE machineId = NEW.machineId); END;')
 
 
 var upload = multer({
@@ -148,14 +147,11 @@ var statsRoutes = require('./routes/statsRoutes')
 var accountRoutes = require('./routes/accountRoutes')
 var gridRoutes = require('./routes/gridRoutes')
 var adminRoutes = require('./routes/adminRoutes')
-var testData = require('./routes/testData')
 
 app.get('/api/sessionLogin', loggedIn, (req, res) => {
   console.log('- Request received:', req.method.cyan, '/api/sessionLogin');
   res.send({userId: req.user})
 })
-
-// testData(conn)
 
 app.use('/api/input', inputRoutes(conn, loggedIn, upload))
 

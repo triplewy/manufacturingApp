@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, SafeAreaView, View, Text, TextInput, StyleSheet, TouchableOpacity, Button } from 'react-native';
+import { Dimensions, SafeAreaView, View, Text, TextInput, StyleSheet, TouchableOpacity, Button, Linking } from 'react-native';
 
 export default class ForgotPassword extends React.Component {
   constructor(props) {
@@ -8,16 +8,50 @@ export default class ForgotPassword extends React.Component {
     this.state = {
     };
 
+    this.linkPhone = this.linkPhone.bind(this)
+    this.linkEmail = this.linkEmail.bind(this)
+  }
+
+  linkPhone() {
+    Linking.canOpenURL('tel:6177770615').then(supported => {
+      if (!supported) {
+        console.log('Can\'t handle url: ' + url);
+      } else {
+        return Linking.openURL('tel:6177770615');
+      }
+    }).catch(err => console.log('An error occurred', err));
+  }
+
+  linkEmail() {
+    Linking.canOpenURL('mailto:help@example.com').then(supported => {
+      if (!supported) {
+        console.log('Can\'t handle url: ' + url);
+      } else {
+        return Linking.openURL('mailto:help@example.com');
+      }
+    }).catch(err => console.log('An error occurred', err));
   }
 
   render() {
     return (
       <SafeAreaView style={{justifyContent: 'center', flex: 1}}>
         <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-          <Text style={{color: 'white', padding: 30, fontSize: 18}}>Back</Text>
+          <Text style={{color: 'white', marginTop: 10, marginLeft: 10, fontSize: 18}}>Back</Text>
         </TouchableOpacity>
         <View style={styles.inputView}>
           <Text style={styles.title}>Forgot Password</Text>
+          <View style={{flexDirection: 'row', marginVertical: 10}}>
+            <Text style={{fontSize: 18, color: 'white'}}>Call:</Text>
+            <TouchableOpacity onPress={this.linkPhone}>
+              <Text style={{fontSize: 18, marginLeft: 5, color: '#337ab7'}}>617-777-0615</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{flexDirection: 'row', marginVertical: 10}}>
+            <Text style={{fontSize: 18, color: 'white'}}>Email:</Text>
+            <TouchableOpacity onPress={this.linkEmail}>
+              <Text style={{fontSize: 18, marginLeft: 5, color: '#337ab7'}}>help@example.com</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </SafeAreaView>
     )
@@ -31,7 +65,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 32,
     fontWeight: '600',
-    marginBottom: 20
+    marginBottom: 10
   },
   inputView: {
     flex: 1,
@@ -46,7 +80,8 @@ const styles = StyleSheet.create({
     padding: 12,
     color: 'white',
     fontSize: 24,
-    margin: 20
+    margin: 20,
+    textAlign: 'center'
   },
   loginButton: {
     margin: 40,

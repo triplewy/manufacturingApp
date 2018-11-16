@@ -74,7 +74,7 @@ module.exports = function(passport, conn, loggedIn) {
         }
       })
     })
-    
+
     // authRoutes.post('/name', loggedIn, function(req, res) {
     //   console.log('- Request received:', req.method.cyan, '/api/auth/name');
     //   const userId = req.user

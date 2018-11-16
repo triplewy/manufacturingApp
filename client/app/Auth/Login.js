@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dimensions, SafeAreaView, View, Text, TextInput, StyleSheet, TouchableOpacity, Animated, Easing } from 'react-native';
-import {setCookie} from '../Storage'
+import { setCookie, clearCookies } from '../Storage'
 
 export default class Login extends React.Component {
   constructor(props) {
@@ -16,52 +16,55 @@ export default class Login extends React.Component {
   }
 
   login(e) {
-    fetch(global.API_URL + '/api/auth/signin', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({
-        username: this.state.username,
-        password: this.state.password
-      })
-    })
-    .then(res => {
-      console.log(res);
-      if (res.headers.get("set-cookie")) {
-        console.log("set cookie is", res.headers.get("set-cookie"));
-        return setCookie(res.headers.get("set-cookie")).then(data => {
-          if (data.message === 'success') {
-            return res.json()
+    clearCookies().then(data => {
+      if (data.message === 'success') {
+        fetch(global.API_URL + '/api/auth/signin', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: this.state.username,
+            password: this.state.password
+          })
+        })
+        .then(res => {
+          console.log(res);
+          if (res.status === 401) {
+            return {message: 'not logged in'}
+          } else if (res.headers.get("set-cookie")) {
+            console.log("set cookie is", res.headers.get("set-cookie"));
+            return setCookie(res.headers.get("set-cookie")).then(data => {
+              if (data.message === 'success') {
+                return res.json()
+              } else {
+                console.log(data);
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            })
           } else {
-            console.log(data);
+            return res.json()
           }
         })
-        .catch(err => {
-          console.log(err);
+        .then(data => {
+          console.log(data);
+          if (data.message === 'not logged in') {
+            // this.setState({failedLogin: 1})
+            this.loginFail()
+          } else {
+            this.props.navigation.navigate('Name')
+          }
         })
+        .catch(function(err) {
+            console.log(err);
+        });
       } else {
-        if (res.status === 401) {
-          return {message: 'not logged in'}
-        } else {
-          return res.json()
-        }
+        console.log(data);
       }
     })
-    .then(data => {
-      console.log(data);
-      if (data.message === 'not logged in') {
-        // this.setState({failedLogin: 1})
-        this.loginFail()
-      } else {
-        this.props.navigation.navigate('Name')
-      }
-    })
-    .catch(function(err) {
-        console.log(err);
-    });
   }
 
   loginFail() {

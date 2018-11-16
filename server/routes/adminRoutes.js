@@ -42,6 +42,22 @@ module.exports = function(conn, loggedIn, csvUpload) {
       }
     })
 
+    adminRoutes.get('/user=:userId/lines', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/admin/user=' + req.params.userId + '/lines');
+      const userId = req.user
+      if (userId == 1) {
+        conn.query('SELECT lineId FROM assemblyLineUsers WHERE userId = :userId', {userId: req.params.userId}, function(err, result) {
+          if (err) {
+            console.log(err);
+          } else {
+            res.send(result)
+          }
+        })
+      } else {
+        res.send({message: 'Unauthorized Access'})
+      }
+    })
+
     adminRoutes.get('/company/:companyId/users', loggedIn, (req, res) => {
       console.log('- Request received:', req.method.cyan, '/api/admin/companies/' + req.params.companyId + '/users');
       const userId = req.user
@@ -115,6 +131,66 @@ module.exports = function(conn, loggedIn, csvUpload) {
                 res.send({message: 'success'})
               }
             })
+          }
+        })
+      } else {
+        res.send({message: 'Unauthorized Access'})
+      }
+    })
+
+    adminRoutes.post('/editUser', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/admin/editUser');
+      const userId = req.user
+      if (userId == 1) {
+        var assemblyLineUsers = []
+        for (var i = 0; i < req.body.lineIds.length; i++) {
+          assemblyLineUsers.push([req.body.userId, req.body.lineIds[i]])
+        }
+        conn.query('INSERT IGNORE INTO assemblyLineUsers (userId, lineId) VALUES ?', [assemblyLineUsers], function(err, result) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("Edited user successfully");
+            res.send({message: 'success'})
+          }
+        })
+      } else {
+        res.send({message: 'Unauthorized Access'})
+      }
+    })
+
+    adminRoutes.delete('/deleteUser', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/admin/editUser');
+      const userId = req.user
+      if (userId == 1) {
+        conn.query('DELETE FROM users WHERE userId = :userId', {userId: req.body.userId}, function(err, result) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("Deleted user successfully");
+            res.send({message: 'success'})
+          }
+        })
+      } else {
+        res.send({message: 'Unauthorized Access'})
+      }
+    })
+
+    adminRoutes.post('/company/new', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/admin/company/new');
+      const userId = req.user
+      if (userId == 1) {
+        conn.query('INSERT INTO companies (name) VALUES (?)', [req.body.name], function(err, result) {
+          if (err) {
+            console.log(err);
+          } else {
+            if (result.affectedRows) {
+              console.log('Records added successfully');
+              res.send({message: 'success'})
+            } else {
+              console.log('Records added faded');
+              res.send({message: 'fail'})
+            }
           }
         })
       } else {
