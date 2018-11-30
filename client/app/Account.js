@@ -63,11 +63,11 @@ export default class Account extends React.Component {
   }
 
   linkEmail() {
-    Linking.canOpenURL('mailto:help@example.com').then(supported => {
+    Linking.canOpenURL('mailto:help.stream.lineapp@gmail.com').then(supported => {
       if (!supported) {
         console.log('Can\'t handle url: ' + url);
       } else {
-        return Linking.openURL('mailto:help@example.com');
+        return Linking.openURL('mailto:help.stream.lineapp@gmail.com');
       }
     }).catch(err => console.log('An error occurred', err));
   }
@@ -162,7 +162,7 @@ export default class Account extends React.Component {
         </View>
         <View style={styles.wrapper}>
           <Text style={{fontSize: 24, margin: 10}}>Contact</Text>
-          <View style={{flexDirection: 'row', marginVertical: 10}}>
+          {/* <View style={{flexDirection: 'row', marginVertical: 10}}>
             <Text style={{fontSize: 18}}>Call:</Text>
             <TouchableOpacity onPress={this.linkPhone}>
               <Text style={{fontSize: 18, marginLeft: 5, color: '#337ab7'}}>888-888-8888</Text>
@@ -173,11 +173,11 @@ export default class Account extends React.Component {
             <TouchableOpacity onPress={this.linkText}>
               <Text style={{fontSize: 18, marginLeft: 5, color: '#337ab7'}}>888-888-8888</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
           <View style={{flexDirection: 'row', marginVertical: 10}}>
             <Text style={{fontSize: 18}}>Email:</Text>
             <TouchableOpacity onPress={this.linkEmail}>
-              <Text style={{fontSize: 18, marginLeft: 5, color: '#337ab7'}}>help@example.com</Text>
+              <Text style={{fontSize: 18, marginLeft: 5, color: '#337ab7'}}>help.stream.lineapp@gmail.com</Text>
             </TouchableOpacity>
           </View>
         </View>

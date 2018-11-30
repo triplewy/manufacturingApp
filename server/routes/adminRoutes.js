@@ -3,7 +3,6 @@ module.exports = function(conn, loggedIn, csvUpload) {
 
     var adminRoutes = require('express').Router();
     var parse = require('csv-parse')
-    const parser = parse({delimiter: ','})
 
     adminRoutes.get('/companies', loggedIn, (req, res) => {
       console.log('- Request received:', req.method.cyan, '/api/admin/companies');
@@ -246,6 +245,7 @@ module.exports = function(conn, loggedIn, csvUpload) {
       console.log('- Request received:', req.method.cyan, '/api/admin/company/' + req.params.companyId + '/upload/csv');
       const userId = req.user
       const companyId = req.params.companyId
+      const parser = parse({delimiter: ','})
       if (userId == 1) {
         csvUpload(req, res, function(err) {
           if (err) {
@@ -289,7 +289,7 @@ module.exports = function(conn, loggedIn, csvUpload) {
                     machineInsertArr.push([lines[machines[machine]], machine, 'https://s3.us-east-2.amazonaws.com/manufacturing-app-icons/example-icon.png'])
                   }
 
-                  conn.query('INSERT INTO machines (lineId, name, icon_url) VALUES ?', [machineInsertArr], function(err, result) {
+                  conn.query('INSERT IGNORE INTO machines (lineId, name, icon_url) VALUES ?', [machineInsertArr], function(err, result) {
                     if (err) {
                       console.log(err);
                     } else {

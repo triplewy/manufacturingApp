@@ -117,7 +117,6 @@ export default class Reports extends React.Component {
             onEndReachedThreshold={0.5}
             ListFooterComponent={this.renderFooter}
             onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
-
           />
         :
           null

@@ -37,6 +37,7 @@ export default class App extends React.Component {
   }
 
   sessionLogin() {
+    console.log(global.API_URL);
     fetch(global.API_URL + '/api/sessionLogin', {
       method: 'GET',
       credentials: 'include',

@@ -23,11 +23,11 @@ export default class ForgotPassword extends React.Component {
   }
 
   linkEmail() {
-    Linking.canOpenURL('mailto:help@example.com').then(supported => {
+    Linking.canOpenURL('mailto:help.stream.lineapp@gmail.com').then(supported => {
       if (!supported) {
         console.log('Can\'t handle url: ' + url);
       } else {
-        return Linking.openURL('mailto:help@example.com');
+        return Linking.openURL('mailto:help.stream.lineapp@gmail.com');
       }
     }).catch(err => console.log('An error occurred', err));
   }
@@ -40,16 +40,16 @@ export default class ForgotPassword extends React.Component {
         </TouchableOpacity>
         <View style={styles.inputView}>
           <Text style={styles.title}>Forgot Password</Text>
-          <View style={{flexDirection: 'row', marginVertical: 10}}>
+          {/* <View style={{flexDirection: 'row', marginVertical: 10}}>
             <Text style={{fontSize: 18, color: 'white'}}>Call:</Text>
             <TouchableOpacity onPress={this.linkPhone}>
               <Text style={{fontSize: 18, marginLeft: 5, color: '#337ab7'}}>617-777-0615</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
           <View style={{flexDirection: 'row', marginVertical: 10}}>
             <Text style={{fontSize: 18, color: 'white'}}>Email:</Text>
             <TouchableOpacity onPress={this.linkEmail}>
-              <Text style={{fontSize: 18, marginLeft: 5, color: '#337ab7'}}>help@example.com</Text>
+              <Text style={{fontSize: 18, marginLeft: 5, color: '#337ab7'}}>help.stream.lineapp@gmail.com</Text>
             </TouchableOpacity>
           </View>
         </View>
