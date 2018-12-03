@@ -4,7 +4,5 @@ npm-debug.*
 node_modules
 /server/.env
 /server/dump.rdb
-/client/global.js
-/client/android/*
 /client/ios/*
 /client/third-party/*
