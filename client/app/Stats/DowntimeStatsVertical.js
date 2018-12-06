@@ -66,8 +66,8 @@ export default class DowntimeStatsVertical extends React.Component {
         var downtime = []
         var average = 0
         for (var i = 0; i < data.length; i++) {
-          downtime.push({time: data[i].time, downtime: data[i].totalDowntime, availableMin: data[i].availableMin})
-          average += data[i].totalDowntime
+          downtime.push({time: data[i].time, downtime: data[i].totalDowntime, dateLabel: data[i].dateLabel, availableMin: data[i].availableMin})
+          average += data[i].totalDowntime/data[i].availableMin
         }
         this.setState({downtime: downtime, totalDowntime: average, average: average/data.length})
       })
@@ -80,19 +80,13 @@ export default class DowntimeStatsVertical extends React.Component {
   renderItem(item) {
     const win = Dimensions.get('window');
     const currDate = parseTime(this.props.timePeriod, item.item.time)
-    var availableMin = item.item.availableMin * 2
-    if (this.props.timePeriod === 3) {
-      availableMin *= 30
-    } else if (this.props.timePeriod === 4) {
-      availableMin *= 365
-    }
+    var availableMin = item.item.availableMin
     var downtime = 0
     if (item.item.downtime) {
       downtime = item.item.downtime
     }
     const height = downtime / availableMin * 400
     const parsedDowntime = downtimeString(downtime)
-
     if (downtime !== 0) {
       return (
         <View style={{marginBottom: 20, alignItems: 'center', justifyContent: 'center', width: 80}}>
@@ -108,7 +102,7 @@ export default class DowntimeStatsVertical extends React.Component {
             </View>
           </TouchableOpacity>
           <View style={{alignItems: 'center'}}>
-            <Text style={{color: 'gray', marginTop: 10}}>{currDate}</Text>
+            <Text style={{color: 'gray', marginTop: 10}}>{item.item.dateLabel}</Text>
             {/* <Text style={{color: 'gray', marginTop: 10}}>{currDate.substring(0,3)}</Text>
             <Text style={{color: 'gray'}}>{currDate.substring(5)}</Text> */}
           </View>
@@ -121,10 +115,14 @@ export default class DowntimeStatsVertical extends React.Component {
   }
 
   render() {
+    console.log(this.state.average);
     const win = Dimensions.get('window');
     return (
       <View style={styles.statsView}>
-        <Text style={{marginBottom: 10, color: 'gray', fontSize: 18}}>Downtime</Text>
+        <View style={{flexDirection: 'row', marginBottom: 10}}>
+          <Text style={{color: 'gray', fontSize: 18, flex: 1}}>Downtime</Text>
+          <Text style={{color: '#73C9D0', fontSize: 18, fontWeight: 'bold'}}>{`Average: ${Math.round(this.state.average ? this.state.average * 100 : 0)}%`}</Text>
+        </View>
         <FlatList
           horizontal
           scrollEnabled
@@ -133,6 +131,7 @@ export default class DowntimeStatsVertical extends React.Component {
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={{paddingVertical: 10}}
         />
+        <View style={[styles.averageLine, {bottom: 75 + this.state.average * 400, width: win.width}]} />
       </View>
     )
   }
@@ -142,6 +141,13 @@ const styles = StyleSheet.create({
   statsView: {
     backgroundColor: 'white',
     padding: 20,
-    marginBottom: 40
+    marginBottom: 40,
+    height: 500,
+  },
+  averageLine: {
+    position: 'absolute',
+    height: 2,
+    backgroundColor: '#73C9D0',
+    zIndex: 10,
   }
 })

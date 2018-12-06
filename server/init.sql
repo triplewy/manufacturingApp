@@ -1,0 +1,87 @@
+SET foreign_key_checks = 0;
+DROP TABLE IF EXISTS downtimeImages;
+DROP TABLE IF EXISTS downtime;
+DROP TABLE IF EXISTS machines;
+DROP TABLE IF EXISTS assemblyLineUsers;
+DROP TABLE IF EXISTS assemblyLines;
+DROP TABLE IF EXISTS logins;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS companies;
+SET foreign_key_checks = 1;
+
+CREATE TABLE IF NOT EXISTS companies (
+  companyId INTEGER AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL UNIQUE,
+  createdDate DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS users (
+  userId INTEGER AUTO_INCREMENT PRIMARY KEY,
+  companyId INTEGER,
+  createdDate DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  FOREIGN KEY(companyId) REFERENCES companies(companyId)
+);
+
+CREATE TABLE IF NOT EXISTS logins (
+  loginId INTEGER AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(255) NOT NULL,
+  userId INTEGER NOT NULL,
+  passwordHash CHAR(60),
+  FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS assemblyLines (
+  lineId INTEGER AUTO_INCREMENT PRIMARY KEY,
+  companyId INTEGER NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  availableMin INTEGER NOT NULL,
+  morningShift INTEGER NOT NULL,
+  eveningShift INTEGER NOT NULL,
+  createdDate DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  FOREIGN KEY (companyId) REFERENCES companies(companyId)
+);
+
+CREATE TABLE IF NOT EXISTS assemblyLineUsers (
+  lineId INTEGER NOT NULL,
+  userId INTEGER NOT NULL,
+  FOREIGN KEY(lineId) REFERENCES assemblyLines(lineId),
+  FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE,
+  UNIQUE(lineId, userId)
+);
+
+CREATE TABLE IF NOT EXISTS machines (
+  machineId INTEGER AUTO_INCREMENT PRIMARY KEY,
+  lineId INTEGER NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  icon_url VARCHAR(255) NOT NULL,
+  createdDate DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  FOREIGN KEY(lineId) REFERENCES assemblyLines(lineId),
+  UNIQUE(lineId, name)
+);
+
+CREATE TABLE IF NOT EXISTS downtime (
+  downtimeId INTEGER AUTO_INCREMENT PRIMARY KEY,
+  machineId INTEGER NOT NULL,
+  lineId INTEGER NOT NULL,
+  lineLeaderName VARCHAR(255) NOT NULL,
+  downtime INTEGER NOT NULL,
+  description TEXT,
+  createdDate DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  FOREIGN KEY(machineId) REFERENCES machines(machineId),
+  FOREIGN KEY(lineId) REFERENCES assemblyLines(lineId)
+);
+
+CREATE TABLE IF NOT EXISTS downtimeImages (
+  downtimeImageId INTEGER AUTO_INCREMENT PRIMARY KEY,
+  downtimeId INTEGER NOT NULL,
+  imageUrl VARCHAR(255) NOT NULL,
+  createdDate DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  FOREIGN KEY(downtimeId) REFERENCES downtime(downtimeId)
+);
+
+DELIMITER //
+CREATE TRIGGER before_downtime_insert BEFORE INSERT ON downtime FOR EACH ROW
+  BEGIN
+  SET NEW.lineId = (SELECT lineId FROM machines WHERE machineId = NEW.machineId);
+  END //
+DELIMITER ;
