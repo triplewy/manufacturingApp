@@ -7,10 +7,10 @@ export function setCookie(cookie) {
       CookieManager.set({
         name: 'connect.sid',
         value: cookie.substring(12),
-        // domain: 'localhost',
-        // origin: 'localhost',
-        domain: 'ec2-18-217-232-204.us-east-2.compute.amazonaws.com',
-        origin: 'ec2-18-217-232-204.us-east-2.compute.amazonaws.com',
+        domain: 'localhost',
+        origin: 'localhost',
+        // domain: 'ec2-18-217-232-204.us-east-2.compute.amazonaws.com',
+        // origin: 'ec2-18-217-232-204.us-east-2.compute.amazonaws.com',
         path: '/',
         version: '1',
         expiration: '2020-01-01T12:00:00.00-00:00'

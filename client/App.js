@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { createBottomTabNavigator, createMaterialTopTabNavigator, createSwitchNavigator, createStackNavigator, NavigationActions } from 'react-navigation'
-import './global.js'
 import { getCookie, setCookie, getName } from './app/Storage'
+import { connect } from 'react-redux'
 import editIcon from './app/icons/edit-icon.png'
 import reportIcon from './app/icons/report-icon.png'
 import statsIcon from './app/icons/stats-icon.png'
@@ -18,11 +18,11 @@ import Stats from './app/Stats/Stats'
 import DayStats from './app/Stats/DayStats'
 import Account from './app/Account'
 import Reports from './app/Reports'
+import './global.js'
 
-export default class App extends React.Component {
+class App extends React.Component {
   constructor(props) {
-    super(props);
-
+    super(props)
     this.state = {
       loggedIn: false,
       hasName: false,
@@ -37,7 +37,6 @@ export default class App extends React.Component {
   }
 
   sessionLogin() {
-    console.log(global.API_URL);
     fetch(global.API_URL + '/api/sessionLogin', {
       method: 'GET',
       credentials: 'include',
@@ -111,7 +110,7 @@ export default class App extends React.Component {
     const ReportsNavigator = createStackNavigator(
       {
         Reports: {
-          screen: Reports,
+          screen: props => <Reports {...props} {...this.props} />,
           navigationOptions: {
             title: 'Reports'
           }
@@ -239,6 +238,8 @@ export default class App extends React.Component {
       }
     )
 
+
+
     if (this.state.isLoading) {
       return (
         <Splash />
@@ -251,12 +252,12 @@ export default class App extends React.Component {
   }
 }
 
+const mapStateToProps = (state) => ({
+  state
+})
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+const mapDispatchToProps = (dispatch) => ({
+  dispatch
 });
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

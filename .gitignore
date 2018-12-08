@@ -5,4 +5,5 @@ node_modules
 /server/.env
 /server/dump.rdb
 /client/ios/*
+/client/android/*
 /client/third-party/*
