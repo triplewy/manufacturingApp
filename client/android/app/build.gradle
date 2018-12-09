@@ -100,7 +100,7 @@ android {
     defaultConfig {
         applicationId "com.manufacturingapp"
         minSdkVersion 16
-        targetSdkVersion 22
+        targetSdkVersion 25        
         versionCode 1
         versionName "1.0"
         ndk {
@@ -137,8 +137,8 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-cookies')
     compile project(':react-native-image-picker')
+    compile project(':react-native-cookies')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:27.0.3"
     compile "com.facebook.react:react-native:+"  // From node_modules
