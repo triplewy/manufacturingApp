@@ -20,7 +20,9 @@ export default class CreateAccount extends React.Component {
       password: '',
       confirmPassword: '',
       passwordIsValid: false,
-      passwordErrorMessage: ''
+      passwordErrorMessage: '',
+
+      submitted: false
     };
 
     this.checkUsername = this.checkUsername.bind(this)
@@ -79,6 +81,7 @@ export default class CreateAccount extends React.Component {
   }
 
   signup(e) {
+    this.setState({submitted: true})
     clearCookies().then(data => {
       if (data.message === 'success') {
         fetch(global.API_URL + '/api/auth/signup', {
@@ -117,6 +120,7 @@ export default class CreateAccount extends React.Component {
         })
         .then(data => {
           console.log(data);
+          this.setState({submitted: false})
           if (data.message === 'not logged in') {
             console.log("signup error");
           } else {
@@ -169,7 +173,7 @@ export default class CreateAccount extends React.Component {
             onChangeText={(text) => this.setState({confirmPassword: text})}
             onSubmitEditing={this.signup}
           />
-          <TouchableOpacity onPress={this.signup} disabled={!this.state.usernameIsValid || !this.state.passwordIsValid || this.state.password !== this.state.confirmPassword}>
+          <TouchableOpacity onPress={this.signup} disabled={!this.state.usernameIsValid || !this.state.passwordIsValid || this.state.password !== this.state.confirmPassword || this.state.submitted}>
             <View style={[styles.loginButton, {backgroundColor: this.state.usernameIsValid && this.state.passwordIsValid && this.state.password === this.state.confirmPassword ? '#83D3D6' : '#f1f1f1'}]}>
               <Text style={styles.loginButtonText}>Continue</Text>
             </View>

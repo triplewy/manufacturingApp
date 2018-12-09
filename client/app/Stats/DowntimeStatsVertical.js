@@ -115,7 +115,6 @@ export default class DowntimeStatsVertical extends React.Component {
   }
 
   render() {
-    console.log(this.state.average);
     const win = Dimensions.get('window');
     return (
       <View style={styles.statsView}>

@@ -67,7 +67,7 @@ export default class Reports extends React.Component {
     })
   }
 
-  fetchReports(index) {
+  fetchReports() {
     var url = global.API_URL
     if (this.state.machine !== 0) {
       url += '/api/reports/machine=' + this.state.machines[this.state.machine].machineId
@@ -81,15 +81,16 @@ export default class Reports extends React.Component {
 
     url += '/page=' + this.state.page
 
-    this.setState({refreshing: true})
-    fetch(url, { credentials: 'include' })
-    .then(res => res.json())
-    .then(data => {
-      this.setState({reports: data, refreshing: false, finished: data.length < 10})
+    this.setState({refreshing: true}, () => {
+      fetch(url, { credentials: 'include' })
+      .then(res => res.json())
+      .then(data => {
+        this.setState({reports: data, refreshing: false, finished: data.length < 10})
+      })
+      .catch((error) => {
+        console.error(error);
+      })
     })
-    .catch((error) => {
-      console.error(error);
-    });
   }
 
   fetchMachines() {
@@ -153,11 +154,30 @@ export default class Reports extends React.Component {
       const machineId = payload.action.params.machineId
       const date = payload.action.params.date
 
-      for (var i = 0; i < this.state.lines.length; i++) {
-        if (this.state.lines[i].lineId === lineId) {
-          this.setLine(i)
-          this.setDate(date.substring(0, date.indexOf('T')))
+      if (this.state.lines.length > 0) {
+        for (var i = 0; i < this.state.lines.length; i++) {
+          if (this.state.lines[i].lineId === lineId) {
+            this.setState({line: i, date: date.substring(0, date.indexOf('T')), machine: 0, page: 0, reports: []}, () => {
+              this.fetchMachines()
+              this.fetchReports()
+            })
+            break;
+          }
         }
+      } else {
+        fetchLines().then(data => {
+          this.setState({lines: data}, () => {
+            for (var i = 0; i < this.state.lines.length; i++) {
+              if (this.state.lines[i].lineId === lineId) {
+                this.setState({line: i, date: date.substring(0, date.indexOf('T')), machine: 0, page: 0, reports: []}, () => {
+                  this.fetchMachines()
+                  this.fetchReports()
+                })
+                break;
+              }
+            }
+          })
+        })
       }
     }
   }

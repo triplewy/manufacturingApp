@@ -21,37 +21,6 @@ export default class Name extends React.Component {
         console.log(data);
       }
     })
-    // fetch(global.API_URL + '/api/auth/name', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Accept': 'application/json',
-    //     'Content-Type': 'application/json',
-    //   },
-    //   credentials: 'include',
-    //   body: JSON.stringify({
-    //     name: this.state.name,
-    //   })
-    // })
-    // .then(res => res.json())
-    // .then(data => {
-    //   if (data.message === 'success') {
-    //     setName(this.state.name).then(data => {
-    //       if (data.message === 'success') {
-    //         this.props.navigation.navigate('Tabs')
-    //       } else {
-    //         console.log(data);
-    //       }
-    //     })
-    //     .catch(err => {
-    //       console.log(err);
-    //     })
-    //   } else {
-    //     console.log(data);
-    //   }
-    // })
-    // .catch(function(err) {
-    //     console.log(err);
-    // });
   }
 
   render() {
@@ -70,7 +39,7 @@ export default class Name extends React.Component {
             onSubmitEditing={this.postName}
           />
           <TouchableOpacity onPress={this.postName} disabled={this.state.name.length === 0}>
-            <View style={[styles.loginButton, {backgroundColor: this.state.name.length > 0 ? 'blue' : 'white'}]}>
+            <View style={[styles.loginButton, {backgroundColor: this.state.name.length > 0 ? '#83D3D6' : 'white'}]}>
               <Text style={[styles.loginButtonText, {color: this.state.name.length > 0 ? 'white' : '#f1f1f1'}]}>Done</Text>
             </View>
           </TouchableOpacity>
