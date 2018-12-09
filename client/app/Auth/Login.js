@@ -9,6 +9,8 @@ export default class Login extends React.Component {
     this.state = {
       username: '',
       password: '',
+
+      submitted: false
     };
 
     this.login = this.login.bind(this)
@@ -16,6 +18,7 @@ export default class Login extends React.Component {
   }
 
   login(e) {
+    this.setState({submitted: true})
     clearCookies().then(data => {
       if (data.message === 'success') {
         fetch(global.API_URL + '/api/auth/signin', {
@@ -51,8 +54,8 @@ export default class Login extends React.Component {
         })
         .then(data => {
           console.log(data);
+          this.setState({submitted: false})
           if (data.message === 'not logged in') {
-            // this.setState({failedLogin: 1})
             this.loginFail()
           } else {
             this.props.navigation.navigate('Name')
@@ -106,7 +109,7 @@ export default class Login extends React.Component {
           <TouchableOpacity onPress={() => this.props.navigation.navigate('ForgotPassword')}>
             <Text style={{color: 'white', marginVertical: 20}}>Forgot password?</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.login}>
+          <TouchableOpacity onPress={this.login} disabled={this.state.submitted}>
             <View style={styles.loginButton}>
               <Text style={styles.loginButtonText}>Continue</Text>
             </View>

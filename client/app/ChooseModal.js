@@ -7,7 +7,6 @@ export default class ChooseModal extends React.Component {
     super(props);
 
     this.state = {
-      selectedItem: this.props.defaultIndex ? this.props.defaultIndex : 0,
       showModal: false
     };
 
@@ -15,7 +14,7 @@ export default class ChooseModal extends React.Component {
   }
 
   selectItem(index) {
-    this.setState({showModal: false, selectedItem: index})
+    this.setState({showModal: false})
     this.props.selectItem(index)
   }
 
@@ -27,14 +26,14 @@ export default class ChooseModal extends React.Component {
       renderedItems = this.props.items.map((item, index) => {
         return (
           <TouchableOpacity onPress={this.selectItem.bind(this, index)} key={index}>
-            <Text style={[styles.timePeriodToggle, {color: this.state.selectedItem === index ? '#FF8300' : 'black'}]}>{item.name}</Text>
+            <Text style={[styles.timePeriodToggle, {color: this.props.index === index ? '#FF8300' : 'black'}]}>{item.name}</Text>
           </TouchableOpacity>
         )
       })
 
       return (
         <View style={{marginVertical: 20, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-          <Text style={styles.timePeriodTitle}>{this.props.items[this.state.selectedItem].name}</Text>
+          <Text style={styles.timePeriodTitle}>{this.props.items[this.props.index].name}</Text>
           <TouchableOpacity onPress={() => this.setState({ showModal: true })}>
             <View style={{backgroundColor: '#FF8300', borderRadius: 8}}>
               <Text style={{fontSize: 18, paddingVertical: 10, paddingHorizontal: 15, color: 'white'}}>Choose</Text>
@@ -45,9 +44,20 @@ export default class ChooseModal extends React.Component {
             onBackdropPress={() => this.setState({ showModal: false })}
             style={{justifyContent: 'center', alignItems: 'center'}}
           >
+            {this.props.scroll ?
+            <View style={{height: 700}}>
+              <ScrollView
+                style={{width: win.width - 100, backgroundColor: 'white', borderRadius: 8}}
+                contentContainerStyle={{flex: 0}}
+              >
+                {renderedItems}
+              </ScrollView>
+            </View>
+            :
             <View style={{width: win.width - 100, backgroundColor: 'white', borderRadius: 8}}>
               {renderedItems}
             </View>
+            }
           </Modal>
         </View>
       )

@@ -15,12 +15,13 @@ export default class Stats extends React.Component {
     this.state = {
       timePeriod: 1,
       lines: [],
-      line: null,
+      line: 0,
       refreshing: false
     };
 
+    this.setLine = this.setLine.bind(this)
+    this.setTimePeriod = this.setTimePeriod.bind(this)
     this.refreshStats = this.refreshStats.bind(this)
-    this.refreshLine = this.refreshLine.bind(this)
   }
 
   componentDidMount() {
@@ -29,23 +30,20 @@ export default class Stats extends React.Component {
     })
   }
 
-  refreshStats(index) {
-    var timePeriod = index
-    if (typeof timePeriod === 'undefined') {
-      timePeriod = this.state.timePeriod
-    }
-    this.setState({refreshing: true, timePeriod: timePeriod})
-    setTimeout(() => {
-      this.setState({refreshing: false})
-    }, 2000)
+  setLine(index) {
+    this.setState({line: index}, () => {
+      this.refreshStats()
+    })
   }
 
-  refreshLine(index) {
-    var line = index
-    if (typeof line === 'undefined') {
-      line = this.state.line
-    }
-    this.setState({refreshing: true, line: line})
+  setTimePeriod(index) {
+    this.setState({timePeriod: index}, () => {
+      this.refreshStats()
+    })
+  }
+
+  refreshStats() {
+    this.setState({refreshing: true})
     setTimeout(() => {
       this.setState({refreshing: false})
     }, 2000)
@@ -64,12 +62,13 @@ export default class Stats extends React.Component {
       >
         <ChooseModal
           items={[{name: 'LAST 24 HOURS'}, {name: 'LAST 7 DAYS'}, {name: 'LAST 30 DAYS'}, {name: 'LAST 12 MONTHS'}, {name: 'ALL TIME'}]}
-          selectItem={this.refreshStats}
-          defaultIndex={1}
+          index={this.state.timePeriod}
+          selectItem={this.setTimePeriod}
         />
         <ChooseModal
           items={this.state.lines}
-          selectItem={this.refreshLine}
+          index={this.state.line}
+          selectItem={this.setLine}
         />
         <TotalStats
           refreshing={this.state.refreshing}
@@ -82,15 +81,16 @@ export default class Stats extends React.Component {
           line={this.state.lines[this.state.line]}
           navigation={this.props.navigation}
         />
-        <BarGraphVertical
-          title='Machines'
-          api_url={this.state.line ?
-            '/api/stats/downtime/machines/' + this.state.timePeriod + '/line/' + this.state.lines[this.state.line].lineId
-            :
-            '/api/stats/downtime/machines/' + this.state.timePeriod
-          }
-          refreshing={this.state.refreshing}
-        />
+        {this.state.lines[this.state.line] ?
+          <BarGraphVertical
+            title='Machines'
+            api_url={'/api/stats/downtime/machines/' + this.state.timePeriod + '/line/' + this.state.lines[this.state.line].lineId}
+            refreshing={this.state.refreshing}
+          />
+          :
+          null
+        }
+
       </ScrollView>
     )
   }

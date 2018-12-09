@@ -61,8 +61,8 @@ export default class ReportItem extends React.PureComponent {
           </View>
         </View>
         <View style={{paddingHorizontal: 20}}>
-          <View style={{flex: 1, borderTopWidth: 1, borderColor: '#888888', marginVertical: 10}} />
-          <View style={{paddingVertical: 20, alignItems: 'center'}}>
+          <View style={{flex: 1, height: 1, backgroundColor: '#888888', marginTop: 10}} />
+          <View style={{paddingVertical: 30, alignItems: 'center'}}>
             <Text style={{fontSize: 18}}>{this.props.description}</Text>
             <FlatList
               horizontal

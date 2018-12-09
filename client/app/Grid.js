@@ -1,9 +1,8 @@
 import React from 'react';
-import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Text, Dimensions, TouchableOpacity, Platform} from 'react-native';
+import {ScrollView, View, RefreshControl, FlatList, StyleSheet, Text, Dimensions, TouchableOpacity, Platform} from 'react-native';
+import { fetchLines } from './fetchLines.js'
 import GridItem from './GridItem'
 import ChooseModal from './ChooseModal'
-import { getCookie } from './Storage'
-import { fetchLines } from './fetchLines.js'
 
 export default class Grid extends React.Component {
   constructor(props) {
@@ -12,32 +11,36 @@ export default class Grid extends React.Component {
     this.state = {
       grid: [],
       lines: [],
+      line: 0
     };
 
     this.fetchGrid = this.fetchGrid.bind(this)
+    this.setLine = this.setLine.bind(this)
     this.renderItem = this.renderItem.bind(this)
   }
 
   componentDidMount() {
-    this.fetchGrid()
     fetchLines().then(data => {
-      this.setState({lines: data})
+      this.setState({lines: data}, () => {
+        this.fetchGrid()
+      })
     })
   }
 
-  fetchGrid(index) {
-    var url = global.API_URL + '/api/grid'
-    if (index) {
-      url += '/line/' + this.state.lines[index].lineId
-    }
-
-    fetch(url, {credentials: 'include'})
+  fetchGrid() {
+    fetch(global.API_URL + '/api/grid/line/' + this.state.lines[this.state.line].lineId, {credentials: 'include'})
     .then(res => res.json())
     .then(data => {
       this.setState({grid: data})
     })
     .catch((error) => {
       console.error(error);
+    })
+  }
+
+  setLine(index) {
+    this.setState({line: index}, () => {
+      this.fetchGrid()
     })
   }
 
@@ -54,19 +57,19 @@ export default class Grid extends React.Component {
     }
     return (
       <ScrollView>
-        <ChooseModal items={this.state.lines} selectItem={this.fetchGrid} />
+        <ChooseModal
+          items={this.state.lines}
+          index={this.state.line}
+          selectItem={this.setLine}
+        />
         <View style={styles.statsView}>
-          {this.state.grid.length > 0 ?
-            <FlatList
-              data={this.state.grid}
-              renderItem={this.renderItem}
-              keyExtractor={(item, index) => index.toString()}
-              numColumns={columns}
-              contentContainerStyle={{alignItems: 'center'}}
-            />
-            :
-            null
-          }
+          <FlatList
+            data={this.state.grid}
+            renderItem={this.renderItem}
+            keyExtractor={(item, index) => index.toString()}
+            numColumns={columns}
+            contentContainerStyle={{alignItems: 'center'}}
+          />
         </View>
       </ScrollView>
     )

@@ -36,6 +36,17 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
+    accountRoutes.get('/line=:lineId/machines', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/account/line=' + req.params.lineId + '/machines');
+      conn.query('SELECT * FROM machines WHERE lineId = :lineId', {lineId: req.params.lineId}, function(err, result) {
+        if (err) {
+          console.log(err);
+        } else {
+          res.send(result)
+        }
+      })
+    })
+
     return accountRoutes;
 
 };
