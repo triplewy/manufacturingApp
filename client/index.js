@@ -2,10 +2,10 @@ import React from 'react';
 import { AppRegistry } from 'react-native';
 import { Provider } from 'react-redux'
 import App from './App';
-import initStore from './app/redux/store'
-// import Home from './app/index';
+import configureStore from './redux/configureStore'
 
-const store = initStore()
+
+const store = configureStore()
 
 class RegisterApp extends React.Component {
   render () {
