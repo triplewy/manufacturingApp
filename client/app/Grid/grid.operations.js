@@ -1,4 +1,5 @@
 import { getGrid, getGridSuccess, getGridFailure, getLines, getLinesSuccess, setLineIndex } from './grid.actions'
+import { getRequest } from '../Storage'
 
 export function fetchGrid(lineId) {
   return (dispatch) => {
@@ -15,20 +16,17 @@ export function fetchGrid(lineId) {
 }
 
 export function fetchLines() {
-  console.log("fetch lines");
   return (dispatch) => {
     dispatch(getLines)
-    fetch(global.API_URL + '/api/account/lines')
-    .then(res => res.json())
-    .then(data => {
+    getRequest(global.API_URL + '/api/account/lines').then(data => {
       var lines = []
       for (var i = 0; i < data.length; i++) {
         lines.push({name: 'LINE ' + data[i].name, lineId: data[i].lineId})
       }
       dispatch(getLinesSuccess(lines))
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(err => {
+      console.log(err);
     })
   }
 }
