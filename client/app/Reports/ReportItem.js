@@ -1,7 +1,7 @@
 import React from 'react';
 import {ScrollView, Dimensions, View, Image, ImageBackground, StyleSheet, FlatList, Text, TouchableHighlight, TouchableOpacity} from 'react-native';
-import ImageModal from './ImageModal'
-import { downtimeString } from './DowntimeString.js'
+import ImageModal from '../ImageModal'
+import { downtimeString } from '../DowntimeString.js'
 
 export default class ReportItem extends React.PureComponent {
   constructor(props) {

@@ -3,26 +3,31 @@ import CookieManager from 'react-native-cookies'
 
 export function setCookie(cookie) {
   return new Promise(function(resolve, reject) {
-    AsyncStorage.setItem('cookie', cookie).then(() => {
-      return resolve({message: 'success'})
-    })
-    .catch(err => {
-      return reject(err)
+    clearCookies().then(() => {
+      AsyncStorage.setItem('cookie', cookie).then(() => {
+        console.log("cookie stored");
+        return resolve({message: 'success'})
+      })
+      .catch(err => {
+        return reject(err)
+      })
     })
   })
 }
 
 export function getCookie() {
   return new Promise(function(resolve, reject) {
-    AsyncStorage.getItem('cookie').then(value => {
-      if (value !== null) {
-        return resolve(value)
-      } else {
-        return resolve('')
-      }
-    })
-    .catch(err => {
-      return reject(err)
+    clearCookies().then(() => {
+      AsyncStorage.getItem('cookie').then(value => {
+        if (value !== null) {
+          return resolve(value)
+        } else {
+          return resolve('')
+        }
+      })
+      .catch(err => {
+        return reject(err)
+      })
     })
   })
 }
@@ -69,6 +74,7 @@ export function clearCookies() {
 export function getRequest(path) {
   return new Promise(function(resolve, reject) {
     getCookie().then(cookie => {
+      console.log('cookie is', cookie);
       const fetchParams = {
         method: 'GET',
         headers: {
@@ -81,9 +87,9 @@ export function getRequest(path) {
 
       fetch(path, fetchParams)
       .then(res => {
-        if (res.headers.get('set-cookie')) {
-          setCookie(res.headers.get("set-cookie"))
-        }
+        // if (res.headers.get('set-cookie')) {
+        //   setCookie(res.headers.get("set-cookie"))
+        // }
         return res.json()
       })
       .then(data => {
@@ -126,16 +132,3 @@ export function postRequest(path, body) {
     })
   })
 }
-
-
-
-
-  // Clearing all cookies stored by native cookie managers.
-  // return CookieManager.clearAll().then(() => {
-  //   return fetch(path, fetchParams)
-  //     .then(response => {
-  //       storage.setCookie(response.headers.get("set-cookie"))
-  //       return response
-  //     })
-  //     .then(data => data.json())
-  // })

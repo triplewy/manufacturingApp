@@ -147,7 +147,13 @@ var adminRoutes = require('./routes/adminRoutes')
 
 app.get('/api/sessionLogin', loggedIn, (req, res) => {
   console.log('- Request received:', req.method.cyan, '/api/sessionLogin');
-  res.send({userId: req.user})
+  conn.query('SELECT b.* FROM assemblyLineUsers AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.userId = :userId', {userId: req.user}, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send({userId: req.user, lines: result})
+    }
+  })
 })
 
 app.use('/api/input', inputRoutes(conn, loggedIn, upload))
@@ -169,6 +175,7 @@ server.listen(8082, function(){
 });
 
 function loggedIn(req, res, next) {
+  console.log(req.headers);
   if (req.user) {
     next()
   } else {
