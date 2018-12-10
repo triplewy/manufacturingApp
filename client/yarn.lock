@@ -4525,7 +4525,6 @@ react-native-branch@2.2.5:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/react-native-branch/-/react-native-branch-2.2.5.tgz#4074dd63b4973e6397d9ce50e97b57c77a518e9d"
 
-<<<<<<< HEAD
 react-native-cli@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/react-native-cli/-/react-native-cli-2.0.1.tgz#f2cd3c7aa1b83828cdfba630e2dfd817df766d54"
@@ -4535,7 +4534,6 @@ react-native-cli@^2.0.1:
     minimist "^1.2.0"
     prompt "^0.2.14"
     semver "^5.0.3"
-=======
 react-native-calendars@^1.21.0:
   version "1.21.0"
   resolved "https://registry.yarnpkg.com/react-native-calendars/-/react-native-calendars-1.21.0.tgz#c8df92a131c7ebd3f9cf38d271e1b1cba4f8792d"
@@ -4545,7 +4543,6 @@ react-native-calendars@^1.21.0:
     lodash.isequal "^4.5.0"
     prop-types "^15.5.10"
     xdate "^0.8.0"
->>>>>>> 277c4cc38f2b031d5265d1dd75c4adb0626dcf3f
 
 react-native-cookies@^3.3.0:
   version "3.3.0"
