@@ -1,9 +1,9 @@
 
 import { createStore } from 'redux'
-import app from './reducers'
+import rootReducer from './root.reducer.js'
 import thunk from 'redux-thunk'
 
 export default function configureStore() {
-  let store = createStore(app, applyMiddleware(thunk))
+  let store = createStore(rootReducer, applyMiddleware(thunk))
   return store
 }

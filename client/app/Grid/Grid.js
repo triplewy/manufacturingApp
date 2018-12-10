@@ -1,9 +1,10 @@
 import React from 'react';
-import { ScrollView, View, RefreshControl, FlatList, StyleSheet, Text, Dimensions, TouchableOpacity, Platform } from 'react-native';
+import { ScrollView, View,  FlatList, Platform } from 'react-native';
 import { fetchGrid, fetchLines, setLine } from './grid.operations'
 import { connect } from 'react-redux'
 import GridItem from './GridItem'
 import ChooseModal from '../ChooseModal'
+import styles from "./grid.style";
 
 class Grid extends React.Component {
 
@@ -61,17 +62,4 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(Grid);
 
-const styles = StyleSheet.create({
-  timePeriodTitle: {
-    flex: 1,
-    fontSize: 24,
-  },
-  timePeriodToggle: {
-    fontSize: 21,
-    padding: 20
-  },
-  statsView: {
-    backgroundColor: 'white',
-    padding: 20,
-  }
-})
+

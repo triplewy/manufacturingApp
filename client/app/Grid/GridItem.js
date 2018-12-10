@@ -1,6 +1,5 @@
 import React from 'react';
 import {ScrollView, View, Platform, Dimensions, StyleSheet, Text, Image, TouchableHighlight, TouchableOpacity} from 'react-native';
-import machineIcon from '../icons/machine-icon.png'
 
 export default class GridItem extends React.Component {
   constructor(props) {
