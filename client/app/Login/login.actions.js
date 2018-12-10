@@ -1,36 +1,39 @@
-export const GET_GRID = 'GET_GRID'
-export const GET_GRID_SUCCESS = 'GET_GRID_SUCCESS'
-export const GET_GRID_FAILURE = 'GET_GRID_FAILURE'
+export const SET_USERNAME = 'SET_USERNAME'
+export const SET_PASSWORD = 'SET_PASSWORD'
+export const GET_USER = 'GET_USER'
+export const GET_USER_FAILURE = 'GET_USER_FAILURE'
 
 export const SET_NAME = 'SET_NAME'
-export const SET_NAME_SUCCESS = 'SET_NAME_SUCCESS'
 export const SET_NAME_FAILURE = 'SET_NAME_FAILURE'
 
-export function getGrid() {
+export function getUser() {
   return {
-    type: GET_GRID
+    type: GET_USER
   }
 }
 
-export function getGridSuccess(data) {
+export function getUserFailure(error) {
+    return {
+      type: GET_USER_FAILURE,
+      error: error
+    }
+  }
+
+export function setUsername(username) {
   return{
-    type: GET_GRID_SUCCESS,
-    data: data
+    type: SET_USERNAME,
+    username: username,
   }
 }
 
-export function getGridFailure(error) {
-  return{
-    type: GET_GRID_SUCCESS,
-    error: error
+export function setPassword(password) {
+    return{
+      type: SET_PASSWORD,
+      password: password,
+    }
   }
-}
 
-export function getLines() {
-  return {
-    type: GET_LINE
-  }
-}
+
 
 export function getLinesSuccess(lines) {
   return{

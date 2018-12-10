@@ -1,17 +1,16 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { createBottomTabNavigator, createMaterialTopTabNavigator, createSwitchNavigator, createStackNavigator, NavigationActions } from 'react-navigation'
-import { getCookie, setCookie, getName } from './app/Storage'
-import { connect } from 'react-redux'
+import { getName, getRequest } from './app/Storage'
 import editIcon from './app/icons/edit-icon.png'
 import reportIcon from './app/icons/report-icon.png'
 import statsIcon from './app/icons/stats-icon.png'
 import accountIcon from './app/icons/account-icon.png'
 import Splash from './app/Splash'
-import Login from './app/Auth/Login'
-import CreateAccount from './app/Auth/CreateAccount'
-import Name from './app/Auth/Name'
-import ForgotPassword from './app/Auth/ForgotPassword'
+import Login from './app/Login/Login'
+import CreateAccount from './app/CreateAccount'
+import Name from './app/Login/Name'
+import ForgotPassword from './app/ForgotPassword'
 import Grid from './app/Grid/Grid'
 import Input from './app/Input'
 import Stats from './app/Stats/Stats'
@@ -37,11 +36,7 @@ export default class App extends React.Component {
   }
 
   sessionLogin() {
-    fetch(global.API_URL + '/api/sessionLogin', {
-      method: 'GET',
-      credentials: 'include',
-    })
-    .then(res => res.json())
+    getRequest(global.API_URL + '/api/sessionLogin')
     .then(data => {
       console.log(data);
       if (data.message === 'not logged in') {

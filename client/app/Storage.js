@@ -4,23 +4,7 @@ import CookieManager from 'react-native-cookies'
 export function setCookie(cookie) {
   return new Promise(function(resolve, reject) {
     AsyncStorage.setItem('cookie', cookie).then(() => {
-      CookieManager.set({
-        name: 'connect.sid',
-        value: cookie.substring(12),
-        // domain: 'localhost',
-        // origin: 'localhost',
-        domain: 'ec2-18-217-232-204.us-east-2.compute.amazonaws.com',
-        origin: 'ec2-18-217-232-204.us-east-2.compute.amazonaws.com',
-        path: '/',
-        version: '1',
-        expiration: '2020-01-01T12:00:00.00-00:00'
-      }).then((res) => {
-        console.log("connect sid is", res);
-        return resolve({message: 'success'})
-      })
-      .catch(err => {
-        return reject(err)
-      })
+      return resolve({message: 'success'})
     })
     .catch(err => {
       return reject(err)
@@ -122,7 +106,7 @@ export function postRequest(path, body) {
           "Content-Type": "application/json",
           "cookie": cookie,
         },
-        body: body,
+        body: JSON.stringify(body),
         credentials: "omit",
       }
 

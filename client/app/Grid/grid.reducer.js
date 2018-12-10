@@ -18,6 +18,7 @@ export function grid(state = initialState, action) {
       }
     case GET_GRID_SUCCESS:
       return {
+        ...state,
         data: action.data,
         dataFetched: true,
         isFetching: false,

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Dimensions, SafeAreaView, View, Text, TextInput, StyleSheet, TouchableOpacity, Animated, Easing } from 'react-native';
-import { setCookie, clearCookies } from '../Storage'
+import { Dimensions, View, Text, TextInput, StyleSheet, TouchableOpacity, Animated, Easing } from 'react-native';
+import { postRequest } from '../Storage'
 
 export default class Login extends React.Component {
   constructor(props) {
@@ -18,55 +18,21 @@ export default class Login extends React.Component {
   }
 
   login(e) {
-    this.setState({submitted: true})
-    clearCookies().then(data => {
-      if (data.message === 'success') {
-        fetch(global.API_URL + '/api/auth/signin', {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: this.state.username,
-            password: this.state.password
-          })
-        })
-        .then(res => {
-          console.log(res);
-          if (res.status === 401) {
-            return {message: 'not logged in'}
-          } else if (res.headers.get("set-cookie")) {
-            console.log("set cookie is", res.headers.get("set-cookie"));
-            return setCookie(res.headers.get("set-cookie")).then(data => {
-              if (data.message === 'success') {
-                return res.json()
-              } else {
-                console.log(data);
-              }
-            })
-            .catch(err => {
-              console.log(err);
-            })
-          } else {
-            return res.json()
-          }
-        })
-        .then(data => {
-          console.log(data);
-          this.setState({submitted: false})
-          if (data.message === 'not logged in') {
-            this.loginFail()
-          } else {
-            this.props.navigation.navigate('Name')
-          }
-        })
-        .catch(function(err) {
-            console.log(err);
-        });
-      } else {
+    postRequest(global.API_URL + '/api/auth/signin', {
+      username: this.state.username,
+      password: this.state.password
+    })
+    .then(data => {
         console.log(data);
-      }
+        this.setState({submitted: false})
+        if (data.message === 'not logged in') {
+          this.loginFail()
+        } else {
+          this.props.navigation.navigate('Name')
+        }
+    })
+    .catch(function(err) {
+            console.log(err);
     })
   }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dimensions, SafeAreaView, View, Text, TextInput, StyleSheet, TouchableOpacity, Animated, Easing } from 'react-native';
-import { setCookie, clearCookies } from '../Storage'
+import { setCookie, clearCookies } from './Storage'
 import validator from 'validator';
 import owasp from 'owasp-password-strength-test'
 
