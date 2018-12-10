@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, RefreshControl, FlatList, StyleSheet, Text, Dimensions, TouchableWithoutFeedback, TouchableOpacity, ActivityIndicator, Animated } from 'react-native';
-import { fetchLines } from './fetchLines.js'
 import { NavigationEvents } from 'react-navigation';
+import { connect } from 'react-redux'
 import ReportItem from './ReportItem'
-import ChooseModal from './ChooseModal'
-import CalendarModal from './CalendarModal'
+import ChooseModal from '../ChooseModal'
+import CalendarModal from '../CalendarModal'
 import Modal from 'react-native-modal'
 
-export default class Reports extends React.Component {
+class Reports extends React.Component {
   constructor(props) {
     super(props);
     this.heightValue = new Animated.Value(80)
@@ -257,3 +257,20 @@ const styles = StyleSheet.create({
     marginBottom: 40
   }
 })
+
+function mapStateToProps(state) {
+  return {
+    grid: state.grid.data,
+    lines: state.splash.lines,
+    lineIndex: state.grid.lineIndex
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    getGrid: (lineId) => dispatch(fetchGrid(lineId)),
+    setLineIndex: (index) => dispatch(setLine(index))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Reports);

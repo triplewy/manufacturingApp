@@ -1,7 +1,7 @@
 import React from 'react';
 import {ScrollView, View, Platform, Dimensions, StyleSheet, Text, Image, TouchableHighlight, TouchableOpacity} from 'react-native';
 
-export default class GridItem extends React.Component {
+export default class GridItem extends React.PureComponent {
   constructor(props) {
     super(props);
 

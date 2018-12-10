@@ -1,12 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { createBottomTabNavigator, createMaterialTopTabNavigator, createSwitchNavigator, createStackNavigator, NavigationActions } from 'react-navigation'
-import { getName, getRequest } from './app/Storage'
 import editIcon from './app/icons/edit-icon.png'
 import reportIcon from './app/icons/report-icon.png'
 import statsIcon from './app/icons/stats-icon.png'
 import accountIcon from './app/icons/account-icon.png'
-import Splash from './app/Splash'
+import Splash from './app/Splash/Splash'
 import Login from './app/Login/Login'
 import CreateAccount from './app/CreateAccount'
 import Name from './app/Login/Name'
@@ -15,45 +14,14 @@ import Grid from './app/Grid/Grid'
 import Input from './app/Input'
 import Stats from './app/Stats/Stats'
 import DayStats from './app/Stats/DayStats'
-import Account from './app/Account'
-import Reports from './app/Reports'
+import Account from './app/Account/Account'
+import Reports from './app/Reports/Reports'
 import './global.js'
 
 export default class App extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      loggedIn: false,
-      hasName: false,
-      isLoading: true,
-    }
 
-    this.sessionLogin = this.sessionLogin.bind(this)
-  }
-
-  componentDidMount() {
-    this.sessionLogin()
-  }
-
-  sessionLogin() {
-    getRequest(global.API_URL + '/api/sessionLogin')
-    .then(data => {
-      console.log(data);
-      if (data.message === 'not logged in') {
-        this.setState({loggedIn: false, isLoading: false})
-      } else {
-        getName().then(name => {
-          if (name === '') {
-            this.setState({loggedIn: true, hasName: false, isLoading: false})
-          } else {
-            this.setState({loggedIn: true, hasName: true, isLoading: false})
-          }
-        })
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    })
   }
 
   render() {
@@ -224,25 +192,18 @@ export default class App extends React.Component {
 
     const AppNavigator = createSwitchNavigator(
       {
+        Splash: Splash,
         Auth: AuthNavigation,
         Name: Name,
         Tabs: Tabs,
       },
       {
-        initialRouteName: this.state.loggedIn ? (this.state.hasName ? 'Tabs' : 'Name') : 'Auth'
+        // initialRouteName: this.state.loggedIn ? (this.state.hasName ? 'Tabs' : 'Name') : 'Auth'
       }
     )
 
-
-
-    if (this.state.isLoading) {
-      return (
-        <Splash />
-      )
-    } else {
-      return (
-        <AppNavigator />
-      )
-    }
+    return (
+      <AppNavigator />
+    )
   }
 }

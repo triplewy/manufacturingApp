@@ -1,45 +1,22 @@
 import React from 'react';
-import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Text, Image, TouchableOpacity, Linking, Alert} from 'react-native';
-import machineIcon from './icons/machine-icon.png'
-import { getName, setName } from './Storage'
+import { ScrollView, View, RefreshControl, StyleSheet, Text, Image, TouchableOpacity, Linking, Alert, ActivityIndicator } from 'react-native';
+import { fetchAccount, fetchLogout, fetchName, changeName } from './account.operations'
+import { connect } from 'react-redux'
+import machineIcon from '../icons/machine-icon.png'
 
-export default class Account extends React.Component {
+class Account extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      name: '',
-      account: {}
-    };
-
-    this.fetchAccount = this.fetchAccount.bind(this)
     this.linkPhone = this.linkPhone.bind(this)
     this.linkText = this.linkText.bind(this)
     this.linkEmail = this.linkEmail.bind(this)
-    this.changeName = this.changeName.bind(this)
     this.logoutAlert = this.logoutAlert.bind(this)
-    this.logout = this.logout.bind(this)
   }
 
   componentDidMount() {
-    getName().then(name => {
-      this.setState({name: name})
-    })
-    this.fetchAccount()
-  }
-
-  fetchAccount() {
-    fetch(global.API_URL + '/api/account', {
-      credentials: 'include'
-    })
-    .then(res => res.json())
-    .then(data => {
-      console.log(data);
-      this.setState({account: data})
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+    this.props.getName()
+    this.props.getAccount()
   }
 
   linkPhone() {
@@ -72,48 +49,16 @@ export default class Account extends React.Component {
     }).catch(err => console.log('An error occurred', err));
   }
 
-  changeName() {
-    setName('').then(data => {
-      if (data.message === 'success') {
-        this.props.navigation.navigate('Name')
-      } else {
-        console.log('error is', data);
-      }
-    })
-  }
-
   logoutAlert() {
     Alert.alert(
       'Change lines',
       'Changing lines will log you out. Are you sure?',
       [
         {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-        {text: 'Logout', onPress: () => this.logout(), style: 'destructive'},
+        {text: 'Logout', onPress: () => this.props.logout(this.props.navigation), style: 'destructive'},
       ],
       { cancelable: false }
     )
-  }
-
-  logout() {
-    fetch(global.API_URL + '/api/auth/logout', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.message === 'success') {
-        this.props.navigation.navigate('Auth')
-      } else {
-        console.log(data);
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
   }
 
   render() {
@@ -126,7 +71,7 @@ export default class Account extends React.Component {
           />
         </View>
         <View style={styles.wrapper}>
-          <Text style={{fontSize: 32, margin: 10, color: 'gray'}}>{this.state.account.companyName}</Text>
+          <Text style={{fontSize: 32, margin: 10, color: 'gray'}}>{this.props.account.companyName}</Text>
           {/* <View style={{flexDirection: 'row'}}>
             <Text style={{fontSize: 18, margin: 10}}>Day Shift:</Text>
             <Text style={{fontSize: 18, margin: 10}}>{this.state.account.morningShift + 'AM - ' + (this.state.account.eveningShift - 12) + 'PM'}</Text>
@@ -138,18 +83,18 @@ export default class Account extends React.Component {
         </View>
         <View style={styles.wrapper}>
           <Text style={{fontSize: 24, margin: 10, color: 'gray'}}>Line Leader</Text>
-          <Text style={{fontSize: 24, margin: 10}}>{this.state.name}</Text>
-          <TouchableOpacity onPress={this.changeName}>
+          <Text style={{fontSize: 24, margin: 10}}>{this.props.name}</Text>
+          <TouchableOpacity onPress={() => this.props.setName(this.props.navigation)}>
             <View style={{backgroundColor: '#FF8300', borderRadius: 8, marginVertical: 10}}>
               <Text style={{fontSize: 18, paddingVertical: 10, paddingHorizontal: 15, color: 'white'}}>Change Name</Text>
             </View>
           </TouchableOpacity>
         </View>
         <View style={styles.wrapper}>
-          {this.state.account.lineNumbers ?
+          {this.props.account.lineNumbers ?
             <View style={{marginVertical: 10, alignItems: 'center'}}>
-              <Text style={{fontSize: 24, margin: 10, color: 'gray'}}>{this.state.account.lineNumbers.length > 1 ? 'Lines' : 'Line'}</Text>
-              <Text style={{fontSize: 18, margin: 10}}>{this.state.account.lineNumbers.join(', ')}</Text>
+              <Text style={{fontSize: 24, margin: 10, color: 'gray'}}>{this.props.account.lineNumbers.length > 1 ? 'Lines' : 'Line'}</Text>
+              <Text style={{fontSize: 18, margin: 10}}>{this.props.account.lineNumbers.join(', ')}</Text>
               <TouchableOpacity onPress={this.logoutAlert}>
                 <View style={{backgroundColor: '#FF8300', borderRadius: 8, marginVertical: 10}}>
                   <Text style={{fontSize: 18, paddingVertical: 10, paddingHorizontal: 15, color: 'white'}}>Change Lines</Text>
@@ -199,3 +144,21 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
 })
+
+function mapStateToProps(state) {
+  return {
+    account: state.account.account,
+    name: state.account.name,
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    getAccount: () => dispatch(fetchAccount()),
+    logout: (navigation) => dispatch(fetchLogout(navigation)),
+    getName: () => dispatch(fetchName()),
+    setName: (navigation) => dispatch(changeName(navigation))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Account);

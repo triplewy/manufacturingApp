@@ -7,15 +7,27 @@ import ChooseModal from '../ChooseModal'
 import styles from "./grid.style";
 
 class Grid extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.renderItem = this.renderItem.bind(this)
+    this.setLine = this.setLine.bind(this)
+  }
 
   componentDidMount() {
-    this.props.getLines()
+    this.props.getGrid(this.props.lines[this.props.lineIndex].lineId)
   }
 
   renderItem(item) {
     return (
       <GridItem {...item.item} navigation={this.props.navigation} />
     )
+  }
+
+  setLine(index) {
+    this.props.setLineIndex(index).then(() => {
+      this.props.getGrid(this.props.lines[this.props.lineIndex].lineId)
+    })
   }
 
   render() {
@@ -28,7 +40,7 @@ class Grid extends React.Component {
         <ChooseModal
           items={this.props.lines}
           index={this.props.lineIndex}
-          selectItem={this.props.setLineIndex}
+          selectItem={this.setLine}
         />
         <View style={styles.statsView}>
           <FlatList
@@ -47,7 +59,7 @@ class Grid extends React.Component {
 function mapStateToProps(state) {
   return {
     grid: state.grid.data,
-    lines: state.grid.lines,
+    lines: state.splash.lines,
     lineIndex: state.grid.lineIndex
   }
 }
@@ -55,11 +67,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     getGrid: (lineId) => dispatch(fetchGrid(lineId)),
-    getLines: () => dispatch(fetchLines()),
     setLineIndex: (index) => dispatch(setLine(index))
   }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Grid);
-
-
