@@ -1,8 +1,9 @@
 import React from 'react';
-import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Text, TouchableHighlight, TouchableOpacity, Dimensions} from 'react-native';
-import { downtimeString } from '../DowntimeString.js'
+import { View, FlatList, StyleSheet, Text, TouchableOpacity, Dimensions} from 'react-native';
+import { connect } from 'react-redux'
+import { downtimeString } from '../../DowntimeString.js'
 
-export default class BarGraphVertical extends React.Component {
+class BarGraphVertical extends React.Component {
   constructor(props) {
     super(props);
 
@@ -101,3 +102,22 @@ const styles = StyleSheet.create({
     marginBottom: 40
   }
 })
+
+function mapStateToProps(state) {
+  return {
+    timePeriod: state.stats.timePeriod,
+    lineIndex: state.stats.lineIndex,
+    lines: state.splash.lines,
+    downtime: state.barGraph.downtime,
+    totalDowntime: state.barGraph.totalDowntime,
+    average: state.barGraph.average
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    getDowntimeStats: (lineId, timePeriod) => dispatch(fetchDowntimeStats(lineId, timePeriod))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(BarGraphVertical);

@@ -197,7 +197,7 @@ module.exports = function(conn, loggedIn) {
     //   })
     // })
 
-    statsRoutes.get('/downtime/machines/:timePeriod/line/:lineId', loggedIn, (req, res) => {
+    statsRoutes.get('/downtime/machines/time=:timePeriod/line=:lineId', loggedIn, (req, res) => {
       console.log('- Request received:', req.method.cyan, '/api/stats/downtime/machines/' + req.params.timePeriod + '/line/' + req.params.lineId);
       const userId = req.user
       const timePeriodQuery = parseTotalTimePeriod(req.params.timePeriod * 1)
@@ -213,24 +213,8 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
-    statsRoutes.get('/downtime/machines/:timePeriod', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/machines/' + req.params.timePeriod);
-      const userId = req.user
-      const timePeriodQuery = parseTotalTimePeriod(req.params.timePeriod * 1)
-      conn.query(
-      'SELECT a.*, SUM(b.downtime) AS totalDowntime FROM machines AS a ' +
-      'JOIN downtime AS b ON b.machineId = a.machineId AND b.createdDate <= CURRENT_TIMESTAMP' + timePeriodQuery +
-      'WHERE a.lineId = (SELECT lineId FROM assemblyLineUsers WHERE userId = :userId ORDER BY lineId ASC LIMIT 1) GROUP BY a.machineId ORDER BY totalDowntime DESC', {userId: userId}, function(err, result) {
-        if (err) {
-          console.log(err);
-        } else {
-          res.send(result)
-        }
-      })
-    })
-
-    statsRoutes.get('/downtime/machines/line/:lineId/:timePeriod/:date', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/machines/' + req.params.lineId + '/' + req.params.timePeriod + '/' + req.params.date);
+    statsRoutes.get('/downtime/machines/time=:timePeriod/line=:lineId/:date', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/machines/time=' + req.params.timePeriod + '/line=' + req.params.lineId + '/' + req.params.date);
       const userId = req.user
       const timePeriodQuery = parseTimePeriodDate(req.params.timePeriod * 1)
       conn.query(
@@ -244,6 +228,22 @@ module.exports = function(conn, loggedIn) {
         }
       })
     })
+
+    // statsRoutes.get('/downtime/machines/:timePeriod', loggedIn, (req, res) => {
+    //   console.log('- Request received:', req.method.cyan, '/api/stats/downtime/machines/' + req.params.timePeriod);
+    //   const userId = req.user
+    //   const timePeriodQuery = parseTotalTimePeriod(req.params.timePeriod * 1)
+    //   conn.query(
+    //   'SELECT a.*, SUM(b.downtime) AS totalDowntime FROM machines AS a ' +
+    //   'JOIN downtime AS b ON b.machineId = a.machineId AND b.createdDate <= CURRENT_TIMESTAMP' + timePeriodQuery +
+    //   'WHERE a.lineId = (SELECT lineId FROM assemblyLineUsers WHERE userId = :userId ORDER BY lineId ASC LIMIT 1) GROUP BY a.machineId ORDER BY totalDowntime DESC', {userId: userId}, function(err, result) {
+    //     if (err) {
+    //       console.log(err);
+    //     } else {
+    //       res.send(result)
+    //     }
+    //   })
+    // })
 
     statsRoutes.get('/downtime/lines/:timePeriod/:date', loggedIn, (req, res) => {
       console.log('- Request received:', req.method.cyan, '/api/stats/downtime/lines/' + req.params.timePeriod + '/' + req.params.date);

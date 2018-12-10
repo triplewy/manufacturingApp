@@ -1,35 +1,29 @@
 import React from 'react';
-import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Text, TouchableHighlight, TouchableOpacity, Dimensions, Animated, Easing} from 'react-native';
-import { parseTime } from '../ParseTime.js'
-import { downtimeString } from '../DowntimeString.js'
+import {View, FlatList, StyleSheet, Text, TouchableOpacity, Dimensions, Animated, Easing} from 'react-native';
+import { fetchDowntimeStats } from './downtimeStats.operations'
+import { connect } from 'react-redux'
+import { parseTime } from '../../ParseTime.js'
+import { downtimeString } from '../../DowntimeString.js'
 
-export default class DowntimeStatsVertical extends React.Component {
+class DowntimeStatsVertical extends React.Component {
   constructor(props) {
     super(props);
+
     this.fadeValue = new Animated.Value(0)
-    this.state = {
-      downtime: [],
-      totalDowntime: 0,
-      average: 0
-    };
 
     this.fadeIn = this.fadeIn.bind(this)
     this.fadeOut = this.fadeOut.bind(this)
-    this.fetchDowntimeStats = this.fetchDowntimeStats.bind(this)
     this.renderItem = this.renderItem.bind(this)
   }
 
   componentDidMount() {
-    this.fetchDowntimeStats()
-    this.fadeValue.setValue(0)
+    this.props.getDowntimeStats(this.props.lines[this.props.lineIndex].lineId, this.props.timePeriod)
     this.fadeIn()
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.line !== prevProps.line) {
-      this.fetchDowntimeStats()
-    } else if (this.props.refreshing && this.props.refreshing !== prevProps.refreshing) {
-      this.fetchDowntimeStats()
+    if (this.props.lineIndex !== prevProps.lineIndex || this.props.timePeriod !== prevProps.timePeriod) {
+      this.props.getDowntimeStats(this.props.lines[this.props.lineIndex].lineId, this.props.timePeriod)
     }
   }
 
@@ -55,28 +49,6 @@ export default class DowntimeStatsVertical extends React.Component {
     ).start(() => this.fadeIn())
   }
 
-  fetchDowntimeStats() {
-    if (this.props.line) {
-      var url = global.API_URL + '/api/stats/downtime/time/' + this.props.timePeriod
-      url += '/line/' + this.props.line.lineId
-      fetch(url, {credentials: 'include'})
-      .then(res => res.json())
-      .then(data => {
-        console.log(data);
-        var downtime = []
-        var average = 0
-        for (var i = 0; i < data.length; i++) {
-          downtime.push({time: data[i].time, downtime: data[i].totalDowntime, dateLabel: data[i].dateLabel, availableMin: data[i].availableMin})
-          average += data[i].totalDowntime/data[i].availableMin
-        }
-        this.setState({downtime: downtime, totalDowntime: average, average: average/data.length})
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-    }
-  }
-
   renderItem(item) {
     const win = Dimensions.get('window');
     const currDate = parseTime(this.props.timePeriod, item.item.time)
@@ -94,7 +66,7 @@ export default class DowntimeStatsVertical extends React.Component {
           <View style={{marginBottom: 5}}>
             <Text style={{color: 'gray', textAlign: 'center'}}>{parsedDowntime}</Text>
           </View>
-          <TouchableOpacity onPress={() => this.props.navigation.navigate('DayStats', {date: item.item.time, timePeriod: this.props.timePeriod, downtime: downtime, line: this.props.line})}>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('DayStats', {date: item.item.time, downtime: downtime, lineId: this.props.lines[this.props.lineIndex].lineId})}>
             <View style={{height: height, width: 70, backgroundColor: '#FF8300', borderRadius: 4, alignItems: 'center', justifyContent: 'center'}}>
               <Animated.View style={{opacity: this.fadeValue}}>
                 <Text style={{color: 'white', fontWeight: 'bold'}}>{Math.round(downtime / availableMin * 100) + '%'}</Text>
@@ -120,17 +92,17 @@ export default class DowntimeStatsVertical extends React.Component {
       <View style={styles.statsView}>
         <View style={{flexDirection: 'row', marginBottom: 10}}>
           <Text style={{color: 'gray', fontSize: 18, flex: 1}}>Downtime</Text>
-          <Text style={{color: '#73C9D0', fontSize: 18, fontWeight: 'bold'}}>{`Average: ${Math.round(this.state.average ? this.state.average * 100 : 0)}%`}</Text>
+          <Text style={{color: '#73C9D0', fontSize: 18, fontWeight: 'bold'}}>{`Average: ${Math.round(this.props.average ? this.props.average * 100 : 0)}%`}</Text>
         </View>
         <FlatList
           horizontal
           scrollEnabled
-          data={this.state.downtime}
+          data={this.props.downtime}
           renderItem={this.renderItem}
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={{paddingVertical: 10}}
         />
-        <View style={[styles.averageLine, {bottom: 75 + this.state.average * 400, width: win.width}]} />
+        <View style={[styles.averageLine, {bottom: 75 + this.props.average * 400, width: win.width}]} />
       </View>
     )
   }
@@ -150,3 +122,22 @@ const styles = StyleSheet.create({
     zIndex: 10,
   }
 })
+
+function mapStateToProps(state) {
+  return {
+    timePeriod: state.stats.timePeriod,
+    lineIndex: state.stats.lineIndex,
+    lines: state.splash.lines,
+    downtime: state.downtimeStats.downtime,
+    totalDowntime: state.downtimeStats.totalDowntime,
+    average: state.downtimeStats.average
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    getDowntimeStats: (lineId, timePeriod) => dispatch(fetchDowntimeStats(lineId, timePeriod))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DowntimeStatsVertical);

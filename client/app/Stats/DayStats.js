@@ -1,13 +1,12 @@
 import React from 'react';
-import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Text, TouchableHighlight, TouchableOpacity, Dimensions} from 'react-native';
-import BarGraph from './BarGraph'
-import BarGraphVertical from './BarGraphVertical'
-import MachinesGraphVertical from './MachinesGraphVertical'
-import TotalStats from './TotalStats'
+import { ScrollView, View, FlatList, StyleSheet, Text, TouchableOpacity, Dimensions} from 'react-native';
+import { connect } from 'react-redux'
+import MachineStats from './MachineStats/MachineStats'
+import ShiftStats from './ShiftStats/ShiftStats'
 import { parseTime } from '../ParseTime.js'
 import { downtimeString } from '../DowntimeString.js'
 
-export default class DayStats extends React.Component {
+class DayStats extends React.Component {
   static navigationOptions = ({ navigation }) => {
     const {state}  = navigation;
     const currDate = parseTime(state.params.timePeriod, state.params.date)
@@ -19,15 +18,6 @@ export default class DayStats extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      colors: null
-    };
-
-    this.updateColors = this.updateColors.bind(this)
-  }
-
-  updateColors(colors) {
-    this.setState({colors: colors})
   }
 
   render() {
@@ -40,29 +30,15 @@ export default class DayStats extends React.Component {
           <Text style={{marginBottom: 20, color: 'gray', fontSize: 18}}>Total Downtime</Text>
           <Text style={{fontSize: 24, fontWeight: '600', color: '#FF8300'}}>{parsedDowntime}</Text>
         </View>
-        {params.line ?
-          <View>
-            {/* <MachinesGraphVertical
-              title='Machines'
-              api_url={'/api/stats/downtime/machines/line/' + params.line.lineId + '/' + params.timePeriod + '/' + params.date}
-              date={params.date}
-              lineId={params.line.lineId}
-              {...this.props}
-            /> */}
-            <BarGraphVertical
-              title='Machines'
-              api_url={'/api/stats/downtime/machines/line/' + params.line.lineId + '/' + params.timePeriod + '/' + params.date}
-              date={params.date}
-            />
-            <BarGraph title='Shifts' api_url={'/api/stats/downtime/shifts/line=' + params.line.lineId + '/' + params.timePeriod + '/' + params.date} />
-          </View>
-        :
-        null
-        }
-        {params.timePeriod < 3 ?
+        <View>
+          <MachineStats date={params.date} />
+          <ShiftStats date={params.date} />
+        </View>
+
+        {this.props.timePeriod < 3 ?
           <TouchableOpacity
             style={{backgroundColor: 'white', alignItems: 'center', justifyContent: 'center'}}
-            onPress={() => this.props.navigation.navigate('Reports', {date: params.date, lineId: params.line.lineId})}
+            onPress={() => this.props.navigation.navigate('Reports', {date: params.date, lineId: this.props.lines[this.props.lineIndex].lineId})}
           >
             <Text style={{color: '#FF8300', fontSize: 24, padding: 30}}>GO TO REPORTS</Text>
           </TouchableOpacity>
@@ -89,3 +65,18 @@ const styles = StyleSheet.create({
     marginBottom: 40
   }
 })
+
+function mapStateToProps(state) {
+  return {
+    timePeriod: state.stats.timePeriod,
+    lineIndex: state.stats.lineIndex,
+    lines: state.splash.lines,
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DayStats);

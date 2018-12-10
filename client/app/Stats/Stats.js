@@ -1,45 +1,20 @@
 import React from 'react';
-import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Text, TouchableHighlight, TouchableOpacity, Dimensions} from 'react-native';
+import { ScrollView, View, RefreshControl, FlatList, StyleSheet, Text, TouchableOpacity, Dimensions} from 'react-native';
+import { setLine, setTime } from './stats.operations'
+import { connect } from 'react-redux'
 import ChooseModal from '../ChooseModal'
-import TotalStats from './TotalStats'
-import BarGraph from './BarGraph'
-import BarGraphVertical from './BarGraphVertical'
-import DowntimeStats from './DowntimeStats'
-import DowntimeStatsVertical from './DowntimeStatsVertical'
-import { fetchLines } from '../fetchLines.js'
+import TotalStats from './TotalStats/TotalStats'
+import DowntimeStatsVertical from './DowntimeStats/DowntimeStatsVertical'
+import MachineStats from './MachineStats/MachineStats'
 
-export default class Stats extends React.Component {
+class Stats extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      timePeriod: 1,
-      lines: [],
-      line: 0,
       refreshing: false
     };
-
-    this.setLine = this.setLine.bind(this)
-    this.setTimePeriod = this.setTimePeriod.bind(this)
     this.refreshStats = this.refreshStats.bind(this)
-  }
-
-  componentDidMount() {
-    fetchLines().then(data => {
-      this.setState({lines: this.state.lines.concat(data), line: 0})
-    })
-  }
-
-  setLine(index) {
-    this.setState({line: index}, () => {
-      this.refreshStats()
-    })
-  }
-
-  setTimePeriod(index) {
-    this.setState({timePeriod: index}, () => {
-      this.refreshStats()
-    })
   }
 
   refreshStats() {
@@ -62,35 +37,24 @@ export default class Stats extends React.Component {
       >
         <ChooseModal
           items={[{name: 'LAST 24 HOURS'}, {name: 'LAST 7 DAYS'}, {name: 'LAST 30 DAYS'}, {name: 'LAST 12 MONTHS'}, {name: 'ALL TIME'}]}
-          index={this.state.timePeriod}
-          selectItem={this.setTimePeriod}
+          index={this.props.timePeriod}
+          selectItem={this.props.setTimePeriod}
         />
         <ChooseModal
-          items={this.state.lines}
-          index={this.state.line}
-          selectItem={this.setLine}
+          items={this.props.lines}
+          index={this.props.lineIndex}
+          selectItem={this.props.setLineIndex}
         />
         <TotalStats
           refreshing={this.state.refreshing}
-          timePeriod={this.state.timePeriod}
-          line={this.state.lines[this.state.line]}
         />
         <DowntimeStatsVertical
           refreshing={this.state.refreshing}
-          timePeriod={this.state.timePeriod}
-          line={this.state.lines[this.state.line]}
           navigation={this.props.navigation}
         />
-        {this.state.lines[this.state.line] ?
-          <BarGraphVertical
-            title='Machines'
-            api_url={'/api/stats/downtime/machines/' + this.state.timePeriod + '/line/' + this.state.lines[this.state.line].lineId}
-            refreshing={this.state.refreshing}
-          />
-          :
-          null
-        }
-
+        <MachineStats
+          refreshing={this.state.refreshing}
+        />
       </ScrollView>
     )
   }
@@ -111,3 +75,20 @@ const styles = StyleSheet.create({
     marginBottom: 40
   }
 })
+
+function mapStateToProps(state) {
+  return {
+    lines: state.splash.lines,
+    lineIndex: state.stats.lineIndex,
+    timePeriod: state.stats.timePeriod,
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    setLineIndex: (index) => dispatch(setLine(index)),
+    setTimePeriod: (index) => dispatch(setTime(index))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Stats);

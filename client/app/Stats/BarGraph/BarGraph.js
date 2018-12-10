@@ -1,6 +1,6 @@
 import React from 'react';
 import {ScrollView, View, SafeAreaView, RefreshControl, FlatList, StyleSheet, Text, TouchableHighlight, TouchableOpacity, Dimensions} from 'react-native';
-import { downtimeString } from '../DowntimeString.js'
+import { downtimeString } from '../../DowntimeString.js'
 
 export default class BarGraph extends React.Component {
   constructor(props) {
