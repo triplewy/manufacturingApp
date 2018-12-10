@@ -15,7 +15,5 @@ export const resolvedGetData(data) {
 export function getGrid() {
   (dispatch) => {
     return fetch('/api/grid')
-    .then(res => res.json())
-    .then(data => dispatch(resolvedGetData(data)))
   }
 }

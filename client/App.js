@@ -12,7 +12,7 @@ import Login from './app/Auth/Login'
 import CreateAccount from './app/Auth/CreateAccount'
 import Name from './app/Auth/Name'
 import ForgotPassword from './app/Auth/ForgotPassword'
-import Grid from './app/Grid'
+import Grid from './app/Grid/Grid'
 import Input from './app/Input'
 import Stats from './app/Stats/Stats'
 import DayStats from './app/Stats/DayStats'
@@ -20,7 +20,7 @@ import Account from './app/Account'
 import Reports from './app/Reports'
 import './global.js'
 
-class App extends React.Component {
+export default class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -251,13 +251,3 @@ class App extends React.Component {
     }
   }
 }
-
-const mapStateToProps = (state) => ({
-  state
-})
-
-const mapDispatchToProps = (dispatch) => ({
-  dispatch
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -96,5 +96,26 @@ export function clearCookies() {
       return reject(err)
     })
   })
+}
 
+export function makeRequest(method, path, params) {
+  const fetchParams = {
+    method,
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "cookie": cookie,
+    },
+    credentials: "omit",
+  }
+
+  // Clearing all cookies stored by native cookie managers.
+  return CookieManager.clearAll().then(() => {
+    return fetch(path, fetchParams)
+      .then(response => {
+        storage.setCookie(response.headers.get("set-cookie"))
+        return response
+      })
+      .then(data => data.json())
+  })
 }
