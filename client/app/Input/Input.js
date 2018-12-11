@@ -19,10 +19,7 @@ class Input extends React.Component {
     };
 
     this.addImage = this.addImage.bind(this)
-    // this.deleteImage = this.deleteImage.bind(this)
     this.renderItem = this.renderItem.bind(this)
-    // this.submit = this.submit.bind(this)
-    // this.upload = this.upload.bind(this)
     this.toggleModal = this.toggleModal.bind(this)
   }
 
@@ -31,10 +28,6 @@ class Input extends React.Component {
       this.setState({name: name})
     })
   }
-
-  // handleDowntimeChange(text) {
-  //   this.setState({downtime: text.replace(/[^0-9]/g, '')});
-  // }
 
   addImage() {
     if (this.props.images.length > 3) {
@@ -59,17 +52,10 @@ class Input extends React.Component {
           // You can also display the image using data:
           // const source = { uri: 'data:image/jpeg;base64,' + response.data };
           this.props.addImage(source)
-          // this.setState({images: this.state.images.concat(source)})
         }
       })
     }
   }
-
-  // deleteImage(index) {
-  //   var temp = this.state.images
-  //   temp.splice(index, 1)
-  //   this.setState({images: temp})
-  // }
 
   renderItem(item) {
     return (
@@ -89,45 +75,6 @@ class Input extends React.Component {
       </TouchableOpacity>
     )
   }
-
-  // submit() {
-  //   var navigationProps = this.props.navigation.state.params
-  //   var formData = new FormData();
-  //   for (var i = 0; i < this.state.images.length; i++) {
-  //     formData.append('image', {uri: this.state.images[i].uri, name: "file"})
-  //   }
-  //   formData.append('lineLeaderName', this.state.name)
-  //   formData.append('machineId', navigationProps.machineId);
-  //   formData.append('downtime', this.state.downtime);
-  //   formData.append('description', this.state.description);
-  //
-  //   this.setState({submitted: true})
-  //   this.upload(formData)
-  // }
-  //
-  // upload(formData) {
-  //   var xhr = new XMLHttpRequest();
-  //   xhr.withCredentials = true;
-  //
-  //   xhr.onreadystatechange = () => {
-  //    if(xhr.readyState === 4 && xhr.status === 200){
-  //        console.log(xhr.responseText);
-  //        this.setState({uploaded: true})
-  //        this.props.navigation.navigate('Grid')
-  //     } else {
-  //       console.log(xhr.responseText);
-  //     }
-  //   }
-  //
-  //   xhr.upload.onprogress = (e) => {
-  //     const win = Dimensions.get('window');
-  //     this.widthValue.setValue(win.width * e.loaded/e.total)
-  //     this.setState({progress: e.loaded/e.total})
-  //   }
-  //
-  //   xhr.open('POST', global.API_URL + '/api/input/submit');
-  //   xhr.send(formData)
-  // }
 
   toggleModal() {
     this.setState({showModal: !this.state.showModal})
@@ -151,7 +98,7 @@ class Input extends React.Component {
           </View>
           <View style={{flexDirection: 'row'}}>
             <Text style={styles.lockedInputLabel}>Line:</Text>
-            <Text style={styles.lockedText}>{this.props.navigation.state.params.lineName}</Text>
+            <Text style={styles.lockedText}>{this.props.lines[this.props.lineIndex].name}</Text>
           </View>
           <View style={{flexDirection: 'row'}}>
             <Text style={{fontSize: 18, color: '#888888'}}>Line Leader:</Text>
@@ -271,6 +218,8 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
   return {
+    lines: state.splash.lines,
+    lineIndex: state.grid.lineIndex,
     downtime: state.input.downtime,
     description: state.input.description,
     images: state.input.images,

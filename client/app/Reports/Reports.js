@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, RefreshControl, FlatList, StyleSheet, Text, Dimensions, TouchableWithoutFeedback, TouchableOpacity, ActivityIndicator, Animated } from 'react-native';
+import { fetchReports, fetchUpdateReports, setPage, setDate, setLine, setMachine } from './reports.operations'
 import { NavigationEvents } from 'react-navigation';
 import { connect } from 'react-redux'
 import ReportItem from './ReportItem'
@@ -12,32 +13,13 @@ class Reports extends React.Component {
     super(props);
     this.heightValue = new Animated.Value(80)
     this.state = {
-      reports: [],
-      lines: [],
-      line: 0,
-      page: 0,
-
-      machines: [],
-      machine: 0,
-
-      date: '',
-
       scrolled: false,
-      refreshing: false,
-      updating: false,
-      finished: false,
-
       viewOptions: false
     };
 
     this.toggleViewOptions = this.toggleViewOptions.bind(this)
 
     this.fetchReports = this.fetchReports.bind(this)
-    this.fetchMachines = this.fetchMachines.bind(this)
-
-    this.setLine = this.setLine.bind(this)
-    this.setMachine = this.setMachine.bind(this)
-    this.setDate = this.setDate.bind(this)
 
     this.updatePage = this.updatePage.bind(this)
     this.handleNavigate = this.handleNavigate.bind(this)
@@ -47,12 +29,13 @@ class Reports extends React.Component {
   }
 
   componentDidMount() {
-    fetchLines().then(data => {
-      this.setState({lines: data}, () => {
-        this.fetchReports()
-        this.fetchMachines()
-      })
-    })
+    this.fetchReports()
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.lineIndex !== prevProps.lineIndex || this.props.machineIndex !== prevProps.machineIndex || this.props.date !== prevProps.date) {
+      this.fetchReports()
+    }
   }
 
   toggleViewOptions() {
@@ -68,82 +51,16 @@ class Reports extends React.Component {
   }
 
   fetchReports() {
-    var url = global.API_URL
-    if (this.state.machine !== 0) {
-      url += '/api/reports/machine=' + this.state.machines[this.state.machine].machineId
-    } else {
-      url += '/api/reports/line/' + this.state.lines[this.state.line].lineId
-    }
-
-    if (this.state.date) {
-      url += '/date=' + this.state.date
-    }
-
-    url += '/page=' + this.state.page
-
-    this.setState({refreshing: true}, () => {
-      fetch(url, { credentials: 'include' })
-      .then(res => res.json())
-      .then(data => {
-        this.setState({reports: data, refreshing: false, finished: data.length < 10})
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-    })
-  }
-
-  fetchMachines() {
-    fetch(global.API_URL + '/api/account/line=' + this.state.lines[this.state.line].lineId + '/machines', {
-      credentials: 'include'
-    })
-    .then(res => res.json())
-    .then(data => {
-      this.setState({machines: [{name: 'ALL MACHINES'}].concat(data)})
-    })
-    .catch((error) => {
-      console.error(error);
-    })
-  }
-
-  setLine(index) {
-    this.setState({line: index, machine: 0, page: 0, reports: []}, () => {
-      this.fetchMachines()
-      this.fetchReports()
-    })
-  }
-
-  setMachine(index) {
-    this.setState({machine: index, page: 0, reports: []}, () => {
-      this.fetchReports()
-    })
-  }
-
-  setDate(day) {
-    this.setState({date: day, page: 0, reports: []}, () => {
-      this.fetchReports()
-    })
+    const lineId = this.props.lines[this.props.lineIndex].lineId
+    this.props.getReports(lineId, this.props.machineIndex ? this.props.machines[lineId][this.props.machineIndex - 1].machineId : 0, this.props.date)
   }
 
   updatePage() {
-    if (!this.state.refreshing && !this.state.finished && !this.state.updating && this.state.scrolled && !this.onEndReachedCalledDuringMomentum) {
-      this.setState({page: this.state.page + 1, updating: true}, () => {
-        var url = global.API_URL
-        if (this.state.machine !== 0) {
-          url += '/api/reports/machine=' + this.state.machines[this.state.machine].machineId
-        } else {
-          url += '/api/reports/line/' + this.state.lines[this.state.line].lineId
-        }
-        url += '/page=' + this.state.page
-        fetch(url, { credentials: 'include' })
-        .then(res => res.json())
-        .then(data => {
-          this.setState({reports: this.state.reports.concat(data), updating: false, finished: data.length < 10})
-          this.onEndReachedCalledDuringMomentum = true;
-        })
-        .catch((error) => {
-          console.error(error);
-        })
+    if (!this.props.finished && !this.onEndReachedCalledDuringMomentum && this.state.scrolled) {
+      this.props.updatePage(this.props.page + 1).then(() => {
+        const lineId = this.props.lines[this.props.lineIndex].lineId
+        this.props.updateReports(lineId, this.props.machineIndex ? this.props.machines[lineId][this.props.machineIndex - 1].machineId : 0, this.props.date, this.props.page)
+        this.onEndReachedCalledDuringMomentum = true;
       })
     }
   }
@@ -191,7 +108,7 @@ class Reports extends React.Component {
   renderFooter() {
     return (
       <View style={{marginBottom: 80, paddingVertical: 10}}>
-        <ActivityIndicator size="large" animating={this.state.updating} color="#FF8300" />
+        <ActivityIndicator size="large" animating={this.props.updating} color="#FF8300" />
       </View>
     )
   }
@@ -210,29 +127,29 @@ class Reports extends React.Component {
             </View>
           </TouchableOpacity>
           <ChooseModal
-            items={this.state.lines}
-            index={this.state.line}
-            selectItem={this.setLine}
+            items={this.props.lines}
+            index={this.props.lineIndex}
+            selectItem={this.props.setLineIndex}
           />
           <ChooseModal
-            items={this.state.machines}
-            index={this.state.machine}
-            selectItem={this.setMachine}
+            items={[{name: 'ALL MACHINES'}].concat(this.props.machines[this.props.lines[this.props.lineIndex].lineId])}
+            index={this.props.machineIndex}
+            selectItem={this.props.setMachineIndex}
             scroll
           />
           <CalendarModal
-            date={this.state.date}
-            selectDate={this.setDate}
+            date={this.props.date}
+            selectDate={this.props.updateDate}
           />
         </Animated.View>
         <FlatList
           onScroll={() => {this.setState({scrolled: true})}}
-          data={this.state.reports}
+          data={this.props.reports}
           renderItem={this.renderItem}
           keyExtractor={(item, index) => index.toString()}
-          onRefresh={this.fetchReports.bind(this)}
-          refreshing={this.state.refreshing}
-          onEndReached={this.updatePage.bind(this)}
+          onRefresh={this.fetchReports}
+          refreshing={this.props.refreshing}
+          onEndReached={this.updatePage}
           onEndReachedThreshold={0.5}
           ListFooterComponent={this.renderFooter}
           onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
@@ -260,16 +177,27 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
   return {
-    grid: state.grid.data,
     lines: state.splash.lines,
-    lineIndex: state.grid.lineIndex
+    machines: state.splash.machines,
+    lineIndex: state.reports.lineIndex,
+    machineIndex: state.reports.machineIndex,
+    reports: state.reports.reports,
+    page: state.reports.page,
+    date: state.reports.date,
+    refreshing: state.reports.refreshing,
+    updating: state.reports.updating,
+    finished: state.reports.finished
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    getGrid: (lineId) => dispatch(fetchGrid(lineId)),
-    setLineIndex: (index) => dispatch(setLine(index))
+    getReports: (lineId, machineId, date) => dispatch(fetchReports(lineId, machineId, date)),
+    updatePage: (page) => dispatch(setPage(page)),
+    updateReports: (lineId, machineId, date, page) => dispatch(fetchUpdateReports(lineId, machineId, date, page)),
+    setLineIndex: (index) => dispatch(setLine(index)),
+    setMachineIndex: (index) => dispatch(setMachine(index)),
+    updateDate: (date) => dispatch(setDate(date))
   }
 }
 

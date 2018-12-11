@@ -1,12 +1,18 @@
-import { GET_REPORTS, GET_REPORTS_SUCCESS, GET_REPORTS_FAILURE, SET_REPORTS_LINE_INDEX, SET_MACHINE_INDEX } from './reports.actions'
+import {
+  GET_REPORTS, GET_REPORTS_SUCCESS, GET_REPORTS_FAILURE,
+  UPDATE_REPORTS, UPDATE_REPORTS_SUCCESS, UPDATE_REPORTS_FAILURE, UPDATE_PAGE, UPDATE_DATE,
+  SET_REPORTS_LINE_INDEX, SET_REPORTS_MACHINE_INDEX
+} from './reports.actions'
 
 const initialState = {
   reports: [],
-  machines: [],
   lineIndex: 0,
   machineIndex: 0,
-  dataFetched: false,
-  isFetching: false,
+  page: 0,
+  date: '',
+  refreshing: false,
+  updating: false,
+  finished: false,
   error: ""
 }
 
@@ -15,33 +21,64 @@ export function reports(state = initialState, action) {
     case GET_REPORTS:
       return {
         ...state,
-        isFetching: true
+        refreshing: true,
+        page: 0
       }
     case GET_REPORTS_SUCCESS:
       return {
         ...state,
-        data: action.data,
-        dataFetched: true,
-        isFetching: false,
+        reports: action.reports,
+        refreshing: false,
+        finished: action.reports.length < 10,
         error: ""
       }
 
     case GET_REPORTS_FAILURE:
       return {
-        data: [],
-        dataFetched: true,
-        isFetching: false,
+        ...state,
+        refreshing: false,
         error: action.error
+      }
+    case UPDATE_REPORTS:
+      return {
+        ...state,
+        updating: true
+      }
+    case UPDATE_REPORTS_SUCCESS:
+      return {
+        ...state,
+        reports: state.reports.concat(action.reports),
+        updating: false,
+        finished: action.reports.length < 10,
+        error: ""
+      }
+    case UPDATE_REPORTS_FAILURE:
+      return {
+        ...state,
+        updating: false,
+        error: action.error
+      }
+    case UPDATE_PAGE:
+      return {
+        ...state,
+        page: action.page,
+        updating: true
+      }
+    case UPDATE_DATE:
+      return {
+        ...state,
+        date: action.date
       }
     case SET_REPORTS_LINE_INDEX:
       return {
         ...state,
         lineIndex: action.index,
+        machineIndex: 0
       }
-    case SET_MACHINE_INDEX:
+    case SET_REPORTS_MACHINE_INDEX:
       return {
         ...state,
-        lineIndex: action.index,
+        machineIndex: action.index,
       }
     default:
       return state

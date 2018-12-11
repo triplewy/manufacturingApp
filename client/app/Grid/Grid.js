@@ -11,23 +11,12 @@ class Grid extends React.Component {
     super(props)
 
     this.renderItem = this.renderItem.bind(this)
-    this.setLine = this.setLine.bind(this)
-  }
-
-  componentDidMount() {
-    this.props.getGrid(this.props.lines[this.props.lineIndex].lineId)
   }
 
   renderItem(item) {
     return (
       <GridItem {...item.item} navigation={this.props.navigation} />
     )
-  }
-
-  setLine(index) {
-    this.props.setLineIndex(index).then(() => {
-      this.props.getGrid(this.props.lines[this.props.lineIndex].lineId)
-    })
   }
 
   render() {
@@ -40,11 +29,11 @@ class Grid extends React.Component {
         <ChooseModal
           items={this.props.lines}
           index={this.props.lineIndex}
-          selectItem={this.setLine}
+          selectItem={this.props.setLineIndex}
         />
         <View style={styles.statsView}>
           <FlatList
-            data={this.props.grid}
+            data={this.props.machines[this.props.lines[this.props.lineIndex].lineId]}
             renderItem={this.renderItem}
             keyExtractor={(item, index) => index.toString()}
             numColumns={columns}
@@ -60,7 +49,8 @@ function mapStateToProps(state) {
   return {
     grid: state.grid.data,
     lines: state.splash.lines,
-    lineIndex: state.grid.lineIndex
+    machines: state.splash.machines,
+    lineIndex: state.grid.lineIndex,
   }
 }
 

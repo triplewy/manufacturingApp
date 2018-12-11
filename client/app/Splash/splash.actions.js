@@ -8,10 +8,11 @@ export function sessionLogin() {
   }
 }
 
-export function sessionLoginSuccess(lines) {
+export function sessionLoginSuccess(lines, machines) {
   return{
     type: SESSION_LOGIN_SUCCESS,
-    lines: lines
+    lines: lines,
+    machines: machines
   }
 }
 

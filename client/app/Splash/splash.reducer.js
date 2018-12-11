@@ -4,7 +4,8 @@ const initialState = {
   loading: false,
   fetched: false,
   success: false,
-  lines: []
+  lines: [],
+  machines: []
 }
 
 export function splash(state = initialState, action) {
@@ -19,7 +20,8 @@ export function splash(state = initialState, action) {
         loading: false,
         fetched: true,
         success: true,
-        lines: action.lines
+        lines: action.lines,
+        machines: action.machines
       }
 
     case SESSION_LOGIN_FAILURE:
