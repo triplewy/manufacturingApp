@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dimensions, SafeAreaView, View, Text, TextInput, StyleSheet, TouchableOpacity, Button } from 'react-native';
-import { setName } from '../Storage'
+import { setName } from './Storage'
 
 export default class Name extends React.Component {
   constructor(props) {

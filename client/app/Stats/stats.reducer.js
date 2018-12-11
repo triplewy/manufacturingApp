@@ -1,4 +1,4 @@
-import { SET_LINE_INDEX, SET_TIME_PERIOD } from './stats.actions'
+import { SET_STATS_LINE_INDEX, SET_TIME_PERIOD } from './stats.actions'
 
 const initialState = {
   lineIndex: 0,
@@ -8,7 +8,7 @@ const initialState = {
 
 export function stats(state = initialState, action) {
   switch (action.type) {
-    case SET_LINE_INDEX:
+    case SET_STATS_LINE_INDEX:
       return {
         ...state,
         lineIndex: action.index,

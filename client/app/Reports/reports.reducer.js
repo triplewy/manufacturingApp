@@ -1,4 +1,4 @@
-import { GET_REPORTS, GET_REPORTS_SUCCESS, GET_REPORTS_FAILURE, SET_LINE_INDEX, SET_MACHINE_INDEX } from './reports.actions'
+import { GET_REPORTS, GET_REPORTS_SUCCESS, GET_REPORTS_FAILURE, SET_REPORTS_LINE_INDEX, SET_MACHINE_INDEX } from './reports.actions'
 
 const initialState = {
   reports: [],
@@ -33,7 +33,7 @@ export function reports(state = initialState, action) {
         isFetching: false,
         error: action.error
       }
-    case SET_LINE_INDEX:
+    case SET_REPORTS_LINE_INDEX:
       return {
         ...state,
         lineIndex: action.index,

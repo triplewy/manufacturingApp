@@ -1,33 +1,28 @@
 import React from 'react';
-import {Animated, Easing, Dimensions, ScrollView, View, Image, ImageBackground, RefreshControl, FlatList, StyleSheet, Text, TextInput, Alert, TouchableOpacity} from 'react-native';
-import plusIcon from './icons/plus-icon.png'
+import { ScrollView, View, Image, ImageBackground, FlatList, StyleSheet, Text, TextInput, Alert, ActivityIndicator, TouchableOpacity} from 'react-native';
+import { connect } from 'react-redux'
+import { handleDowntime, handleDescription, handleAddImage, handleDeleteImage, handleUpload } from './input.operations'
+import plusIcon from '../icons/plus-icon.png'
 import ImagePicker from 'react-native-image-picker';
-import deleteIcon from './icons/delete-icon.png'
-import ImageModal from './ImageModal'
-import { getName } from './Storage'
+import deleteIcon from '../icons/delete-icon.png'
+import ImageModal from '../ImageModal'
+import { getName } from '../Storage'
 
-export default class Input extends React.Component {
+class Input extends React.Component {
   constructor(props) {
     super(props);
-    this.widthValue = new Animated.Value(0)
     this.state = {
       name: '',
-      downtime: null,
-      description: '',
-      submitted: false,
-      progress: 0,
-      images: [],
 
       showModal: false,
       selectedImage: null
     };
 
-    this.handleDowntimeChange = this.handleDowntimeChange.bind(this)
     this.addImage = this.addImage.bind(this)
-    this.deleteImage = this.deleteImage.bind(this)
+    // this.deleteImage = this.deleteImage.bind(this)
     this.renderItem = this.renderItem.bind(this)
-    this.submut = this.submit.bind(this)
-    this.upload = this.upload.bind(this)
+    // this.submit = this.submit.bind(this)
+    // this.upload = this.upload.bind(this)
     this.toggleModal = this.toggleModal.bind(this)
   }
 
@@ -37,12 +32,12 @@ export default class Input extends React.Component {
     })
   }
 
-  handleDowntimeChange(text) {
-    this.setState({downtime: text.replace(/[^0-9]/g, '')});
-  }
+  // handleDowntimeChange(text) {
+  //   this.setState({downtime: text.replace(/[^0-9]/g, '')});
+  // }
 
   addImage() {
-    if (this.state.images.length > 3) {
+    if (this.props.images.length > 3) {
       Alert.alert(
         'Exceeded photos limit',
         'Max 4 photos',
@@ -63,18 +58,18 @@ export default class Input extends React.Component {
           const source = { uri: response.uri };
           // You can also display the image using data:
           // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-
-          this.setState({images: this.state.images.concat(source)})
+          this.props.addImage(source)
+          // this.setState({images: this.state.images.concat(source)})
         }
       })
     }
   }
 
-  deleteImage(index) {
-    var temp = this.state.images
-    temp.splice(index, 1)
-    this.setState({images: temp})
-  }
+  // deleteImage(index) {
+  //   var temp = this.state.images
+  //   temp.splice(index, 1)
+  //   this.setState({images: temp})
+  // }
 
   renderItem(item) {
     return (
@@ -84,7 +79,7 @@ export default class Input extends React.Component {
           style={{width: 100, height: 100, margin: 20}}
           imageStyle={{borderRadius: 8}}
         >
-          <TouchableOpacity onPress={this.deleteImage.bind(this,item.index)}>
+          <TouchableOpacity onPress={() => this.props.deleteImage(item.index)}>
             <Image
               source={deleteIcon}
               style={{position: 'absolute', width: 40, height: 40, right: -20, top: -20}}
@@ -95,44 +90,44 @@ export default class Input extends React.Component {
     )
   }
 
-  submit() {
-    var navigationProps = this.props.navigation.state.params
-    var formData = new FormData();
-    for (var i = 0; i < this.state.images.length; i++) {
-      formData.append('image', {uri: this.state.images[i].uri, name: "file"})
-    }
-    formData.append('lineLeaderName', this.state.name)
-    formData.append('machineId', navigationProps.machineId);
-    formData.append('downtime', this.state.downtime);
-    formData.append('description', this.state.description);
-
-    this.setState({submitted: true})
-    this.upload(formData)
-  }
-
-  upload(formData) {
-    var xhr = new XMLHttpRequest();
-    xhr.withCredentials = true;
-
-    xhr.onreadystatechange = () => {
-     if(xhr.readyState === 4 && xhr.status === 200){
-         console.log(xhr.responseText);
-         this.setState({uploaded: true})
-         this.props.navigation.navigate('Grid')
-      } else {
-        console.log(xhr.responseText);
-      }
-    }
-
-    xhr.upload.onprogress = (e) => {
-      const win = Dimensions.get('window');
-      this.widthValue.setValue(win.width * e.loaded/e.total)
-      this.setState({progress: e.loaded/e.total})
-    }
-
-    xhr.open('POST', global.API_URL + '/api/input/submit');
-    xhr.send(formData)
-  }
+  // submit() {
+  //   var navigationProps = this.props.navigation.state.params
+  //   var formData = new FormData();
+  //   for (var i = 0; i < this.state.images.length; i++) {
+  //     formData.append('image', {uri: this.state.images[i].uri, name: "file"})
+  //   }
+  //   formData.append('lineLeaderName', this.state.name)
+  //   formData.append('machineId', navigationProps.machineId);
+  //   formData.append('downtime', this.state.downtime);
+  //   formData.append('description', this.state.description);
+  //
+  //   this.setState({submitted: true})
+  //   this.upload(formData)
+  // }
+  //
+  // upload(formData) {
+  //   var xhr = new XMLHttpRequest();
+  //   xhr.withCredentials = true;
+  //
+  //   xhr.onreadystatechange = () => {
+  //    if(xhr.readyState === 4 && xhr.status === 200){
+  //        console.log(xhr.responseText);
+  //        this.setState({uploaded: true})
+  //        this.props.navigation.navigate('Grid')
+  //     } else {
+  //       console.log(xhr.responseText);
+  //     }
+  //   }
+  //
+  //   xhr.upload.onprogress = (e) => {
+  //     const win = Dimensions.get('window');
+  //     this.widthValue.setValue(win.width * e.loaded/e.total)
+  //     this.setState({progress: e.loaded/e.total})
+  //   }
+  //
+  //   xhr.open('POST', global.API_URL + '/api/input/submit');
+  //   xhr.send(formData)
+  // }
 
   toggleModal() {
     this.setState({showModal: !this.state.showModal})
@@ -166,17 +161,17 @@ export default class Input extends React.Component {
         <View style={styles.inputView}>
           <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginVertical: 10}}>
             <Text style={styles.inputLabel}>Downtime:</Text>
-            <TextInput keyboardType='numeric' returnKeyType='done' maxLength={3} style={[styles.textInput, {borderColor: this.state.downtime ? '#83D3D6' : '#FF8300'}]} placeholder='0' value={this.state.downtime} onChangeText={(text) => this.handleDowntimeChange(text)}/>
+            <TextInput keyboardType='numeric' returnKeyType='done' maxLength={3} style={[styles.textInput, {borderColor: this.props.downtime ? '#83D3D6' : '#FF8300'}]} placeholder='0' value={this.props.downtime} onChangeText={(text) => this.props.handleDowntimeInput(text)}/>
             <Text style={{marginLeft: 10, fontSize: 18, color: this.state.downtime ? 'black' : '#888888'}}>Minutes</Text>
           </View>
         </View>
         <View style={styles.inputView}>
           <Text style={styles.inputLabel}>Description:</Text>
-          <TextInput multiline={true} numberOfLines={10} placeholder='Type the description of the downtime here...' style={[styles.textarea, {borderColor: this.state.description ? '#83D3D6' : '#FF8300'}]} value={this.state.description} onChangeText={(text) => this.setState({description: text})}/>
+          <TextInput multiline={true} numberOfLines={10} placeholder='Type the description of the downtime here...' style={[styles.textarea, {borderColor: this.props.description ? '#83D3D6' : '#FF8300'}]} value={this.props.description} onChangeText={(text) => this.props.handleDescriptionInput(text)}/>
         </View>
         <Text style={{textAlign: 'center', fontSize: 18, marginBottom: 30, paddingHorizontal: 20}}>Add photos to your description (Optional. Max 4 photos)</Text>
         <View style={[styles.inputView, {flexDirection: 'row', alignItems: 'center'}]}>
-          <TouchableOpacity onPress={this.addImage.bind(this)}>
+          <TouchableOpacity onPress={this.addImage}>
             <View style={styles.addButton}>
               <Image source={plusIcon} style={{width: 40, height: 40}}/>
             </View>
@@ -184,19 +179,23 @@ export default class Input extends React.Component {
           <FlatList
             horizontal
             scrollEnabled
-            data={this.state.images}
+            data={this.props.images}
             renderItem={this.renderItem}
             keyExtractor={(item, index) => index.toString()}
-            key={this.state.images.length}
+            key={this.props.images.length}
           />
           <ImageModal selectedImage={this.state.selectedImage} showModal={this.state.showModal} toggleModal={this.toggleModal} />
         </View>
-        <TouchableOpacity onPress={this.submit.bind(this)} disabled={!(this.state.downtime && this.state.description) || this.state.submitted}>
-          <View style={{backgroundColor: (this.state.downtime && this.state.description) ? '#83D3D6' : '#f1f1f1', alignItems: 'center', justifyContent: 'center', height: 80}}>
-            <Text style={styles.submitButton}>Submit</Text>
-            <Animated.View style={[styles.AnimatedView,{width: this.widthValue}]}>
-              <Text style={{color: 'white'}}>{Math.round(this.state.progress * 100)}</Text>
-            </Animated.View>
+        <TouchableOpacity
+          onPress={() => this.props.upload(this.props.navigation, this.props.images, this.props.downtime, this.props.description, this.state.name)}
+          disabled={!(this.props.downtime && this.props.description) || this.props.submitted}
+        >
+          <View style={{backgroundColor: (this.props.downtime && this.props.description) ? '#83D3D6' : '#f1f1f1', alignItems: 'center', justifyContent: 'center', height: 80}}>
+            {this.props.submitted ?
+              <ActivityIndicator size="large" color="white" />
+              :
+              <Text style={styles.submitButton}>Submit</Text>
+            }
           </View>
         </TouchableOpacity>
       </ScrollView>
@@ -269,3 +268,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   }
 })
+
+function mapStateToProps(state) {
+  return {
+    downtime: state.input.downtime,
+    description: state.input.description,
+    images: state.input.images,
+    submitted: state.input.submitted
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    handleDowntimeInput: (text) => dispatch(handleDowntime(text)),
+    handleDescriptionInput: (text) => dispatch(handleDescription(text)),
+    addImage: (image) => dispatch(handleAddImage(image)),
+    deleteImage: (index) => dispatch(handleDeleteImage(index)),
+    upload: (navigation, images, downtime, description, name) => dispatch(handleUpload(navigation, images, downtime, description, name))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Input);

@@ -132,3 +132,29 @@ export function postRequest(path, body) {
     })
   })
 }
+
+export function formdataPostRequest(path, formdata) {
+  return new Promise(function(resolve, reject) {
+    getCookie().then(cookie => {
+      const fetchParams = {
+        method: 'POST',
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          "cookie": cookie,
+        },
+        body: formdata,
+        credentials: "omit",
+      }
+
+      fetch(path, fetchParams)
+      .then(res => res.json())
+      .then(data => {
+        return resolve(data)
+      })
+      .catch(err => {
+        return reject(err)
+      })
+    })
+  })
+}

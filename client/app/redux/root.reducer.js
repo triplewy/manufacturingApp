@@ -7,6 +7,7 @@ import { totalStats } from '../Stats/TotalStats/totalStats.reducer'
 import { downtimeStats } from '../Stats/DowntimeStats/downtimeStats.reducer'
 import { machineStats } from '../Stats/MachineStats/machineStats.reducer'
 import { shiftStats } from '../Stats/ShiftStats/shiftStats.reducer'
+import { input } from '../Input/input.reducer'
 
 export default combineReducers({
   grid,
@@ -16,5 +17,6 @@ export default combineReducers({
   totalStats,
   downtimeStats,
   machineStats,
-  shiftStats
+  shiftStats,
+  input
 });

@@ -1,4 +1,4 @@
-import { GET_GRID, GET_GRID_SUCCESS, GET_GRID_FAILURE, SET_LINE_INDEX } from './grid.actions'
+import { GET_GRID, GET_GRID_SUCCESS, GET_GRID_FAILURE, SET_GRID_LINE_INDEX } from './grid.actions'
 
 const initialState = {
   data: [],
@@ -31,7 +31,7 @@ export function grid(state = initialState, action) {
         isFetching: false,
         error: action.error
       }
-    case SET_LINE_INDEX:
+    case SET_GRID_LINE_INDEX:
       return {
         ...state,
         lineIndex: action.index,

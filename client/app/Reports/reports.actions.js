@@ -2,7 +2,7 @@ export const GET_REPORTS = 'GET_REPORTS'
 export const GET_REPORTS_SUCCESS = 'GET_REPORTS_SUCCESS'
 export const GET_REPORTS_FAILURE = 'GET_REPORTS_FAILURE'
 
-export const SET_LINE_INDEX = 'SET_LINE_INDEX'
+export const SET_REPORTS_LINE_INDEX = 'SET_REPORTS_LINE_INDEX'
 export const SET_MACHINE_INDEX = 'SET_MACHINE_INDEX'
 
 export function getReports() {
@@ -27,7 +27,7 @@ export function getReportsFailure(error) {
 
 export function setLineIndex(index) {
   return{
-    type: SET_LINE_INDEX,
+    type: SET_REPORTS_LINE_INDEX,
     index: index
   }
 }

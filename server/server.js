@@ -107,6 +107,20 @@ function handleDisconnect() {
   });
 }
 
+function serverAlive() {
+  setTimeout(function() {
+    conn.query('SELECT 1', [], function(err, result) {
+      if (err) {
+        console.log(err);
+      } else {
+        serverAlive()
+      }
+    })
+  }, 25200000)
+}
+
+serverAlive()
+
 var upload = multer({
   storage: multerS3({
     s3: s3,
@@ -175,7 +189,6 @@ server.listen(8082, function(){
 });
 
 function loggedIn(req, res, next) {
-  console.log(req.headers);
   if (req.user) {
     next()
   } else {
