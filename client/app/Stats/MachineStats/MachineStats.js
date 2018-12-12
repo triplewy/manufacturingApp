@@ -12,12 +12,16 @@ class MachineStats extends React.Component {
   }
 
   componentDidMount() {
-    this.props.getMachineStats(this.props.lines[this.props.lineIndex].lineId, this.props.timePeriod, this.props.date)
+    if (this.props.lines.length > 0) {
+      this.props.getMachineStats(this.props.lines[this.props.lineIndex].lineId, this.props.timePeriod, this.props.date)
+    }
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.lineIndex !== prevProps.lineIndex || this.props.timePeriod !== prevProps.timePeriod || this.props.date !== prevProps.date) {
-      this.props.getMachineStats(this.props.lines[this.props.lineIndex].lineId, this.props.timePeriod, this.props.date)
+      if (this.props.lines.length > 0) {
+        this.props.getMachineStats(this.props.lines[this.props.lineIndex].lineId, this.props.timePeriod, this.props.date)  
+      }
     }
   }
 

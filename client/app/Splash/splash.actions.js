@@ -9,7 +9,7 @@ export function sessionLogin() {
 }
 
 export function sessionLoginSuccess(lines, machines) {
-  return{
+  return {
     type: SESSION_LOGIN_SUCCESS,
     lines: lines,
     machines: machines

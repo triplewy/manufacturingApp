@@ -17,13 +17,17 @@ class DowntimeStatsVertical extends React.Component {
   }
 
   componentDidMount() {
-    this.props.getDowntimeStats(this.props.lines[this.props.lineIndex].lineId, this.props.timePeriod)
-    this.fadeIn()
+    if (this.props.lines.length > 0) {
+      this.props.getDowntimeStats(this.props.lines[this.props.lineIndex].lineId, this.props.timePeriod)
+      this.fadeIn()
+    }
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.lineIndex !== prevProps.lineIndex || this.props.timePeriod !== prevProps.timePeriod) {
-      this.props.getDowntimeStats(this.props.lines[this.props.lineIndex].lineId, this.props.timePeriod)
+      if (this.props.lines.length > 0) {
+        this.props.getDowntimeStats(this.props.lines[this.props.lineIndex].lineId, this.props.timePeriod)
+      }
     }
   }
 

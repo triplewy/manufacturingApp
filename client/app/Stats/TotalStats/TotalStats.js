@@ -10,12 +10,16 @@ class TotalStats extends React.Component {
   }
 
   componentDidMount() {
-    this.props.getTotalStats(this.props.lines[this.props.lineIndex].lineId, this.props.timePeriod)
+    if (this.props.lines.length > 0) {
+      this.props.getTotalStats(this.props.lines[this.props.lineIndex].lineId, this.props.timePeriod)
+    }
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.timePeriod !== prevProps.timePeriod || this.props.lineIndex !== prevProps.lineIndex) {
-      this.props.getTotalStats(this.props.lines[this.props.lineIndex].lineId, this.props.timePeriod)
+      if (this.props.lines.length > 0) {
+        this.props.getTotalStats(this.props.lines[this.props.lineIndex].lineId, this.props.timePeriod)
+      }
     }
   }
 

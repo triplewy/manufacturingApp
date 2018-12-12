@@ -18,12 +18,8 @@ class Reports extends React.Component {
     };
 
     this.toggleViewOptions = this.toggleViewOptions.bind(this)
-
     this.fetchReports = this.fetchReports.bind(this)
-
     this.updatePage = this.updatePage.bind(this)
-    this.handleNavigate = this.handleNavigate.bind(this)
-
     this.renderItem = this.renderItem.bind(this)
     this.renderFooter = this.renderFooter.bind(this)
   }
@@ -51,8 +47,10 @@ class Reports extends React.Component {
   }
 
   fetchReports() {
-    const lineId = this.props.lines[this.props.lineIndex].lineId
-    this.props.getReports(lineId, this.props.machineIndex ? this.props.machines[lineId][this.props.machineIndex - 1].machineId : 0, this.props.date)
+    if (this.props.lines.length > 0) {
+      const lineId = this.props.lines[this.props.lineIndex].lineId
+      this.props.getReports(lineId, this.props.machineIndex ? this.props.machines[lineId][this.props.machineIndex - 1].machineId : 0, this.props.date)
+    }
   }
 
   updatePage() {
@@ -62,40 +60,6 @@ class Reports extends React.Component {
         this.props.updateReports(lineId, this.props.machineIndex ? this.props.machines[lineId][this.props.machineIndex - 1].machineId : 0, this.props.date, this.props.page)
         this.onEndReachedCalledDuringMomentum = true;
       })
-    }
-  }
-
-  handleNavigate(payload) {
-    if (payload.action.params) {
-      const lineId = payload.action.params.lineId
-      const machineId = payload.action.params.machineId
-      const date = payload.action.params.date
-
-      if (this.state.lines.length > 0) {
-        for (var i = 0; i < this.state.lines.length; i++) {
-          if (this.state.lines[i].lineId === lineId) {
-            this.setState({line: i, date: date.substring(0, date.indexOf('T')), machine: 0, page: 0, reports: []}, () => {
-              this.fetchMachines()
-              this.fetchReports()
-            })
-            break;
-          }
-        }
-      } else {
-        fetchLines().then(data => {
-          this.setState({lines: data}, () => {
-            for (var i = 0; i < this.state.lines.length; i++) {
-              if (this.state.lines[i].lineId === lineId) {
-                this.setState({line: i, date: date.substring(0, date.indexOf('T')), machine: 0, page: 0, reports: []}, () => {
-                  this.fetchMachines()
-                  this.fetchReports()
-                })
-                break;
-              }
-            }
-          })
-        })
-      }
     }
   }
 
@@ -116,9 +80,6 @@ class Reports extends React.Component {
   render() {
     return (
       <View>
-        <NavigationEvents
-          onDidFocus={payload => this.handleNavigate(payload)}
-        />
         <Animated.View style={{maxHeight: this.heightValue, overflow: 'hidden', paddingBottom: 20}}>
           <TouchableOpacity onPress={() => this.toggleViewOptions()}>
             <View style={{flexDirection: 'row', height: 80, paddingHorizontal: 20, alignItems: 'center'}}>
@@ -131,12 +92,16 @@ class Reports extends React.Component {
             index={this.props.lineIndex}
             selectItem={this.props.setLineIndex}
           />
-          <ChooseModal
-            items={[{name: 'ALL MACHINES'}].concat(this.props.machines[this.props.lines[this.props.lineIndex].lineId])}
-            index={this.props.machineIndex}
-            selectItem={this.props.setMachineIndex}
-            scroll
-          />
+          {this.props.lines.length > 0 ?
+            <ChooseModal
+              items={[{name: 'ALL MACHINES'}].concat(this.props.machines[this.props.lines[this.props.lineIndex].lineId])}
+              index={this.props.machineIndex}
+              selectItem={this.props.setMachineIndex}
+              scroll
+            />
+            :
+            null
+          }
           <CalendarModal
             date={this.props.date}
             selectDate={this.props.updateDate}

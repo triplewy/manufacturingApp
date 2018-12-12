@@ -1,5 +1,6 @@
 import React from 'react';
 import { ScrollView, View, FlatList, StyleSheet, Text, TouchableOpacity, Dimensions} from 'react-native';
+import { setLine, setDate } from '../Reports/reports.operations'
 import { connect } from 'react-redux'
 import MachineStats from './MachineStats/MachineStats'
 import ShiftStats from './ShiftStats/ShiftStats'
@@ -18,6 +19,15 @@ class DayStats extends React.Component {
   constructor(props) {
     super(props);
 
+    this.goToReports = this.goToReports.bind(this)
+  }
+
+  goToReports() {
+    const date = this.props.navigation.state.params.date
+    Promise.all([this.props.setReportsLine(this.props.lineIndex), this.props.setReportsDate(date.substring(0, date.indexOf('T')))])
+    .then(() => {
+      this.props.navigation.navigate('Reports')
+    })
   }
 
   render() {
@@ -38,7 +48,7 @@ class DayStats extends React.Component {
         {this.props.timePeriod < 3 ?
           <TouchableOpacity
             style={{backgroundColor: 'white', alignItems: 'center', justifyContent: 'center'}}
-            onPress={() => this.props.navigation.navigate('Reports', {date: params.date, lineId: this.props.lines[this.props.lineIndex].lineId})}
+            onPress={this.goToReports}
           >
             <Text style={{color: '#FF8300', fontSize: 24, padding: 30}}>GO TO REPORTS</Text>
           </TouchableOpacity>
@@ -76,6 +86,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    setReportsLine: (index) => dispatch(setLine(index)),
+    setReportsDate: (date) => dispatch(setDate(date))
   }
 }
 

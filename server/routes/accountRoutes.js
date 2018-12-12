@@ -47,18 +47,6 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
-    accountRoutes.get('/machines', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/account/machines');
-      const userId = req.user
-      conn.query('SELECT * FROM machines WHERE lineId IN (SELECT lineId FROM assemblyLineUsers WHERE userId = :userId)', {userId: userId}, function(err, result) {
-        if (err) {
-          console.log(err);
-        } else {
-          var machines =
-        }
-      })
-    })
-
     return accountRoutes;
 
 };

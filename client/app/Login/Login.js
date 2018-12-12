@@ -1,39 +1,20 @@
 import React from 'react';
 import { Dimensions, View, Text, TextInput, StyleSheet, TouchableOpacity, Animated, Easing } from 'react-native';
-import { postRequest } from '../Storage'
+import { username, password, loginUser } from './login.operations'
+import { connect } from 'react-redux'
 
-export default class Login extends React.Component {
+class Login extends React.Component {
   constructor(props) {
     super(props);
     this.fadeValue = new Animated.Value(0)
-    this.state = {
-      username: '',
-      password: '',
 
-      submitted: false
-    };
-
-    this.login = this.login.bind(this)
     this.loginFail = this.loginFail.bind(this)
   }
 
-  login(e) {
-    postRequest(global.API_URL + '/api/auth/signin', {
-      username: this.state.username,
-      password: this.state.password
-    })
-    .then(data => {
-        console.log(data);
-        this.setState({submitted: false})
-        if (data.message === 'not logged in') {
-          this.loginFail()
-        } else {
-          this.props.navigation.navigate('Name')
-        }
-    })
-    .catch(function(err) {
-            console.log(err);
-    })
+  componentDidUpdate(prevProps) {
+    if (this.props.error !== prevProps.error && this.props.error) {
+      this.loginFail()
+    }
   }
 
   loginFail() {
@@ -58,8 +39,8 @@ export default class Login extends React.Component {
             autoCapitalize='none'
             autoCorrect={false}
             style={styles.textInput}
-            value={this.state.username}
-            onChangeText={(text) => this.setState({username: text})}
+            value={this.props.username}
+            onChangeText={(text) => this.props.setUsername(text)}
           />
           <TextInput
             placeholder='Password'
@@ -68,14 +49,13 @@ export default class Login extends React.Component {
             autoCorrect={false}
             returnKeyType="go"
             style={styles.textInput}
-            value={this.state.password}
-            onChangeText={(text) => this.setState({password: text})}
-            onSubmitEditing={this.login}
+            value={this.props.password}
+            onChangeText={(text) => this.props.setPassword(text)}
           />
           <TouchableOpacity onPress={() => this.props.navigation.navigate('ForgotPassword')}>
             <Text style={{color: 'white', marginVertical: 20}}>Forgot password?</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.login} disabled={this.state.submitted}>
+          <TouchableOpacity onPress={() => this.props.login(this.props.username, this.props.password, this.props.navigation)} disabled={this.props.submitted}>
             <View style={styles.loginButton}>
               <Text style={styles.loginButtonText}>Continue</Text>
             </View>
@@ -86,7 +66,7 @@ export default class Login extends React.Component {
             </View>
           </TouchableOpacity>
           <Animated.View style={{marginTop: 30, opacity: this.fadeValue}}>
-            <Text style={{color: 'white', fontSize: 18, fontWeight: 'bold', textAlign: 'center'}}>Incorrect username or password</Text>
+            <Text style={{color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center'}}>Incorrect username or password</Text>
           </Animated.View>
         </View>
 
@@ -131,3 +111,23 @@ const styles = StyleSheet.create({
     color: 'white'
   }
 })
+
+function mapStateToProps(state) {
+  return {
+    username: state.login.username,
+    password: state.login.password,
+    submitted: state.login.submitted,
+    error: state.login.error,
+    success: state.login.success
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    setUsername: (text) => dispatch(username(text)),
+    setPassword: (text) => dispatch(password(text)),
+    login: (username, password, navigation) => dispatch(loginUser(username, password, navigation)),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

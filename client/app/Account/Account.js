@@ -64,14 +64,9 @@ class Account extends React.Component {
   render() {
     return (
       <ScrollView>
-        <View style={{alignItems: 'center', justifyContent: 'center', margin: 20}}>
-          <Image
-            source={machineIcon}
-            style={{width: 100, height: 100, borderRadius: 8}}
-          />
-        </View>
         <View style={styles.wrapper}>
-          <Text style={{fontSize: 32, margin: 10, color: 'gray'}}>{this.props.account.companyName}</Text>
+          <Text style={styles.accountLabel}>Company</Text>
+          <Text style={styles.accountText}>{this.props.account.companyName}</Text>
           {/* <View style={{flexDirection: 'row'}}>
             <Text style={{fontSize: 18, margin: 10}}>Day Shift:</Text>
             <Text style={{fontSize: 18, margin: 10}}>{this.state.account.morningShift + 'AM - ' + (this.state.account.eveningShift - 12) + 'PM'}</Text>
@@ -82,8 +77,8 @@ class Account extends React.Component {
           </View> */}
         </View>
         <View style={styles.wrapper}>
-          <Text style={{fontSize: 24, margin: 10, color: 'gray'}}>Line Leader</Text>
-          <Text style={{fontSize: 24, margin: 10}}>{this.props.name}</Text>
+          <Text style={styles.accountLabel}>Line Leader</Text>
+          <Text style={styles.accountText}>{this.props.name}</Text>
           <TouchableOpacity onPress={() => this.props.setName(this.props.navigation)}>
             <View style={{backgroundColor: '#FF8300', borderRadius: 8, marginVertical: 10}}>
               <Text style={{fontSize: 18, paddingVertical: 10, paddingHorizontal: 15, color: 'white'}}>Change Name</Text>
@@ -91,22 +86,24 @@ class Account extends React.Component {
           </TouchableOpacity>
         </View>
         <View style={styles.wrapper}>
-          {this.props.account.lineNumbers ?
-            <View style={{marginVertical: 10, alignItems: 'center'}}>
-              <Text style={{fontSize: 24, margin: 10, color: 'gray'}}>{this.props.account.lineNumbers.length > 1 ? 'Lines' : 'Line'}</Text>
-              <Text style={{fontSize: 18, margin: 10}}>{this.props.account.lineNumbers.join(', ')}</Text>
-              <TouchableOpacity onPress={this.logoutAlert}>
-                <View style={{backgroundColor: '#FF8300', borderRadius: 8, marginVertical: 10}}>
-                  <Text style={{fontSize: 18, paddingVertical: 10, paddingHorizontal: 15, color: 'white'}}>Change Lines</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-            :
-            null
-          }
+          <View style={{marginVertical: 10, alignItems: 'center'}}>
+            {this.props.account.lineNumbers ?
+              <View>
+                <Text style={styles.accountLabel}>{this.props.account.lineNumbers.length > 1 ? 'Lines' : 'Line'}</Text>
+                <Text style={{fontSize: 18, margin: 10}}>{this.props.account.lineNumbers.join(', ')}</Text>
+              </View>
+              :
+              null
+            }
+            <TouchableOpacity onPress={this.logoutAlert}>
+              <View style={{backgroundColor: '#FF8300', borderRadius: 8, marginVertical: 10}}>
+                <Text style={{fontSize: 18, paddingVertical: 10, paddingHorizontal: 15, color: 'white'}}>Change Lines</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.wrapper}>
-          <Text style={{fontSize: 24, margin: 10}}>Contact</Text>
+          <Text style={styles.accountLabel}>Contact</Text>
           {/* <View style={{flexDirection: 'row', marginVertical: 10}}>
             <Text style={{fontSize: 18}}>Call:</Text>
             <TouchableOpacity onPress={this.linkPhone}>
@@ -143,6 +140,15 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center'
   },
+  accountLabel: {
+    fontSize: 24,
+    margin: 10,
+    color: 'gray'
+  },
+  accountText: {
+    fontSize: 24,
+    margin: 10,
+  }
 })
 
 function mapStateToProps(state) {

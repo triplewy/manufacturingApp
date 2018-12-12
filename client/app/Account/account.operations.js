@@ -4,6 +4,7 @@ import {
   logout, logoutFailure,
   setStoredName, setStoredNameFailure
 } from './account.actions'
+import { sessionLoginSuccess } from '../Splash/splash.actions'
 import { getRequest, postRequest, getName, setName } from '../Storage'
 
 export function fetchAccount() {
@@ -24,7 +25,9 @@ export function fetchLogout(navigation) {
     dispatch(logout())
     return postRequest(global.API_URL + '/api/auth/logout')
     .then(data => {
+      console.log(data);
       if (data.message === 'success') {
+        dispatch(sessionLoginSuccess([], []))
         navigation.navigate('Auth')
       } else {
         dispatch(logoutFailure(data.message))

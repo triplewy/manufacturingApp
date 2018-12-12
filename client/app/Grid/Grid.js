@@ -32,13 +32,17 @@ class Grid extends React.Component {
           selectItem={this.props.setLineIndex}
         />
         <View style={styles.statsView}>
-          <FlatList
-            data={this.props.machines[this.props.lines[this.props.lineIndex].lineId]}
-            renderItem={this.renderItem}
-            keyExtractor={(item, index) => index.toString()}
-            numColumns={columns}
-            contentContainerStyle={{alignItems: 'center'}}
-          />
+          {this.props.lines.length > 0 ?
+            <FlatList
+              data={this.props.machines[this.props.lines[this.props.lineIndex].lineId]}
+              renderItem={this.renderItem}
+              keyExtractor={(item, index) => index.toString()}
+              numColumns={columns}
+              contentContainerStyle={{alignItems: 'center'}}
+            />
+            :
+            null
+          }
         </View>
       </ScrollView>
     )

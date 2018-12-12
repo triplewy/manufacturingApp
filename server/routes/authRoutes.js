@@ -3,6 +3,7 @@ module.exports = function(passport, conn, loggedIn) {
     var authRoutes = require('express').Router();
     var LocalStrategy = require('passport-local').Strategy
     var bcrypt = require('bcrypt');
+    var sessionFunctions = require('../server.js')
 
     passport.use('local-login', new LocalStrategy(
      function(username, password, done) {
@@ -29,64 +30,67 @@ module.exports = function(passport, conn, loggedIn) {
     passport.use('local-signup', new LocalStrategy(
       function(username, password, done) {
         bcrypt.hash(password, 10, function(err, passwordHash) {
-          conn.query('INSERT INTO users () VALUES ()', [], function(err, result) {
+          conn.query('START TRANSACTION', [], function(err, result) {
             if (err) {
-              return done(err)
-            } else {
-              const userId = result.insertId
-              conn.query('INSERT INTO logins (username, userId, passwordHash) VALUES (?,?,?)', [username, userId, passwordHash], function(err, result) {
-                if (err) {
-                  return done(err)
-                } else {
-                  return done(null, userId)
-                }
-              })
+              conn.query('ROLLBACK')
+              return done(err);
             }
+            conn.query('INSERT INTO users () VALUES ()', [], function(err, result) {
+              if (err) {
+                conn.query('ROLLBACK')
+                return done(err);
+              } else {
+                const userId = result.insertId
+                conn.query('INSERT INTO logins (username, userId, passwordHash) VALUES (?,?,?)', [username, userId, passwordHash], function(err, result) {
+                  if (err) {
+                    conn.query('ROLLBACK')
+                    return done(err);
+                  } else {
+                    conn.query('COMMIT', [], function(err, result) {
+                      if (err) {
+                        conn.query('ROLLBACK')
+                        return done(err);
+                      }
+                      return done(null, userId)
+                    })
+                  }
+                })
+              }
+            })
           })
         })
       }
     ))
 
-    authRoutes.post('/signup', passport.authenticate('local-signup'), (req, res) => {
+    authRoutes.post('/signup', function(req, res, next) {
       console.log('- Request received:', req.method.cyan, '/api/auth/signup');
-      const userId = req.user
-      res.send({userId: userId});
+      passport.authenticate('local-signup', function(err, user) {
+        if (err) {
+          if (err.code == 'ER_DUP_ENTRY') {
+            return res.send({message: 'Username already exists'})
+          } else {
+            return res.send({message: 'Unable to create account'})
+          }
+        } else {
+          req.logIn(user, function(err) {
+            if (err) {
+              return res.send({message: 'Unable to create account'})
+            } else {
+              return res.send({message: 'success'});
+            }
+          })
+        }
+      })(req, res, next)
     })
 
     authRoutes.post('/signin', passport.authenticate('local-login'), (req, res) => {
       console.log('- Request received:', req.method.cyan, '/api/auth/signin');
-      const userId = req.user
-      res.send({userId: userId});
-    })
-
-    authRoutes.post('/checkUsername', (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/auth/checkUsername');
-      const username = req.body.username.toLowerCase()
-      conn.query('SELECT 1 FROM logins WHERE username = ?', [username], function(err, result) {
-        if (err) {
-          console.log(err);
-        } else {
-          if (result.length > 0) {
-            res.send({message: 'exists'})
-          } else {
-            res.send({message: 'unique'})
-          }
-        }
+      Promise.all([sessionFunctions.getLines(req.user), sessionFunctions.getMachines(req.user)]).then(allData => {
+        res.send({lines: allData[0], machines: allData[1]})
+      }).catch(err => {
+        console.log(err);
       })
     })
-
-    // authRoutes.post('/name', loggedIn, function(req, res) {
-    //   console.log('- Request received:', req.method.cyan, '/api/auth/name');
-    //   const userId = req.user
-    //   conn.query('INSERT INTO usersNames (userId, name) VALUES (?, ?)', [userId, req.body.name], function(err, result) {
-    //     if (err) {
-    //       console.log(err);
-    //       res.send({message: "fail"});
-    //     } else {
-    //       res.send({message: "success"});
-    //     }
-    //   })
-    // })
 
     authRoutes.post('/logout', loggedIn, function(req, res) {
       console.log('- Request received:', req.method.cyan, '/api/auth/logout');

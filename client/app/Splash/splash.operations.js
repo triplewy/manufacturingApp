@@ -12,7 +12,6 @@ export function fetchSessionLogin() {
         for (var i = 0; i < data.lines.length; i++) {
           data.lines[i].name = 'LINE ' + data.lines[i].name
         }
-        console.log(data);
         dispatch(sessionLoginSuccess(data.lines, data.machines))
       }
     })

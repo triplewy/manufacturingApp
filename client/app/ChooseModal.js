@@ -45,7 +45,7 @@ export default class ChooseModal extends React.Component {
             style={{justifyContent: 'center', alignItems: 'center'}}
           >
             {this.props.scroll ?
-            <View style={{height: 700}}>
+            <View style={{height: win.height - 300}}>
               <ScrollView
                 style={{width: win.width - 100, backgroundColor: 'white', borderRadius: 8}}
                 contentContainerStyle={{flex: 0}}

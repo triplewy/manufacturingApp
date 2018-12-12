@@ -161,44 +161,47 @@ var adminRoutes = require('./routes/adminRoutes')
 
 app.get('/api/sessionLogin', loggedIn, (req, res) => {
   console.log('- Request received:', req.method.cyan, '/api/sessionLogin');
-  Promise.all([getLines(req.user), getMachines(req.user)]).then(allData => {
+  Promise.all([module.exports.getLines(req.user), module.exports.getMachines(req.user)]).then(allData => {
     res.send({lines: allData[0], machines: allData[1]})
   }).catch(err => {
     console.log(err);
   })
 })
 
-function getLines(userId) {
-  return new Promise(function(resolve, reject) {
-    conn.query('SELECT b.* FROM assemblyLineUsers AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.userId = :userId', {userId: userId}, function(err, result) {
-      if (err) {
-        return reject(err);
-      } else {
-        return resolve(result)
-      }
+module.exports = {
+  getLines: function(userId) {
+    return new Promise(function(resolve, reject) {
+      conn.query('SELECT b.* FROM assemblyLineUsers AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.userId = :userId', {userId: userId}, function(err, result) {
+        if (err) {
+          return reject(err);
+        } else {
+          return resolve(result)
+        }
+      })
+    });
+  },
+
+  getMachines: function(userId) {
+    return new Promise(function(resolve, reject) {
+      conn.query('SELECT * FROM machines WHERE lineId IN (SELECT lineId FROM assemblyLineUsers WHERE userId = :userId)', {userId: userId}, function(err, result) {
+        if (err) {
+          return reject(err);
+        } else {
+          var machines = []
+          for (var i = 0; i < result.length; i++) {
+            if (machines[result[i].lineId]) {
+              machines[result[i].lineId].push(result[i])
+            } else {
+              machines[result[i].lineId] = [result[i]]
+            }
+          }
+          return resolve(machines)
+        }
+      })
     })
-  });
+  }
 }
 
-function getMachines(userId) {
-  return new Promise(function(resolve, reject) {
-    conn.query('SELECT * FROM machines WHERE lineId IN (SELECT lineId FROM assemblyLineUsers WHERE userId = :userId)', {userId: userId}, function(err, result) {
-      if (err) {
-        return reject(err);
-      } else {
-        var machines = []
-        for (var i = 0; i < result.length; i++) {
-          if (machines[result[i].lineId]) {
-            machines[result[i].lineId].push(result[i])
-          } else {
-            machines[result[i].lineId] = [result[i]]
-          }
-        }
-        return resolve(machines)
-      }
-    })
-  })
-}
 
 app.use('/api/input', inputRoutes(conn, loggedIn, upload))
 
