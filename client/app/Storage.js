@@ -139,8 +139,6 @@ export function formdataPostRequest(path, formdata) {
       const fetchParams = {
         method: 'POST',
         headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json",
           "cookie": cookie,
         },
         body: formdata,

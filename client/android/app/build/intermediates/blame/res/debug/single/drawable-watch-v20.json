@@ -1,6 +1,10 @@
 [
     {
-        "merged": "E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable-watch-v20\\abc_dialog_material_background.xml",
-        "source": "E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\27.1.1\\res\\drawable-watch-v20\\abc_dialog_material_background.xml"
+        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/res/merged/debug/drawable-watch-v20/abc_dialog_material_background.xml",
+        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/27.1.1/res/drawable-watch-v20/abc_dialog_material_background.xml"
+    },
+    {
+        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable-watch-v20\\abc_dialog_material_background.xml",
+        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\27.1.1\\res\\drawable-watch-v20\\abc_dialog_material_background.xml"
     }
 ]

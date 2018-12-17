@@ -1,18 +1,34 @@
 [
     {
-        "merged": "E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_action_tombstone.xml",
-        "source": "E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\exploded-aar\\com.android.support\\support-compat\\27.1.1\\res\\layout-v21\\notification_action_tombstone.xml"
+        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/res/merged/debug/layout-v21/notification_template_custom_big.xml",
+        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/com.android.support/support-compat/27.1.1/res/layout-v21/notification_template_custom_big.xml"
     },
     {
-        "merged": "E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_template_icon_group.xml",
-        "source": "E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\exploded-aar\\com.android.support\\support-compat\\27.1.1\\res\\layout-v21\\notification_template_icon_group.xml"
+        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/res/merged/debug/layout-v21/notification_template_icon_group.xml",
+        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/com.android.support/support-compat/27.1.1/res/layout-v21/notification_template_icon_group.xml"
     },
     {
-        "merged": "E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_action.xml",
-        "source": "E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\exploded-aar\\com.android.support\\support-compat\\27.1.1\\res\\layout-v21\\notification_action.xml"
+        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_template_custom_big.xml",
+        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\exploded-aar\\com.android.support\\support-compat\\27.1.1\\res\\layout-v21\\notification_template_custom_big.xml"
     },
     {
-        "merged": "E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_template_custom_big.xml",
-        "source": "E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\exploded-aar\\com.android.support\\support-compat\\27.1.1\\res\\layout-v21\\notification_template_custom_big.xml"
+        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_action.xml",
+        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\exploded-aar\\com.android.support\\support-compat\\27.1.1\\res\\layout-v21\\notification_action.xml"
+    },
+    {
+        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_template_icon_group.xml",
+        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\exploded-aar\\com.android.support\\support-compat\\27.1.1\\res\\layout-v21\\notification_template_icon_group.xml"
+    },
+    {
+        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/res/merged/debug/layout-v21/notification_action_tombstone.xml",
+        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/com.android.support/support-compat/27.1.1/res/layout-v21/notification_action_tombstone.xml"
+    },
+    {
+        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/res/merged/debug/layout-v21/notification_action.xml",
+        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/com.android.support/support-compat/27.1.1/res/layout-v21/notification_action.xml"
+    },
+    {
+        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_action_tombstone.xml",
+        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\exploded-aar\\com.android.support\\support-compat\\27.1.1\\res\\layout-v21\\notification_action_tombstone.xml"
     }
 ]

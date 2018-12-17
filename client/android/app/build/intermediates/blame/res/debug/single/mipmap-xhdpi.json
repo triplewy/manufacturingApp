@@ -1,6 +1,22 @@
 [
     {
-        "merged": "E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xhdpi\\ic_launcher.png",
-        "source": "E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\src\\main\\res\\mipmap-xhdpi\\ic_launcher.png"
+        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/res/merged/debug/mipmap-xhdpi/icon.png",
+        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/src/main/res/mipmap-xhdpi/icon.png"
+    },
+    {
+        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/res/merged/debug/mipmap-xhdpi/screen.png",
+        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/src/main/res/mipmap-xhdpi/screen.png"
+    },
+    {
+        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/res/merged/debug/mipmap-xhdpi/ic_launcher.png",
+        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/res/merged/debug/mipmap-xhdpi/screen2.png",
+        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/src/main/res/mipmap-xhdpi/screen2.png"
+    },
+    {
+        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xhdpi\\ic_launcher.png",
+        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\src\\main\\res\\mipmap-xhdpi\\ic_launcher.png"
     }
 ]

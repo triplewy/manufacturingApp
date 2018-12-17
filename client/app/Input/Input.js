@@ -14,11 +14,13 @@ class Input extends React.Component {
     this.state = {
       name: '',
 
+      images: [],
       showModal: false,
       selectedImage: null
     };
 
     this.addImage = this.addImage.bind(this)
+    this.deleteImage = this.deleteImage.bind(this)
     this.renderItem = this.renderItem.bind(this)
     this.toggleModal = this.toggleModal.bind(this)
   }
@@ -30,32 +32,39 @@ class Input extends React.Component {
   }
 
   addImage() {
-    if (this.props.images.length > 3) {
-      Alert.alert(
-        'Exceeded photos limit',
-        'Max 4 photos',
-        [
-          {text: 'OK', onPress: () => console.log('OK Pressed')},
-        ],
-        { cancelable: false }
-      )
-    } else {
-      ImagePicker.showImagePicker(null, (response) => {
-        if (response.didCancel) {
-          console.log('User cancelled image picker');
-        } else if (response.error) {
-          console.log('ImagePicker Error: ', response.error);
-        } else if (response.customButton) {
-          console.log('User tapped custom button: ', response.customButton);
-        } else {
-          const source = { uri: response.uri };
-          // You can also display the image using data:
-          // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-          this.props.addImage(source)
-        }
-      })
-    }
-  }
+     if (this.state.images.length > 3) {
+       Alert.alert(
+         'Exceeded photos limit',
+         'Max 4 photos',
+         [
+           {text: 'OK', onPress: () => console.log('OK Pressed')},
+         ],
+         { cancelable: false }
+       )
+     } else {
+       ImagePicker.showImagePicker(null, (response) => {
+         if (response.didCancel) {
+           console.log('User cancelled image picker');
+         } else if (response.error) {
+           console.log('ImagePicker Error: ', response.error);
+         } else if (response.customButton) {
+           console.log('User tapped custom button: ', response.customButton);
+         } else {
+           const source = { uri: response.uri };
+           // You can also display the image using data:
+           // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+           this.setState({images: this.state.images.concat(source)})
+         }
+       })
+     }
+   }
+
+   deleteImage(index) {
+     var temp = this.state.images
+     temp.splice(index, 1)
+     this.setState({images: temp})
+   }
 
   renderItem(item) {
     return (
@@ -65,7 +74,7 @@ class Input extends React.Component {
           style={{width: 100, height: 100, margin: 20}}
           imageStyle={{borderRadius: 8}}
         >
-          <TouchableOpacity onPress={() => this.props.deleteImage(item.index)}>
+          <TouchableOpacity onPress={() => this.deleteImage(item.index)}>
             <Image
               source={deleteIcon}
               style={{position: 'absolute', width: 40, height: 40, right: -20, top: -20}}
@@ -126,15 +135,15 @@ class Input extends React.Component {
           <FlatList
             horizontal
             scrollEnabled
-            data={this.props.images}
+            data={this.state.images}
             renderItem={this.renderItem}
             keyExtractor={(item, index) => index.toString()}
-            key={this.props.images.length}
+            key={this.state.images.length}
           />
           <ImageModal selectedImage={this.state.selectedImage} showModal={this.state.showModal} toggleModal={this.toggleModal} />
         </View>
         <TouchableOpacity
-          onPress={() => this.props.upload(this.props.navigation, this.props.images, this.props.downtime, this.props.description, this.state.name)}
+          onPress={() => this.props.upload(this.props.navigation, this.state.images, this.props.downtime, this.props.description, this.state.name)}
           disabled={!(this.props.downtime && this.props.description) || this.props.submitted}
         >
           <View style={{backgroundColor: (this.props.downtime && this.props.description) ? '#83D3D6' : '#f1f1f1', alignItems: 'center', justifyContent: 'center', height: 80}}>
@@ -222,7 +231,7 @@ function mapStateToProps(state) {
     lineIndex: state.grid.lineIndex,
     downtime: state.input.downtime,
     description: state.input.description,
-    images: state.input.images,
+    // images: state.input.images,
     submitted: state.input.submitted
   }
 }
@@ -231,8 +240,8 @@ function mapDispatchToProps(dispatch) {
   return {
     handleDowntimeInput: (text) => dispatch(handleDowntime(text)),
     handleDescriptionInput: (text) => dispatch(handleDescription(text)),
-    addImage: (image) => dispatch(handleAddImage(image)),
-    deleteImage: (index) => dispatch(handleDeleteImage(index)),
+    // addImage: (image) => dispatch(handleAddImage(image)),
+    // deleteImage: (index) => dispatch(handleDeleteImage(index)),
     upload: (navigation, images, downtime, description, name) => dispatch(handleUpload(navigation, images, downtime, description, name))
   }
 }

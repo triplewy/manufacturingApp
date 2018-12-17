@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { createBottomTabNavigator, createMaterialTopTabNavigator, createSwitchNavigator, createStackNavigator, NavigationActions } from 'react-navigation'
+import SplashScreen from 'react-native-splash-screen';
 import editIcon from './app/icons/edit-icon.png'
 import reportIcon from './app/icons/report-icon.png'
 import statsIcon from './app/icons/stats-icon.png'
@@ -24,6 +25,10 @@ export default class App extends React.Component {
 
   }
 
+  componentDidMount() {
+    SplashScreen.hide()
+  }
+
   render() {
     const AuthNavigation = createStackNavigator(
       {
@@ -32,9 +37,16 @@ export default class App extends React.Component {
         CreateAccount: CreateAccount,
       },
       {
-        headerMode: 'none',
+
+        // headerMode: 'none',
         navigationOptions: {
-          headerVisible: false
+          // headerVisible: false
+          headerStyle: {
+            backgroundColor: '#FF8300',
+            borderBottomWidth: 0,
+            shadowRadius: 0,
+            elevation: 0
+          },
         },
         cardStyle: {
           backgroundColor: '#FF8300'

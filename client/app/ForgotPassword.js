@@ -34,10 +34,7 @@ export default class ForgotPassword extends React.Component {
 
   render() {
     return (
-      <SafeAreaView style={{justifyContent: 'center', flex: 1}}>
-        <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-          <Text style={{color: 'white', marginTop: 10, marginLeft: 10, fontSize: 18}}>Back</Text>
-        </TouchableOpacity>
+      <View style={{flex: 1}}>
         <View style={styles.inputView}>
           <Text style={styles.title}>Forgot Password</Text>
           {/* <View style={{flexDirection: 'row', marginVertical: 10}}>
@@ -53,7 +50,7 @@ export default class ForgotPassword extends React.Component {
             </TouchableOpacity>
           </View>
         </View>
-      </SafeAreaView>
+      </View>
     )
   }
 }
@@ -70,7 +67,6 @@ const styles = StyleSheet.create({
   inputView: {
     flex: 1,
     padding: 30,
-    justifyContent: 'center',
     alignItems: 'center'
   },
   textInput: {

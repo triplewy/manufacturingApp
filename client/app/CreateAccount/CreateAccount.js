@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, View, Text, TextInput, StyleSheet, TouchableOpacity, Animated, Easing } from 'react-native';
+import { Dimensions, View, SafeAreaView, Text, TextInput, StyleSheet, TouchableOpacity, Animated, Easing } from 'react-native';
 import { username, password, confirmPassword, signupUser } from './createAccount.operations'
 import { connect } from 'react-redux'
 
@@ -10,10 +10,7 @@ class CreateAccount extends React.Component {
 
   render() {
     return (
-      <View style={{justifyContent: 'center', flex: 1}}>
-        <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-          <Text style={{color: 'white', marginTop: 20, marginLeft: 10, fontSize: 18}}>Back</Text>
-        </TouchableOpacity>
+      <View style={{flex: 1}}>
         <View style={styles.inputView}>
           <Text style={styles.title}>Create Account</Text>
           <TextInput
@@ -33,7 +30,7 @@ class CreateAccount extends React.Component {
             value={this.props.password}
             onChangeText={(text) => this.props.setPassword(text)}
           />
-          <Text style={{color: 'white'}}>{this.props.password.length < 6 ? 'Password must have at least 6 characters' : ''}</Text>
+          <Text style={{color: 'white'}}>{this.props.password && this.props.password.length < 6 ? 'Password must have at least 6 characters' : ''}</Text>
           <TextInput
             placeholder='Confirm Password'
             secureTextEntry
@@ -66,27 +63,27 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 36,
     fontWeight: '600',
-    marginBottom: 10
+    marginBottom: 20
   },
   inputView: {
     flex: 1,
     padding: 30,
-    justifyContent: 'center',
     alignItems: 'center'
   },
   textInput: {
     width: win.width - 100,
     borderBottomWidth: 5,
+    borderColor: 'white',
     padding: 12,
     color: 'white',
     fontSize: 24,
-    margin: 10
+    margin: 20
   },
   loginButton: {
     alignItems: 'center',
     width: 200,
     borderRadius: 24,
-    marginTop: 20
+    marginTop: 30
   },
   loginButtonText: {
     padding: 15,

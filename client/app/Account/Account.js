@@ -88,7 +88,7 @@ class Account extends React.Component {
         <View style={styles.wrapper}>
           <View style={{marginVertical: 10, alignItems: 'center'}}>
             {this.props.account.lineNumbers ?
-              <View>
+              <View style={{alignItems: 'center'}}>
                 <Text style={styles.accountLabel}>{this.props.account.lineNumbers.length > 1 ? 'Lines' : 'Line'}</Text>
                 <Text style={{fontSize: 18, margin: 10}}>{this.props.account.lineNumbers.join(', ')}</Text>
               </View>

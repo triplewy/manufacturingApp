@@ -69,7 +69,6 @@ class Login extends React.Component {
             <Text style={{color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center'}}>Incorrect username or password</Text>
           </Animated.View>
         </View>
-
       </View>
     );
   }
@@ -87,7 +86,6 @@ const styles = StyleSheet.create({
   inputView: {
     flex: 1,
     padding: 30,
-    justifyContent: 'center',
     alignItems: 'center'
   },
   textInput: {
