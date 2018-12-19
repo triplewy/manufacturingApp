@@ -254,17 +254,30 @@ module.exports = function(conn, loggedIn, csvUpload) {
           } else {
 
             var output = []
+            var lineMachines = []
             var machines = []
 
             parser.on('readable', function() {
               let record
               while (record = parser.read()) {
-                // date, lineLeaderName, downtime, description, machineId
-                var downtimeEntry = [parseDate(record[0], record[1]), record[5], record[7], record[9], record[6]]
+                // date, line, lineLeaderName, downtime, description, machineId
+                var downtimeEntry = [parseDate(record[0], record[1]), record[2].substring(2), record[5], record[7], record[9], record[6]]
 
-                if (!machines[record[6]]) {
-                  machines[record[6]] = record[2].substring(2)
+                var line = record[2].substring(2)
+
+                if (lineMachines[line]) {
+                  if (!lineMachines[line].includes(record[6])) {
+                    lineMachines[line].push(record[6])
+                  }
+                } else {
+                  var temp = []
+                  temp.push(record[6])
+                  lineMachines[line] = temp
                 }
+
+                // if (!machines[record[6]]) {
+                //   machines[record[6]] = record[2].substring(2)
+                // }
 
                 output.push(downtimeEntry)
               }
@@ -285,29 +298,45 @@ module.exports = function(conn, loggedIn, csvUpload) {
                   }
 
                   var machineInsertArr = []
-                  for (var machine in machines) {
-                    machineInsertArr.push([lines[machines[machine]], machine, 'https://s3.us-east-2.amazonaws.com/manufacturing-app-icons/example-icon.png'])
+
+                  for (var line in lineMachines) {
+                    for (var i = 0; i < lineMachines[line].length; i++) {
+                      machineInsertArr.push([lines[line], lineMachines[line][i], 'https://s3.us-east-2.amazonaws.com/manufacturing-app-icons/example-icon.png'])
+                    }
                   }
+
+                  // for (var machine in machines) {
+                  //   machineInsertArr.push([lines[machines[machine]], machine, 'https://s3.us-east-2.amazonaws.com/manufacturing-app-icons/example-icon.png'])
+                  // }
 
                   conn.query('INSERT IGNORE INTO machines (lineId, name, icon_url) VALUES ?', [machineInsertArr], function(err, result) {
                     if (err) {
                       console.log(err);
                     } else {
                       console.log('Machine records added successfully');
-                      conn.query('SELECT * FROM machines WHERE lineId IN (SELECT lineId FROM assemblyLines WHERE companyId = :companyId)', {companyId: companyId}, function(err, result) {
+                      conn.query('SELECT b.*, a.name AS lineName FROM assemblyLines AS a JOIN machines AS b ON b.lineId = a.lineId WHERE a.companyId  = :companyId', {companyId: companyId}, function(err, result) {
                         if (err) {
                           console.log(err);
                         } else {
-                          var machineIds = []
+                          lineMachines = []
                           for (var i = 0; i < result.length; i++) {
-                            machineIds[result[i].name] = result[i].machineId
+                            var lineName = result[i].lineName
+                            if (lineMachines[lineName]) {
+                              lineMachines[lineName][result[i].name] = result[i].machineId
+                            } else {
+                              lineMachines[lineName] = []
+                              lineMachines[lineName][result[i].name] = result[i].machineId
+                            }
                           }
+
+                          var insertDowntime = []
 
                           for (var i = 0; i < output.length; i++) {
-                            output[i][4] = machineIds[output[i][4]]
+                            insertDowntime.push([output[i][0], output[i][2], output[i][3], output[i][4], output[i][5]])
+                            insertDowntime[i][4] = lineMachines[output[i][1]][output[i][5]]
                           }
 
-                          conn.query('INSERT INTO downtime (createdDate, lineLeaderName, downtime, description, machineId) VALUES ?', [output], function(err, result) {
+                          conn.query('INSERT INTO downtime (createdDate, lineLeaderName, downtime, description, machineId) VALUES ?', [insertDowntime], function(err, result) {
                             if (err) {
                               console.log(err);
                             } else {
