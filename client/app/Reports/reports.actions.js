@@ -10,6 +10,8 @@ export const UPDATE_DATE = 'UPDATE_DATE'
 
 export const SET_REPORTS_LINE_INDEX = 'SET_REPORTS_LINE_INDEX'
 export const SET_REPORTS_MACHINE_INDEX = 'SET_REPORTS_MACHINE_INDEX'
+export const SET_REPORTS_NAME_INDEX = 'SET_REPORTS_NAME_INDEX'
+
 
 export function getReports() {
   return {
@@ -75,6 +77,13 @@ export function setLineIndex(index) {
 export function setMachineIndex(index) {
   return{
     type: SET_REPORTS_MACHINE_INDEX,
+    index: index
+  }
+}
+
+export function setNameIndex(index) {
+  return{
+    type: SET_REPORTS_NAME_INDEX,
     index: index
   }
 }

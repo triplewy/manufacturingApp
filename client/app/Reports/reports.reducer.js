@@ -1,13 +1,14 @@
 import {
   GET_REPORTS, GET_REPORTS_SUCCESS, GET_REPORTS_FAILURE,
   UPDATE_REPORTS, UPDATE_REPORTS_SUCCESS, UPDATE_REPORTS_FAILURE, UPDATE_PAGE, UPDATE_DATE,
-  SET_REPORTS_LINE_INDEX, SET_REPORTS_MACHINE_INDEX
+  SET_REPORTS_LINE_INDEX, SET_REPORTS_MACHINE_INDEX, SET_REPORTS_NAME_INDEX
 } from './reports.actions'
 
 const initialState = {
   reports: [],
   lineIndex: 0,
   machineIndex: 0,
+  nameIndex: 0,
   page: 0,
   date: '',
   refreshing: false,
@@ -79,6 +80,11 @@ export function reports(state = initialState, action) {
       return {
         ...state,
         machineIndex: action.index,
+      }
+    case SET_REPORTS_NAME_INDEX:
+      return {
+        ...state,
+        nameIndex: action.index,
       }
     default:
       return state

@@ -1,8 +1,7 @@
 import React from 'react';
 import { ScrollView, View, RefreshControl, StyleSheet, Text, Image, TouchableOpacity, Linking, Alert, ActivityIndicator } from 'react-native';
-import { fetchAccount, fetchLogout, fetchName, changeName } from './account.operations'
+import { fetchAccount, fetchLogout, changeName } from './account.operations'
 import { connect } from 'react-redux'
-import machineIcon from '../icons/machine-icon.png'
 
 class Account extends React.Component {
   constructor(props) {
@@ -15,7 +14,6 @@ class Account extends React.Component {
   }
 
   componentDidMount() {
-    this.props.getName()
     this.props.getAccount()
   }
 
@@ -67,24 +65,20 @@ class Account extends React.Component {
         <View style={styles.wrapper}>
           <Text style={styles.accountLabel}>Company</Text>
           <Text style={styles.accountText}>{this.props.account.companyName}</Text>
-          {/* <View style={{flexDirection: 'row'}}>
-            <Text style={{fontSize: 18, margin: 10}}>Day Shift:</Text>
-            <Text style={{fontSize: 18, margin: 10}}>{this.state.account.morningShift + 'AM - ' + (this.state.account.eveningShift - 12) + 'PM'}</Text>
+        </View>
+        {this.props.names.length > 0 ?
+          <View style={styles.wrapper}>
+            <Text style={styles.accountLabel}>Line Leader</Text>
+            <Text style={styles.accountText}>{this.props.names[this.props.nameIndex].name}</Text>
+            <TouchableOpacity onPress={() => this.props.setName(this.props.navigation)}>
+              <View style={{backgroundColor: '#FF8300', borderRadius: 8, marginVertical: 10}}>
+                <Text style={{fontSize: 18, paddingVertical: 10, paddingHorizontal: 15, color: 'white'}}>Change Name</Text>
+              </View>
+            </TouchableOpacity>
           </View>
-          <View style={{flexDirection: 'row'}}>
-            <Text style={{fontSize: 18, margin: 10}}>Night Shift:</Text>
-            <Text style={{fontSize: 18, margin: 10}}>{(this.state.account.eveningShift - 12) + 'PM - ' + this.state.account.morningShift + 'AM'}</Text>
-          </View> */}
-        </View>
-        <View style={styles.wrapper}>
-          <Text style={styles.accountLabel}>Line Leader</Text>
-          <Text style={styles.accountText}>{this.props.name}</Text>
-          <TouchableOpacity onPress={() => this.props.setName(this.props.navigation)}>
-            <View style={{backgroundColor: '#FF8300', borderRadius: 8, marginVertical: 10}}>
-              <Text style={{fontSize: 18, paddingVertical: 10, paddingHorizontal: 15, color: 'white'}}>Change Name</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+          :
+          null
+        }
         <View style={styles.wrapper}>
           <View style={{marginVertical: 10, alignItems: 'center'}}>
             {this.props.account.lineNumbers ?
@@ -104,18 +98,6 @@ class Account extends React.Component {
         </View>
         <View style={styles.wrapper}>
           <Text style={styles.accountLabel}>Contact</Text>
-          {/* <View style={{flexDirection: 'row', marginVertical: 10}}>
-            <Text style={{fontSize: 18}}>Call:</Text>
-            <TouchableOpacity onPress={this.linkPhone}>
-              <Text style={{fontSize: 18, marginLeft: 5, color: '#337ab7'}}>888-888-8888</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={{flexDirection: 'row', marginVertical: 10}}>
-            <Text style={{fontSize: 18}}>Text:</Text>
-            <TouchableOpacity onPress={this.linkText}>
-              <Text style={{fontSize: 18, marginLeft: 5, color: '#337ab7'}}>888-888-8888</Text>
-            </TouchableOpacity>
-          </View> */}
           <View style={{flexDirection: 'row', marginVertical: 10}}>
             <Text style={{fontSize: 18}}>Email:</Text>
             <TouchableOpacity onPress={this.linkEmail}>
@@ -123,11 +105,6 @@ class Account extends React.Component {
             </TouchableOpacity>
           </View>
         </View>
-        {/* <TouchableOpacity onPress={this.logoutAlert}>
-          <View style={styles.wrapper}>
-            <Text style={{fontSize: 18, margin: 10, color: 'red'}}>Logout</Text>
-          </View>
-      </TouchableOpacity> */}
       </ScrollView>
     )
   }
@@ -154,7 +131,8 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
   return {
     account: state.account.account,
-    name: state.account.name,
+    names: state.splash.names,
+    nameIndex: state.name.nameIndex
   }
 }
 
@@ -162,7 +140,6 @@ function mapDispatchToProps(dispatch) {
   return {
     getAccount: () => dispatch(fetchAccount()),
     logout: (navigation) => dispatch(fetchLogout(navigation)),
-    getName: () => dispatch(fetchName()),
     setName: (navigation) => dispatch(changeName(navigation))
   }
 }

@@ -30,6 +30,14 @@ CREATE TABLE IF NOT EXISTS logins (
   FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS names (
+  nameId INTEGER AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  companyId INTEGER NOT NULL,
+  FOREIGN KEY (companyId) REFERENCES companies(companyId),
+  UNIQUE(name, companyId)
+);
+
 CREATE TABLE IF NOT EXISTS assemblyLines (
   lineId INTEGER AUTO_INCREMENT PRIMARY KEY,
   companyId INTEGER NOT NULL,
@@ -53,7 +61,7 @@ CREATE TABLE IF NOT EXISTS machines (
   machineId INTEGER AUTO_INCREMENT PRIMARY KEY,
   lineId INTEGER NOT NULL,
   name VARCHAR(255) NOT NULL,
-  icon_url VARCHAR(255) NOT NULL,
+  icon_url VARCHAR(255) DEFAULT 'https://s3.us-east-2.amazonaws.com/manufacturing-app-icons/example-icon.png' NOT NULL,
   createdDate DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
   FOREIGN KEY(lineId) REFERENCES assemblyLines(lineId),
   UNIQUE(lineId, name)

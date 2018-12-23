@@ -1,7 +1,7 @@
 import {
   getReports, getReportsSuccess, getReportsFailure,
   updateReports, updateReportsSuccess, updateReportsFailure, updatePage, updateDate,
-  setLineIndex, setMachineIndex
+  setLineIndex, setMachineIndex, setNameIndex
 } from './reports.actions'
 import { getRequest } from '../Storage'
 
@@ -85,6 +85,13 @@ export function setLine(index) {
 export function setMachine(index) {
   return (dispatch) => {
     dispatch(setMachineIndex(index))
+    return Promise.resolve()
+  }
+}
+
+export function setName(index) {
+  return (dispatch) => {
+    dispatch(setNameIndex(index))
     return Promise.resolve()
   }
 }

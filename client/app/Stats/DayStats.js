@@ -3,6 +3,7 @@ import { ScrollView, View, FlatList, StyleSheet, Text, TouchableOpacity, Dimensi
 import { setLine, setDate } from '../Reports/reports.operations'
 import { connect } from 'react-redux'
 import MachineStats from './MachineStats/MachineStats'
+import WorkerStats from './WorkerStats/WorkerStats'
 import ShiftStats from './ShiftStats/ShiftStats'
 import { parseTime } from '../ParseTime.js'
 import { downtimeString } from '../DowntimeString.js'
@@ -42,6 +43,7 @@ class DayStats extends React.Component {
         </View>
         <View>
           <MachineStats date={params.date} />
+          <WorkerStats date={params.date} />
           <ShiftStats date={params.date} />
         </View>
 

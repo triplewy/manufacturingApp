@@ -10,7 +10,9 @@ import { totalStats } from '../Stats/TotalStats/totalStats.reducer'
 import { downtimeStats } from '../Stats/DowntimeStats/downtimeStats.reducer'
 import { machineStats } from '../Stats/MachineStats/machineStats.reducer'
 import { shiftStats } from '../Stats/ShiftStats/shiftStats.reducer'
+import { workerStats } from '../Stats/WorkerStats/workerStats.reducer'
 import { input } from '../Input/input.reducer'
+import { name } from '../Name/name.reducer'
 
 export default combineReducers({
   login,
@@ -24,5 +26,7 @@ export default combineReducers({
   downtimeStats,
   machineStats,
   shiftStats,
-  input
+  workerStats,
+  input,
+  name
 });

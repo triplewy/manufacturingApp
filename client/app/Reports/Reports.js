@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, RefreshControl, FlatList, StyleSheet, Text, Dimensions, TouchableWithoutFeedback, TouchableOpacity, ActivityIndicator, Animated } from 'react-native';
-import { fetchReports, fetchUpdateReports, setPage, setDate, setLine, setMachine } from './reports.operations'
+import { fetchReports, fetchUpdateReports, setPage, setDate, setLine, setMachine, setName } from './reports.operations'
 import { NavigationEvents } from 'react-navigation';
 import { connect } from 'react-redux'
 import ReportItem from './ReportItem'
@@ -39,7 +39,7 @@ class Reports extends React.Component {
       Animated.timing(
         this.heightValue,
         {
-          toValue: this.state.viewOptions ? 400 : 80,
+          toValue: this.state.viewOptions ? 420 : 80,
           duration: 500
         }
       ).start()
@@ -102,6 +102,11 @@ class Reports extends React.Component {
             :
             null
           }
+          {/* <ChooseModal
+            items={[{name: 'ALL WORKERS'}].concat(this.props.names)}
+            index={this.props.nameIndex}
+            selectItem={this.props.setNameIndex}
+          /> */}
           <CalendarModal
             date={this.props.date}
             selectDate={this.props.updateDate}
@@ -146,6 +151,8 @@ function mapStateToProps(state) {
     machines: state.splash.machines,
     lineIndex: state.reports.lineIndex,
     machineIndex: state.reports.machineIndex,
+    names: state.splash.names,
+    nameIndex: state.reports.nameIndex,
     reports: state.reports.reports,
     page: state.reports.page,
     date: state.reports.date,
@@ -162,6 +169,7 @@ function mapDispatchToProps(dispatch) {
     updateReports: (lineId, machineId, date, page) => dispatch(fetchUpdateReports(lineId, machineId, date, page)),
     setLineIndex: (index) => dispatch(setLine(index)),
     setMachineIndex: (index) => dispatch(setMachine(index)),
+    setNameIndex: (index) => dispatch(setName(index)),
     updateDate: (date) => dispatch(setDate(date))
   }
 }

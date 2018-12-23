@@ -4,8 +4,9 @@ import {
   logout, logoutFailure,
   setStoredName, setStoredNameFailure
 } from './account.actions'
+import { setNameIndex } from '../Name/name.actions'
 import { sessionLoginSuccess } from '../Splash/splash.actions'
-import { getRequest, postRequest, getName, setName } from '../Storage'
+import { getRequest, postRequest, setNameStorage } from '../Storage'
 
 export function fetchAccount() {
   return (dispatch) => {
@@ -25,10 +26,18 @@ export function fetchLogout(navigation) {
     dispatch(logout())
     return postRequest(global.API_URL + '/api/auth/logout')
     .then(data => {
-      console.log(data);
       if (data.message === 'success') {
-        dispatch(sessionLoginSuccess([], []))
-        navigation.navigate('Auth')
+        return setNameStorage('-1').then(data => {
+          if (data.message === 'success') {
+            navigation.navigate('Auth')
+            dispatch(sessionLoginSuccess([], [], []))
+            dispatch(setNameIndex(-1))
+          } else {
+            dispatch(setStoredNameFailure())
+            navigation.navigate('Auth')
+          }
+        })
+
       } else {
         dispatch(logoutFailure(data.message))
       }
@@ -39,24 +48,13 @@ export function fetchLogout(navigation) {
   }
 }
 
-export function fetchName() {
-  return (dispatch) => {
-    dispatch(getStoredName())
-    return getName().then(name => {
-      dispatch(getStoredNameSuccess(name))
-    })
-    .catch(err => {
-      dispatch(getStoredNameFailure(err))
-    })
-  }
-}
-
 export function changeName(navigation) {
   return (dispatch) => {
     dispatch(setStoredName())
-    return setName('').then(data => {
+    return setNameStorage('-1').then(data => {
       if (data.message === 'success') {
         navigation.navigate('Name')
+        dispatch(setNameIndex(-1))
       } else {
         dispatch(setStoredNameFailure())
       }

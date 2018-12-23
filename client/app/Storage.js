@@ -32,9 +32,9 @@ export function getCookie() {
   })
 }
 
-export function setName(name) {
+export function setNameStorage(index) {
   return new Promise(function(resolve, reject) {
-    AsyncStorage.setItem('name', name).then(() => {
+    AsyncStorage.setItem('name', index).then(() => {
       return resolve({message: 'success'})
     })
     .catch(err => {
@@ -43,13 +43,13 @@ export function setName(name) {
   })
 }
 
-export function getName() {
+export function getNameStorage() {
   return new Promise(function(resolve, reject) {
     AsyncStorage.getItem('name').then(value => {
       if (value !== null) {
-        return resolve(value)
+        return resolve(parseInt(value, 10))
       } else {
-        return resolve('')
+        return resolve(-1)
       }
     })
     .catch(err => {

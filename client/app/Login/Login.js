@@ -47,7 +47,6 @@ class Login extends React.Component {
             secureTextEntry
             autoCapitalize='none'
             autoCorrect={false}
-            returnKeyType="go"
             style={styles.textInput}
             value={this.props.password}
             onChangeText={(text) => this.props.setPassword(text)}

@@ -5,7 +5,9 @@ const initialState = {
   fetched: false,
   success: false,
   lines: [],
-  machines: []
+  machines: [],
+  names: [],
+  error: ''
 }
 
 export function splash(state = initialState, action) {
@@ -13,7 +15,8 @@ export function splash(state = initialState, action) {
     case SESSION_LOGIN:
       return {
         ...state,
-        loading: true
+        loading: true,
+        error: ''
       }
     case SESSION_LOGIN_SUCCESS:
       return {
@@ -21,7 +24,9 @@ export function splash(state = initialState, action) {
         fetched: true,
         success: true,
         lines: action.lines,
-        machines: action.machines
+        machines: action.machines,
+        names: action.names,
+        error: ''
       }
 
     case SESSION_LOGIN_FAILURE:
@@ -29,7 +34,8 @@ export function splash(state = initialState, action) {
         ...state,
         loading: false,
         fetched: true,
-        success: false
+        success: false,
+        error: action.error
       }
     default:
       return state

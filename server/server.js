@@ -161,8 +161,8 @@ var adminRoutes = require('./routes/adminRoutes')
 
 app.get('/api/sessionLogin', loggedIn, (req, res) => {
   console.log('- Request received:', req.method.cyan, '/api/sessionLogin');
-  Promise.all([module.exports.getLines(req.user), module.exports.getMachines(req.user)]).then(allData => {
-    res.send({lines: allData[0], machines: allData[1]})
+  Promise.all([module.exports.getLines(req.user), module.exports.getMachines(req.user), module.exports.getNames(req.user)]).then(allData => {
+    res.send({lines: allData[0], machines: allData[1], names: allData[2]})
   }).catch(err => {
     console.log(err);
   })
@@ -196,6 +196,18 @@ module.exports = {
             }
           }
           return resolve(machines)
+        }
+      })
+    })
+  },
+
+  getNames: function(userId) {
+    return new Promise(function(resolve, reject) {
+      conn.query('SELECT * FROM names WHERE companyId = (SELECT companyId FROM users WHERE userId = :userId)', {userId: userId}, function(err, result) {
+        if (err) {
+          return reject(err);
+        } else {
+          return resolve(result)
         }
       })
     })

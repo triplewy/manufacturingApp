@@ -40,11 +40,12 @@ const styles = StyleSheet.create({
   gridItem: {
     margin: win.width / 25,
     alignItems: 'center',
-    width: win.width / gridWidth
+    width: win.width / gridWidth,
   },
   icon: {
     backgroundColor: 'white',
-    borderRadius: 8
+    borderRadius: 8,
+    padding: 5
   },
   iconTitle: {
     padding: 10,

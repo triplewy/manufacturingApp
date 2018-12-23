@@ -85,8 +85,8 @@ module.exports = function(passport, conn, loggedIn) {
 
     authRoutes.post('/signin', passport.authenticate('local-login'), (req, res) => {
       console.log('- Request received:', req.method.cyan, '/api/auth/signin');
-      Promise.all([sessionFunctions.getLines(req.user), sessionFunctions.getMachines(req.user)]).then(allData => {
-        res.send({lines: allData[0], machines: allData[1]})
+      Promise.all([sessionFunctions.getLines(req.user), sessionFunctions.getMachines(req.user), sessionFunctions.getNames(req.user)]).then(allData => {
+        res.send({lines: allData[0], machines: allData[1], names: allData[2]})
       }).catch(err => {
         console.log(err);
       })

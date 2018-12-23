@@ -2,20 +2,19 @@ import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { fetchSessionLogin } from './splash.operations'
 import { connect } from 'react-redux'
-import { getName } from '../Storage'
+import { getNameStorage } from '../Storage'
 
 class Splash extends React.Component {
 
   componentDidMount() {
     this.props.sessionLogin().then(() => {
       if (this.props.success) {
-        getName().then(name => {
-          if (name === '') {
-            this.props.navigation.navigate('Name')
-          } else {
-            this.props.navigation.navigate('Tabs')
-          }
-        })
+        console.log('nameIndex', this.props.nameIndex);
+        if (this.props.nameIndex < 0) {
+          this.props.navigation.navigate('Name')
+        } else {
+          this.props.navigation.navigate('Tabs')
+        }
       } else {
         this.props.navigation.navigate('Auth')
       }
@@ -48,7 +47,8 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
   return {
-    success: state.splash.success
+    success: state.splash.success,
+    nameIndex: state.name.nameIndex
   }
 }
 

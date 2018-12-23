@@ -10,7 +10,12 @@ export default styles = StyleSheet.create({
       padding: 20
     },
     statsView: {
-      backgroundColor: 'white',
+      // backgroundColor: 'white',
       padding: 20,
+    },
+    icon: {
+      backgroundColor: 'white',
+      borderRadius: 8,
+      padding: 5
     }
   })

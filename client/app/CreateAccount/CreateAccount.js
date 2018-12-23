@@ -36,7 +36,6 @@ class CreateAccount extends React.Component {
             secureTextEntry
             autoCapitalize='none'
             autoCorrect={false}
-            returnKeyType="go"
             style={[styles.textInput, {borderColor: this.props.confirmPassword.length > 5 && this.props.password === this.props.confirmPassword ? '#83D3D6' : 'red'}]}
             value={this.props.confirmPassword}
             onChangeText={(text) => this.props.setConfirmPassword(text)}

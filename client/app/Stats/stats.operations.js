@@ -1,8 +1,15 @@
-import { setLineIndex, setTimePeriod } from './stats.actions'
+import { setLineIndex, setNameIndex, setTimePeriod } from './stats.actions'
 
 export function setLine(index) {
   return (dispatch) => {
     dispatch(setLineIndex(index))
+    return Promise.resolve()
+  }
+}
+
+export function setName(index) {
+  return (dispatch) => {
+    dispatch(setNameIndex(index))
     return Promise.resolve()
   }
 }

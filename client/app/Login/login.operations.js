@@ -28,7 +28,7 @@ export function loginUser(username, password, navigation) {
         for (var i = 0; i < data.lines.length; i++) {
           data.lines[i].name = 'LINE ' + data.lines[i].name
         }
-        dispatch(sessionLoginSuccess(data.lines, data.machines))
+        dispatch(sessionLoginSuccess(data.lines, data.machines, data.names))
         dispatch(getUserSuccess())
         navigation.navigate('Name')
       }

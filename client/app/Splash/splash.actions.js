@@ -8,16 +8,18 @@ export function sessionLogin() {
   }
 }
 
-export function sessionLoginSuccess(lines, machines) {
+export function sessionLoginSuccess(lines, machines, names) {
   return {
     type: SESSION_LOGIN_SUCCESS,
     lines: lines,
-    machines: machines
+    machines: machines,
+    names: names
   }
 }
 
-export function sessionLoginFailure() {
+export function sessionLoginFailure(error) {
   return{
-    type: SESSION_LOGIN_FAILURE
+    type: SESSION_LOGIN_FAILURE,
+    error: error
   }
 }

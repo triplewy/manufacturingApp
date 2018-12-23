@@ -6,14 +6,11 @@ import plusIcon from '../icons/plus-icon.png'
 import ImagePicker from 'react-native-image-picker';
 import deleteIcon from '../icons/delete-icon.png'
 import ImageModal from '../ImageModal'
-import { getName } from '../Storage'
 
 class Input extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: '',
-
       images: [],
       showModal: false,
       selectedImage: null
@@ -26,9 +23,6 @@ class Input extends React.Component {
   }
 
   componentDidMount() {
-    getName().then(name => {
-      this.setState({name: name})
-    })
   }
 
   addImage() {
@@ -111,7 +105,7 @@ class Input extends React.Component {
           </View>
           <View style={{flexDirection: 'row'}}>
             <Text style={{fontSize: 18, color: '#888888'}}>Line Leader:</Text>
-            <Text style={styles.lockedText}>{this.state.name}</Text>
+            <Text style={styles.lockedText}>{this.props.names[this.props.nameIndex].name}</Text>
           </View>
         </View>
         <View style={styles.inputView}>
@@ -143,7 +137,7 @@ class Input extends React.Component {
           <ImageModal selectedImage={this.state.selectedImage} showModal={this.state.showModal} toggleModal={this.toggleModal} />
         </View>
         <TouchableOpacity
-          onPress={() => this.props.upload(this.props.navigation, this.state.images, this.props.downtime, this.props.description, this.state.name)}
+          onPress={() => this.props.upload(this.props.navigation, this.state.images, this.props.downtime, this.props.description, this.props.names[this.props.nameIndex].name)}
           disabled={!(this.props.downtime && this.props.description) || this.props.submitted}
         >
           <View style={{backgroundColor: (this.props.downtime && this.props.description) ? '#83D3D6' : '#f1f1f1', alignItems: 'center', justifyContent: 'center', height: 80}}>
@@ -231,7 +225,8 @@ function mapStateToProps(state) {
     lineIndex: state.grid.lineIndex,
     downtime: state.input.downtime,
     description: state.input.description,
-    // images: state.input.images,
+    names: state.splash.names,
+    nameIndex: state.name.nameIndex,
     submitted: state.input.submitted
   }
 }
@@ -240,8 +235,6 @@ function mapDispatchToProps(dispatch) {
   return {
     handleDowntimeInput: (text) => dispatch(handleDowntime(text)),
     handleDescriptionInput: (text) => dispatch(handleDescription(text)),
-    // addImage: (image) => dispatch(handleAddImage(image)),
-    // deleteImage: (index) => dispatch(handleDeleteImage(index)),
     upload: (navigation, images, downtime, description, name) => dispatch(handleUpload(navigation, images, downtime, description, name))
   }
 }

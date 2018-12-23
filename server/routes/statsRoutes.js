@@ -203,6 +203,36 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
+    statsRoutes.get('/downtime/workers/time=:timePeriod/line=:lineId', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/workers/' + req.params.timePeriod + '/line/' + req.params.lineId);
+      const userId = req.user
+      const timePeriodQuery = parseTotalTimePeriod(req.params.timePeriod * 1)
+      conn.query(
+      'SELECT SUM(b.downtime) AS totalDowntime, b.lineLeaderName AS name FROM downtime AS b WHERE b.createdDate <= CURRENT_TIMESTAMP' + timePeriodQuery +
+      'AND b.lineId = :lineId GROUP BY b.lineLeaderName ORDER BY totalDowntime DESC', {userId: userId, lineId: req.params.lineId}, function(err, result) {
+        if (err) {
+          console.log(err);
+        } else {
+          res.send(result)
+        }
+      })
+    })
+
+    statsRoutes.get('/downtime/workers/time=:timePeriod/line=:lineId/:date', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/workers/time=' + req.params.timePeriod + '/line=' + req.params.lineId + '/' + req.params.date);
+      const userId = req.user
+      const timePeriodQuery = parseTimePeriodDate(req.params.timePeriod * 1)
+      conn.query(
+      'SELECT SUM(b.downtime) AS totalDowntime, b.lineLeaderName AS name FROM downtime AS b WHERE b.lineId = :lineId' + timePeriodQuery +
+      'GROUP BY b.lineLeaderName ORDER BY totalDowntime DESC', {userId: userId, date: req.params.date, lineId: req.params.lineId}, function(err, result) {
+        if (err) {
+          console.log(err);
+        } else {
+          res.send(result)
+        }
+      })
+    })
+
     function parseTotalTimePeriod(timePeriod) {
       switch (timePeriod) {
         case 0:
