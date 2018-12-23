@@ -14,7 +14,7 @@ export default class GridItem extends React.PureComponent {
     return (
       <TouchableOpacity onPress={() => this.props.navigation.navigate('Input', {...this.props})}>
         <View style={styles.gridItem}>
-          <View styles={styles.icon}>
+          <View style={styles.icon}>
             <Image
               source={{uri: this.props.icon_url}}
               resizeMode={'contain'}
@@ -30,7 +30,7 @@ export default class GridItem extends React.PureComponent {
 }
 
 const win = Dimensions.get('window');
-var imageWidth = 8
+var imageWidth = 9
 var gridWidth = 6
 if (!Platform.isPad) {
   imageWidth = 6
@@ -44,8 +44,8 @@ const styles = StyleSheet.create({
   },
   icon: {
     backgroundColor: 'white',
-    borderRadius: 8,
-    padding: 5
+    padding: 12,
+    borderRadius: 12,
   },
   iconTitle: {
     padding: 10,
@@ -55,6 +55,5 @@ const styles = StyleSheet.create({
   image: {
     width: win.width / imageWidth,
     height: win.width / imageWidth,
-    borderRadius: 8
   }
 })

@@ -28,6 +28,7 @@ export function handleDeleteImage(index) {
 export function handleUpload(navigation, images, downtime, description, name) {
   return (dispatch) => {
     var formData = new FormData();
+    console.log(images);
     for (var i = 0; i < images.length; i++) {
       formData.append('image', {uri: images[i].uri, name: "file"})
     }
@@ -37,7 +38,7 @@ export function handleUpload(navigation, images, downtime, description, name) {
     formData.append('description', description);
 
     dispatch(upload())
-
+    console.log('here');
     return formdataPostRequest(global.API_URL + '/api/input/submit', formData)
     .then(data => {
       if (data.message === 'success') {

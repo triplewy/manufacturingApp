@@ -34,8 +34,8 @@ var server = http.createServer(app)
 
 app.use(cors({credentials: true, origin: true}))
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+// app.use(bodyParser.json({limit: '50mb'}));
+// app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 var sessionMiddleware = session({
   store: sessionStore,

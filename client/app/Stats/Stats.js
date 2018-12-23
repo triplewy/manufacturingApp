@@ -46,11 +46,6 @@ class Stats extends React.Component {
           index={this.props.lineIndex}
           selectItem={this.props.setLineIndex}
         />
-        {/* <ChooseModal
-          items={[{name: 'ALL WORKERS'}].concat(this.props.names)}
-          index={this.props.nameIndex}
-          selectItem={this.props.setNameIndex}
-        /> */}
         <TotalStats
           refreshing={this.state.refreshing}
         />
@@ -61,9 +56,9 @@ class Stats extends React.Component {
         <MachineStats
           refreshing={this.state.refreshing}
         />
-        <WorkerStats
+        {/* <WorkerStats
           refreshing={this.state.refreshing}
-        />
+        /> */}
       </ScrollView>
     )
   }

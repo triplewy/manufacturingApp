@@ -44,7 +44,9 @@ class Input extends React.Component {
          } else if (response.customButton) {
            console.log('User tapped custom button: ', response.customButton);
          } else {
-           const source = { uri: response.uri };
+           console.log(response.uri);
+           console.log(response.data);
+           const source = { uri: 'data:image/jpeg;base64,' + response.data };
            // You can also display the image using data:
            // const source = { uri: 'data:image/jpeg;base64,' + response.data };
 

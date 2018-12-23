@@ -139,6 +139,8 @@ export function formdataPostRequest(path, formdata) {
       const fetchParams = {
         method: 'POST',
         headers: {
+          "Accept": "application/json",
+          "Content-Type": "multipart/form-data",
           "cookie": cookie,
         },
         body: formdata,
@@ -146,7 +148,12 @@ export function formdataPostRequest(path, formdata) {
       }
 
       fetch(path, fetchParams)
-      .then(res => res.json())
+      .then(res => {
+        if (res.headers.get('set-cookie')) {
+          setCookie(res.headers.get("set-cookie"))
+        }
+        return res.json()
+      })
       .then(data => {
         return resolve(data)
       })

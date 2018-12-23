@@ -43,7 +43,7 @@ class DayStats extends React.Component {
         </View>
         <View>
           <MachineStats date={params.date} />
-          <WorkerStats date={params.date} />
+          {/* <WorkerStats date={params.date} /> */}
           <ShiftStats date={params.date} />
         </View>
 

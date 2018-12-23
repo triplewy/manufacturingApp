@@ -41,7 +41,8 @@ class Name extends React.Component {
           <Text style={styles.title}>Name</Text>
           <View style={{backgroundColor: 'white', height: win.height/2, width: win.width * 3 / 4, borderRadius: 8}}>
             <FlatList
-              key={this.props.nameIndex}
+              // key={this.props.nameIndex}
+              extraData={this.props.nameIndex}
               data={this.props.names}
               renderItem={this.renderItem}
               keyExtractor={(item, index) => index.toString()}
