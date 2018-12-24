@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS downtimeImages (
   downtimeId INTEGER NOT NULL,
   imageUrl VARCHAR(255) NOT NULL,
   createdDate DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  FOREIGN KEY(downtimeId) REFERENCES downtime(downtimeId)
+  FOREIGN KEY(downtimeId) REFERENCES downtime(downtimeId) ON DELETE CASCADE
 );
 
 DELIMITER //
