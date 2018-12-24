@@ -83,7 +83,7 @@ const db_config = {
   user     : process.env.MYSQL_USER,
   password : process.env.MYSQL_PASSWORD,
   database : process.env.MYSQL_DATABASE,
-  timezone: 'utc'
+  timezone: '-05:00'
 }
 
 var conn = mysql.createConnection(db_config);

@@ -150,6 +150,7 @@ export function formdataPostRequest(path, formdata) {
 
       fetch(path, fetchParams)
       .then(res => {
+        console.log(res);
         if (res.headers.get('set-cookie')) {
           setCookie(res.headers.get("set-cookie"))
         }

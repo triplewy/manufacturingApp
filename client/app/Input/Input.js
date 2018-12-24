@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { handleDowntime, handleDescription, handleAddImage, handleDeleteImage, handleUpload } from './input.operations'
 import plusIcon from '../icons/plus-icon.png'
 import ImagePicker from 'react-native-image-picker';
+import ImageResizer from 'react-native-image-resizer';
 import deleteIcon from '../icons/delete-icon.png'
 import ImageModal from '../ImageModal'
 
@@ -44,13 +45,16 @@ class Input extends React.Component {
          } else if (response.customButton) {
            console.log('User tapped custom button: ', response.customButton);
          } else {
-           console.log(response.uri);
-           console.log(response.data);
-           const source = { uri: 'data:image/jpeg;base64,' + response.data };
-           // You can also display the image using data:
-           // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-
-           this.setState({images: this.state.images.concat(source)})
+           ImageResizer.createResizedImage(response.uri, 1080, 1080 * 4 / 3, 'JPEG', 75).then((response) => {
+             // response.uri is the URI of the new image that can now be displayed, uploaded...
+             // response.path is the path of the new image
+             // response.name is the name of the new image with the extension
+             // response.size is the size of the new image
+             const source = { uri: response.uri };
+             this.setState({images: this.state.images.concat(source)})
+           }).catch((err) => {
+             console.log(err)
+           })
          }
        })
      }
