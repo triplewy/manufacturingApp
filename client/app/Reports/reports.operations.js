@@ -13,7 +13,7 @@ export function fetchReports(lineId, machineId, date) {
     if (machineId) {
       url += '/api/reports/machine=' + machineId
     } else {
-      url += '/api/reports/line/' + lineId
+      url += '/api/reports/line=' + lineId
     }
 
     if (date) {
@@ -40,7 +40,7 @@ export function fetchUpdateReports(lineId, machineId, date, page) {
     if (machineId) {
       url += '/api/reports/machine=' + machineId
     } else {
-      url += '/api/reports/line/' + lineId
+      url += '/api/reports/line=' + lineId
     }
 
     if (date) {

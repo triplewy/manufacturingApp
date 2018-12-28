@@ -4,9 +4,9 @@ import { getRequest } from '../../Storage'
 export function fetchMachineStats(lineId, timePeriod, date) {
   return (dispatch) => {
     dispatch(getStats())
-    var url = '/api/stats/downtime/machines/time=' + timePeriod + '/line=' + lineId
+    var url = '/api/stats/downtime/line=' + lineId + '/timePeriod=' + timePeriod + '/machines'
     if (date) {
-      url += '/' + date
+      url += '/date=' + date
     }
     return getRequest(global.API_URL + url)
     .then(data => {

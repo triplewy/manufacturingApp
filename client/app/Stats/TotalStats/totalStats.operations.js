@@ -4,7 +4,7 @@ import { getRequest } from '../../Storage'
 export function fetchTotalStats(lineId, timePeriod) {
   return (dispatch) => {
     dispatch(getStats())
-    return getRequest(global.API_URL + '/api/stats/totalDowntime/' + timePeriod + '/' + lineId)
+    return getRequest(global.API_URL + '/api/stats/totalDowntime/line=' + lineId + '/timePeriod=' + timePeriod)
     .then(data => {
       console.log(data);
       dispatch(getStatsSuccess(data.totalDowntime))

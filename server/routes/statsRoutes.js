@@ -3,8 +3,8 @@ module.exports = function(conn, loggedIn) {
     var statsRoutes = require('express').Router();
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-    statsRoutes.get('/totalDowntime/:timePeriod/:lineId', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/stats/totalDowntime/' + req.params.timePeriod + '/' + req.params.lineId);
+    statsRoutes.get('/totalDowntime/line=:lineId/timePeriod=:timePeriod', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/stats/totalDowntime/line=' + req.params.lineId + '/timePeriod=' + req.params.timePeriod);
       const userId = req.user
       const timePeriodQuery = parseTotalTimePeriod(req.params.timePeriod * 1)
       conn.query('SELECT SUM(b.downtime) AS totalDowntime FROM downtime AS b WHERE b.lineId = :lineId AND b.createdDate <= CURRENT_TIMESTAMP' + timePeriodQuery, {userId: userId, lineId: req.params.lineId}, function(err, result) {
@@ -16,8 +16,8 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
-    statsRoutes.get('/downtime/time/:timePeriod/line/:lineId', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/time/' + req.params.timePeriod + '/line/' + req.params.lineId);
+    statsRoutes.get('/downtime/line=:lineId/timePeriod=:timePeriod', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/line=' + req.params.lineId + '/timePeriod=' + req.params.timePeriod);
       const userId = req.user
       const timePeriodQuery = parseTimePeriodLine(req.params.timePeriod * 1)
       conn.query(timePeriodQuery, {userId: userId, lineId: req.params.lineId}, function(err, result) {
@@ -135,8 +135,8 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
-    statsRoutes.get('/downtime/machines/time=:timePeriod/line=:lineId', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/machines/' + req.params.timePeriod + '/line/' + req.params.lineId);
+    statsRoutes.get('/downtime/line=:lineId/timePeriod=:timePeriod/machines', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/line=' + req.params.lineId + '/timePeriod=' + req.params.timePeriod + '/machines');
       const userId = req.user
       const timePeriodQuery = parseTotalTimePeriod(req.params.timePeriod * 1)
       conn.query(
@@ -151,8 +151,8 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
-    statsRoutes.get('/downtime/machines/time=:timePeriod/line=:lineId/:date', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/machines/time=' + req.params.timePeriod + '/line=' + req.params.lineId + '/' + req.params.date);
+    statsRoutes.get('/downtime/line=:lineId/timePeriod=:timePeriod/machines/date=:date', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/line=' + req.params.lineId + '/timePeriod=' + req.params.timePeriod + '/machines/date=' + req.params.date);
       const userId = req.user
       const timePeriodQuery = parseTimePeriodDate(req.params.timePeriod * 1)
       conn.query(
@@ -167,24 +167,24 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
-    statsRoutes.get('/downtime/lines/:timePeriod/:date', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/lines/' + req.params.timePeriod + '/' + req.params.date);
-      const userId = req.user
-      const timePeriodQuery = parseTimePeriodDate(req.params.timePeriod * 1)
-      conn.query(
-        'SELECT a.*, CONCAT(\'Line\', \' \', a.lineId) AS name, SUM(b.downtime) AS totalDowntime FROM assemblyLines AS a ' +
-        'JOIN downtime AS b ON b.lineId = a.lineId' + timePeriodQuery +
-        'WHERE a.userId = :userId GROUP BY a.lineId ORDER BY totalDowntime DESC', {userId: userId, date: req.params.date}, function(err, result) {
-        if (err) {
-          console.log(err);
-        } else {
-          res.send(result)
-        }
-      })
-    })
+    // statsRoutes.get('/downtime/lines/:timePeriod/:date', loggedIn, (req, res) => {
+    //   console.log('- Request received:', req.method.cyan, '/api/stats/downtime/lines/' + req.params.timePeriod + '/' + req.params.date);
+    //   const userId = req.user
+    //   const timePeriodQuery = parseTimePeriodDate(req.params.timePeriod * 1)
+    //   conn.query(
+    //     'SELECT a.*, CONCAT(\'Line\', \' \', a.lineId) AS name, SUM(b.downtime) AS totalDowntime FROM assemblyLines AS a ' +
+    //     'JOIN downtime AS b ON b.lineId = a.lineId' + timePeriodQuery +
+    //     'WHERE a.userId = :userId GROUP BY a.lineId ORDER BY totalDowntime DESC', {userId: userId, date: req.params.date}, function(err, result) {
+    //     if (err) {
+    //       console.log(err);
+    //     } else {
+    //       res.send(result)
+    //     }
+    //   })
+    // })
 
-    statsRoutes.get('/downtime/shifts/line=:lineId/:timePeriod/:date', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/shifts/line=' + req.params.lineId + '/' + req.params.timePeriod + '/' + req.params.date);
+    statsRoutes.get('/downtime/line=:lineId/timePeriod=:timePeriod/shifts/date=:date', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/line=' + req.params.lineId + '/timePeriod=' + req.params.timePeriod + '/shifts/date=' + req.params.date);
       const userId = req.user
       const timePeriodQuery = parseTimePeriodDate(req.params.timePeriod * 1)
       conn.query(
@@ -203,8 +203,8 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
-    statsRoutes.get('/downtime/workers/time=:timePeriod/line=:lineId', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/workers/' + req.params.timePeriod + '/line/' + req.params.lineId);
+    statsRoutes.get('/downtime/line=:lineId/timePeriod=:timePeriod/workers', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/line=' + req.params.lineId + '/timePeriod=' + req.params.timePeriod + '/workers');
       const userId = req.user
       const timePeriodQuery = parseTotalTimePeriod(req.params.timePeriod * 1)
       conn.query(
@@ -218,8 +218,8 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
-    statsRoutes.get('/downtime/workers/time=:timePeriod/line=:lineId/:date', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/workers/time=' + req.params.timePeriod + '/line=' + req.params.lineId + '/' + req.params.date);
+    statsRoutes.get('/downtime/line=:lineId/timePeriod=:timePeriod/workers/date=:date', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/line=' + req.params.lineId + '/timePeriod=' + req.params.timePeriod + '/workers/date=' + req.params.date);
       const userId = req.user
       const timePeriodQuery = parseTimePeriodDate(req.params.timePeriod * 1)
       conn.query(

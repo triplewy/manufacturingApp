@@ -4,7 +4,7 @@ import { getRequest } from '../../Storage'
 export function fetchShiftStats(lineId, timePeriod, date) {
   return (dispatch) => {
     dispatch(getStats())
-    return getRequest(global.API_URL + '/api/stats/downtime/shifts/line=' + lineId + '/' + timePeriod + '/' + date)
+    return getRequest(global.API_URL + '/api/stats/downtime/line=' + lineId + '/timePeriod=' + timePeriod + '/shifts/date=' + date)
     .then(data => {
       console.log(data);
       var totalDowntime = 0

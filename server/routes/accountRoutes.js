@@ -23,29 +23,29 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
-    accountRoutes.get('/lines', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/account/lines');
-      const userId = req.user
-      conn.query(
-      'SELECT a.lineId, b.name FROM assemblyLineUsers AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.userId = :userId ORDER BY lineId ASC', {userId: userId}, function(err, result) {
-        if (err) {
-          console.log(err);
-        } else {
-          res.send(result)
-        }
-      })
-    })
-
-    accountRoutes.get('/line=:lineId/machines', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/account/line=' + req.params.lineId + '/machines');
-      conn.query('SELECT * FROM machines WHERE lineId = :lineId', {lineId: req.params.lineId}, function(err, result) {
-        if (err) {
-          console.log(err);
-        } else {
-          res.send(result)
-        }
-      })
-    })
+    // accountRoutes.get('/lines', loggedIn, (req, res) => {
+    //   console.log('- Request received:', req.method.cyan, '/api/account/lines');
+    //   const userId = req.user
+    //   conn.query(
+    //   'SELECT a.lineId, b.name FROM assemblyLineUsers AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.userId = :userId ORDER BY lineId ASC', {userId: userId}, function(err, result) {
+    //     if (err) {
+    //       console.log(err);
+    //     } else {
+    //       res.send(result)
+    //     }
+    //   })
+    // })
+    //
+    // accountRoutes.get('/line=:lineId/machines', loggedIn, (req, res) => {
+    //   console.log('- Request received:', req.method.cyan, '/api/account/line=' + req.params.lineId + '/machines');
+    //   conn.query('SELECT * FROM machines WHERE lineId = :lineId', {lineId: req.params.lineId}, function(err, result) {
+    //     if (err) {
+    //       console.log(err);
+    //     } else {
+    //       res.send(result)
+    //     }
+    //   })
+    // })
 
     return accountRoutes;
 
