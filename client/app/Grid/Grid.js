@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView, View,  FlatList, Platform } from 'react-native';
 import { fetchGrid, fetchLines, setLine } from './grid.operations'
 import { connect } from 'react-redux'
+import PushNotification from '../PushNotification/PushNotification'
 import GridItem from './GridItem'
 import ChooseModal from '../ChooseModal'
 import styles from "./grid.style";
@@ -26,6 +27,7 @@ class Grid extends React.Component {
     }
     return (
       <ScrollView>
+        <PushNotification />
         <ChooseModal
           items={this.props.lines}
           index={this.props.lineIndex}

@@ -23,6 +23,23 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
+    accountRoutes.post('/token', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/account/token');
+      const userId = req.user
+      conn.query('UPDATE users SET deviceToken = :token WHERE userId = :userId', {token: req.body.token, userId: userId}, function(err, result) {
+        if (err) {
+          console.log(err);
+          res.send({ message: 'failure' })
+        } else {
+          if (result.affectedRows) {
+            res.send({ message: 'success' })
+          } else {
+            res.send({ message: 'failure' })
+          }
+        }
+      })
+    })
+
     // accountRoutes.get('/lines', loggedIn, (req, res) => {
     //   console.log('- Request received:', req.method.cyan, '/api/account/lines');
     //   const userId = req.user

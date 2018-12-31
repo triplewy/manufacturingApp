@@ -17,6 +17,7 @@ var uuidv1 = require('uuid/v1');
 var bcrypt = require('bcrypt');
 var fs = require('fs')
 var cors = require('cors')
+var apn = require('apn')
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 var Redis = require('redis')
@@ -27,6 +28,17 @@ var sessionStore = new RedisStore({
   port: 6379,
   client: client
 })
+
+var options = {
+  token: {
+    key: process.env.KEY_PATH,
+    keyId: process.env.KEY_ID,
+    teamId: process.env.TEAM_ID
+  },
+  production: false
+};
+
+var apnProvider = new apn.Provider(options);
 
 var app = express();
 var s3 = new aws.S3()
@@ -121,6 +133,8 @@ function serverAlive() {
 
 serverAlive()
 
+// sendNotification()
+
 var upload = multer({
   storage: multerS3({
     s3: s3,
@@ -158,6 +172,7 @@ var statsRoutes = require('./routes/statsRoutes')
 var accountRoutes = require('./routes/accountRoutes')
 var gridRoutes = require('./routes/gridRoutes')
 var adminRoutes = require('./routes/adminRoutes')
+var homeRoutes = require('./routes/homeRoutes')
 
 app.get('/api/sessionLogin', loggedIn, (req, res) => {
   console.log('- Request received:', req.method.cyan, '/api/sessionLogin');
@@ -211,6 +226,33 @@ module.exports = {
         }
       })
     })
+  },
+
+  sendNotification: function(deviceToken) {
+    return new Promise(function(resolve, reject) {
+      var notification = new apn.Notification();
+
+      notification.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
+      notification.badge = 1;
+      notification.sound = "ping.aiff";
+      notification.alert = "You have a new message";
+      notification.payload = {'messageFrom': 'Streamline'};
+      notification.topic = process.env.BUNDLE_ID;
+
+      apnProvider.send(notification, deviceToken).then((res) => {
+        // see documentation for an explanation of result
+        console.log(res);
+        if (res.sent.length) {
+          return resolve('notification sent')
+        } else {
+          return resolve('notification failed to send')
+        }
+      }).catch(err => {
+        return reject(err)
+      })
+    })
+
+
   }
 }
 
@@ -228,6 +270,8 @@ app.use('/api/account', accountRoutes(conn, loggedIn))
 app.use('/api/grid', gridRoutes(conn, loggedIn))
 
 app.use('/api/admin', adminRoutes(conn, loggedIn, csvUpload))
+
+app.use('/api/home', homeRoutes(conn, loggedIn))
 
 server.listen(8082, function(){
     console.log('- Server listening on port 8082');

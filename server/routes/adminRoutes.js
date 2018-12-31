@@ -41,11 +41,11 @@ module.exports = function(conn, loggedIn, csvUpload) {
       }
     })
 
-    adminRoutes.get('/user=:userId/lines', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/admin/user=' + req.params.userId + '/lines');
+    adminRoutes.get('/user=:userId', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/admin/user=' + req.params.userId);
       const userId = req.user
       if (userId == 1) {
-        conn.query('SELECT lineId FROM assemblyLineUsers WHERE userId = :userId', {userId: req.params.userId}, function(err, result) {
+        conn.query('SELECT a.*, b.lineId FROM users AS a JOIN assemblyLineUsers AS b ON b.userId = a.userId WHERE a.userId = :userId', {userId: req.params.userId}, function(err, result) {
           if (err) {
             console.log(err);
           } else {
@@ -114,20 +114,33 @@ module.exports = function(conn, loggedIn, csvUpload) {
       console.log('- Request received:', req.method.cyan, '/api/admin/registerUser');
       const userId = req.user
       if (userId == 1) {
-        conn.query('UPDATE users SET companyId = :companyId WHERE userId = :userId', {companyId: req.body.companyId, userId: req.body.userId}, function(err, result) {
+        conn.query('START TRANSACTION', [], function(err, result) {
           if (err) {
-            console.log(err);
+            conn.query('ROLLBACK')
           } else {
-            var assemblyLineUsers = []
-            for (var i = 0; i < req.body.lineIds.length; i++) {
-              assemblyLineUsers.push([req.body.userId, req.body.lineIds[i]])
-            }
-            conn.query('INSERT INTO assemblyLineUsers (userId, lineId) VALUES ?', [assemblyLineUsers], function(err, result) {
+            conn.query('UPDATE users SET companyId = :companyId, isMechanic = :isMechanic, isAdmin = :isAdmin WHERE userId = :userId',
+            {companyId: req.body.companyId, isMechanic: req.body.isMechanic, isAdmin: req.body.isAdmin, userId: req.body.userId}, function(err, result) {
               if (err) {
-                console.log(err);
+                conn.query('ROLLBACK')
               } else {
-                console.log("Registered user successfully");
-                res.send({message: 'success'})
+                var assemblyLineUsers = []
+                for (var i = 0; i < req.body.lineIds.length; i++) {
+                  assemblyLineUsers.push([req.body.userId, req.body.lineIds[i]])
+                }
+                conn.query('INSERT INTO assemblyLineUsers (userId, lineId) VALUES ?', [assemblyLineUsers], function(err, result) {
+                  if (err) {
+                    conn.query('ROLLBACK')
+                  } else {
+                    conn.query('COMMIT', [], function(err, result) {
+                      if (err) {
+                        conn.query('ROLLBACK')
+                      } else {
+                        console.log("Registered user successfully");
+                        res.send({message: 'success'})
+                      }
+                    })
+                  }
+                })
               }
             })
           }
@@ -145,12 +158,19 @@ module.exports = function(conn, loggedIn, csvUpload) {
         for (var i = 0; i < req.body.lineIds.length; i++) {
           assemblyLineUsers.push([req.body.userId, req.body.lineIds[i]])
         }
-        conn.query('INSERT IGNORE INTO assemblyLineUsers (userId, lineId) VALUES ?', [assemblyLineUsers], function(err, result) {
+        conn.query('UPDATE users SET isMechanic = :isMechanic, isAdmin = :isAdmin WHERE userId = :userId',
+        {isMechanic: req.body.isMechanic, isAdmin: req.body.isAdmin, userId: req.body.userId}, function(err, result) {
           if (err) {
             console.log(err);
           } else {
-            console.log("Edited user successfully");
-            res.send({message: 'success'})
+            conn.query('INSERT IGNORE INTO assemblyLineUsers (userId, lineId) VALUES ?', [assemblyLineUsers], function(err, result) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log("Edited user successfully");
+                res.send({message: 'success'})
+              }
+            })
           }
         })
       } else {

@@ -58,6 +58,28 @@ export function getNameStorage() {
   })
 }
 
+export function getDeviceTokenRegistered() {
+  return new Promise(function(resolve, reject) {
+    AsyncStorage.getItem('deviceTokenRegistered').then(value => {
+      return resolve(value)
+    })
+    .catch(err => {
+      return reject(err)
+    })
+  })
+}
+
+export function setDeviceTokenRegistered() {
+  return new Promise(function(resolve, reject) {
+    AsyncStorage.setItem('deviceTokenRegistered', 'true').then(() => {
+      return resolve({ message : 'success' })
+    })
+    .catch(err => {
+      return reject(err)
+    })
+  })
+}
+
 export function clearCookies() {
   return new Promise(function(resolve, reject) {
     CookieManager.clearAll()

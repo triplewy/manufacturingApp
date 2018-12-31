@@ -27,6 +27,32 @@ module.exports = function(passport, conn, loggedIn) {
       }
     ))
 
+    passport.use('local-admin-login', new LocalStrategy(
+     function(username, password, done) {
+       conn.query('SELECT a.*, b.* FROM logins AS a JOIN users AS b ON b.userId = a.userId WHERE a.username=?', [username], function(err, result) {
+          if (err) {
+            return done(err)
+          }
+          if (result.length == 0) {
+            return done(false)
+          }
+          bcrypt.compare(password, result[0].passwordHash, (err, isValid) => {
+            if (err) {
+              return done(err)
+            }
+            if (!isValid) {
+              return done('Incorrect credentials')
+            }
+
+            if (!result[0].isAdmin) {
+              return done('Not admin')
+            }
+            return done(null, result[0].userId)
+          })
+        })
+      }
+    ))
+
     passport.use('local-signup', new LocalStrategy(
       function(username, password, done) {
         bcrypt.hash(password, 10, function(err, passwordHash) {
@@ -90,6 +116,28 @@ module.exports = function(passport, conn, loggedIn) {
       }).catch(err => {
         console.log(err);
       })
+    })
+
+    authRoutes.post('/signin/admin', function(req, res, next) {
+      console.log('- Request received:', req.method.cyan, '/api/auth/signin/admin');
+      passport.authenticate('local-admin-login', function(err, user) {
+        if (err) {
+          console.log(err);
+          res.send({ message: err })
+        } else {
+          req.logIn(user, function(err) {
+            if (err) {
+              console.log(err);
+            } else {
+              Promise.all([sessionFunctions.getLines(req.user), sessionFunctions.getMachines(req.user), sessionFunctions.getNames(req.user)]).then(allData => {
+                res.send({lines: allData[0], machines: allData[1], names: allData[2]})
+              }).catch(err => {
+                console.log(err);
+              })
+            }
+          })
+        }
+      })(req, res, next)
     })
 
     authRoutes.post('/logout', loggedIn, function(req, res) {
