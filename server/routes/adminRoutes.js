@@ -128,14 +128,17 @@ module.exports = function(conn, loggedIn, csvUpload, client) {
       const userId = req.user
       conn.query('START TRANSACTION', [], function(err, result) {
         if (err) {
+          console.log(err);
           conn.query('ROLLBACK')
         } else {
           conn.query('INSERT INTO notifications (companyId, isGlobal, message) VALUES (?,?,?)', [req.body.companyId, true, req.body.message], function(err, result) {
             if (err) {
+              console.log(err);
               conn.query('ROLLBACK')
             } else {
               conn.query('SELECT userId, deviceToken FROM users WHERE companyId = :companyId AND deviceToken IS NOT NULL', { companyId: req.body.companyId }, function(err, result) {
                 if (err) {
+                  console.log(err);
                   conn.query('ROLLBACK')
                 } else {
                   var devices = []
@@ -169,6 +172,7 @@ module.exports = function(conn, loggedIn, csvUpload, client) {
                       console.log(err);
                     } else {
                       serverFunctions.sendNotifications(devices, req.body.message).then(data => {
+                        console.log(data);
                         if (data.failed == 0) {
                           res.send({ message: 'All succeeded'})
                         } else {
