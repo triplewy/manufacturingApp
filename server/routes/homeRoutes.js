@@ -94,8 +94,8 @@ module.exports = function(conn, loggedIn) {
             }
 
             resultMachines.sort(function(a, b){
-              var keyA = a.percentage,
-                  keyB = b.percentage
+              var keyA = a.totalDowntime,
+                  keyB = b.totalDowntime
 
               if(keyA < keyB) return 1;
               if(keyA > keyB) return -1;
