@@ -3,6 +3,7 @@ node_modules/**/*
 npm-debug.*
 node_modules
 /server/.env
+/server/.env.swp
 /server/dump.rdb
 /client/ios/*
 /client/android/*

@@ -29,17 +29,6 @@ var sessionStore = new RedisStore({
   client: client
 })
 
-var options = {
-  token: {
-    key: process.env.KEY_PATH,
-    keyId: process.env.KEY_ID,
-    teamId: process.env.TEAM_ID
-  },
-  production: false
-};
-
-var apnProvider = new apn.Provider(options);
-
 var app = express();
 var s3 = new aws.S3()
 var server = http.createServer(app)
@@ -228,48 +217,66 @@ module.exports = {
     })
   },
 
-  sendNotification: function(deviceToken) {
+  sendNotifications: function(devices, alert) {
     return new Promise(function(resolve, reject) {
-      var notification = new apn.Notification();
 
-      notification.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
-      notification.badge = 1;
-      notification.sound = "ping.aiff";
-      notification.alert = "You have a new message";
-      notification.payload = {'messageFrom': 'Streamline'};
-      notification.topic = process.env.BUNDLE_ID;
+      var options = {
+        token: {
+          key: process.env.KEY_PATH,
+          keyId: process.env.KEY_ID,
+          teamId: process.env.TEAM_ID
+        },
+        production: false
+      };
 
-      apnProvider.send(notification, deviceToken).then((res) => {
-        // see documentation for an explanation of result
-        console.log(res);
-        if (res.sent.length) {
-          return resolve('notification sent')
-        } else {
-          return resolve('notification failed to send')
+      var apnProvider = new apn.Provider(options);
+
+      var promises = []
+
+      for (var i = 0; i < devices.length; i++) {
+        var notification = new apn.Notification();
+        notification.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
+        notification.badge = devices[i].badge;
+        notification.sound = "ping.aiff";
+        notification.alert = alert
+        notification.payload = {'messageFrom': 'Streamline'};
+        notification.topic = process.env.BUNDLE_ID;
+        promises.push(apnProvider.send(notification, devices[i].token))
+      }
+
+      Promise.all([...promises])
+      .then(allData => {
+        apnProvider.shutdown();
+        var sent = 0
+        var failed = 0
+        for (var i = 0; i < allData.length; i++) {
+          sent += allData[i].sent.length
+          failed += allData[i].failed.length
         }
-      }).catch(err => {
-        return reject(err)
+        return resolve({ sent: sent, failed: failed })
+      })
+      .catch(err => {
+        apnProvider.shutdown();
+        console.log(err);
       })
     })
-
-
   }
 }
 
 
 app.use('/api/input', inputRoutes(conn, loggedIn, upload))
 
-app.use('/api/auth', authRoutes(passport, conn, loggedIn))
+app.use('/api/auth', authRoutes(passport, conn, loggedIn, client))
 
 app.use('/api/reports', reportsRoutes(conn, loggedIn))
 
 app.use('/api/stats', statsRoutes(conn, loggedIn))
 
-app.use('/api/account', accountRoutes(conn, loggedIn))
+app.use('/api/account', accountRoutes(conn, loggedIn, client))
 
 app.use('/api/grid', gridRoutes(conn, loggedIn))
 
-app.use('/api/admin', adminRoutes(conn, loggedIn, csvUpload))
+app.use('/api/admin', adminRoutes(conn, loggedIn, csvUpload, client))
 
 app.use('/api/home', homeRoutes(conn, loggedIn))
 

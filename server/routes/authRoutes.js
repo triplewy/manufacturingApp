@@ -1,4 +1,4 @@
-module.exports = function(passport, conn, loggedIn) {
+module.exports = function(passport, conn, loggedIn, client) {
     'use strict';
     var authRoutes = require('express').Router();
     var LocalStrategy = require('passport-local').Strategy
@@ -102,6 +102,10 @@ module.exports = function(passport, conn, loggedIn) {
             if (err) {
               return res.send({message: 'Unable to create account'})
             } else {
+              console.log(user);
+              client.HMSET(user, {
+                badge: '0'
+              })
               return res.send({message: 'success'});
             }
           })

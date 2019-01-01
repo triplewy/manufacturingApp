@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, ImageBackground } from 'react-native';
 import { createBottomTabNavigator, createMaterialTopTabNavigator, createSwitchNavigator, createStackNavigator, NavigationActions } from 'react-navigation'
+import { connect } from 'react-redux'
 import SplashScreen from 'react-native-splash-screen';
 import editIcon from './app/icons/edit-icon.png'
 import reportIcon from './app/icons/report-icon.png'
@@ -16,6 +17,8 @@ import Input from './app/Input/Input'
 import Stats from './app/Stats/Stats'
 import DayStats from './app/Stats/DayStats'
 import Account from './app/Account/Account'
+import Notifications from './app/Notifications/Notifications'
+import NotificationBadge from './app/NotificationBadge/NotificationBadge'
 import Reports from './app/Reports/Reports'
 import './global.js'
 
@@ -37,10 +40,7 @@ export default class App extends React.Component {
         CreateAccount: CreateAccount,
       },
       {
-
-        // headerMode: 'none',
         navigationOptions: {
-          // headerVisible: false
           headerStyle: {
             backgroundColor: '#FF8300',
             borderBottomWidth: 0,
@@ -136,6 +136,12 @@ export default class App extends React.Component {
           navigationOptions: {
             title: 'Account'
           }
+        },
+        Notifications: {
+          screen: Notifications,
+          navigationOptions: {
+            title: 'Notifications'
+          }
         }
       },
       {
@@ -174,7 +180,11 @@ export default class App extends React.Component {
         Account: {
           screen: AccountNavigator,
           navigationOptions: {
-            tabBarIcon: () => (<Image source={accountIcon} style={{width: 40, height: 40, alignItems: 'center'}} />)
+            tabBarIcon: () => (
+              <ImageBackground source={accountIcon} style={{width: 40, height: 40, alignItems: 'center'}}>
+                <NotificationBadge />
+              </ImageBackground>
+            )
           }
         }
       },
@@ -208,9 +218,6 @@ export default class App extends React.Component {
         Auth: AuthNavigation,
         Name: Name,
         Tabs: Tabs,
-      },
-      {
-        // initialRouteName: this.state.loggedIn ? (this.state.hasName ? 'Tabs' : 'Name') : 'Auth'
       }
     )
 

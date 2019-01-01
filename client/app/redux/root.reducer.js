@@ -13,6 +13,8 @@ import { shiftStats } from '../Stats/ShiftStats/shiftStats.reducer'
 import { workerStats } from '../Stats/WorkerStats/workerStats.reducer'
 import { input } from '../Input/input.reducer'
 import { name } from '../Name/name.reducer'
+import { pushNotification } from '../PushNotification/PushNotification.reducer'
+import { notifications } from '../Notifications/Notifications.reducer'
 
 export default combineReducers({
   login,
@@ -28,5 +30,7 @@ export default combineReducers({
   shiftStats,
   workerStats,
   input,
-  name
+  name,
+  pushNotification,
+  notifications
 });

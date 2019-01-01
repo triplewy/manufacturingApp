@@ -1,4 +1,5 @@
 SET foreign_key_checks = 0;
+DROP TABLE IF EXISTS notifications;
 DROP TABLE IF EXISTS downtimeImages;
 DROP TABLE IF EXISTS downtime;
 DROP TABLE IF EXISTS machines;
@@ -87,6 +88,17 @@ CREATE TABLE IF NOT EXISTS downtimeImages (
   imageUrl VARCHAR(255) NOT NULL,
   createdDate DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
   FOREIGN KEY(downtimeId) REFERENCES downtime(downtimeId) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS notifications (
+  notificationId INTEGER AUTO_INCREMENT PRIMARY KEY,
+  companyId INTEGER NOT NULL,
+  userId INTEGER,
+  isGlobal BOOLEAN NOT NULL DEFAULT FALSE,
+  message VARCHAR(255) NOT NULL,
+  createdDate DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  FOREIGN KEY(companyId) REFERENCES companies(companyId),
+  FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE
 );
 
 DELIMITER //

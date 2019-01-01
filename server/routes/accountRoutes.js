@@ -1,4 +1,4 @@
-module.exports = function(conn, loggedIn) {
+module.exports = function(conn, loggedIn, client) {
     'use strict';
     var accountRoutes = require('express').Router();
 
@@ -32,10 +32,38 @@ module.exports = function(conn, loggedIn) {
           res.send({ message: 'failure' })
         } else {
           if (result.affectedRows) {
+            console.log('Token added successfully');
             res.send({ message: 'success' })
           } else {
             res.send({ message: 'failure' })
           }
+        }
+      })
+    })
+
+    accountRoutes.get('/notifications', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/account/notifications');
+      const userId = req.user
+      conn.query('SELECT b.* FROM users AS a JOIN notifications AS b ON b.userId = a.userId OR (b.isGlobal AND b.companyId = a.companyId) ' +
+      'WHERE a.userId = :userId ORDER BY b.createdDate DESC', { userId: userId }, function(err, result) {
+        if (err) {
+          console.log(err);
+        } else {
+          res.send(result)
+        }
+      })
+    })
+
+    accountRoutes.post('/notifications/read', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/account/notifications/read');
+      const userId = req.user
+      client.HMSET(userId, {
+        badge: '0'
+      }, function(err, result) {
+        if (result == 'OK') {
+          res.send({ message: 'success' })
+        } else {
+          res.send({ message: 'fail' })
         }
       })
     })
