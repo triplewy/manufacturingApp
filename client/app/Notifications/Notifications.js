@@ -33,7 +33,7 @@ class Notifications extends React.Component {
     return (
       <View style={styles.notification}>
         <Text style={styles.message}>{item.item.message}</Text>
-        <Text style={styles.date}>{this.parseNotificationTime((new Date() - new Date(item.item.createdDate)) / 1000)}</Text>
+        <Text style={styles.date}>{this.parseNotificationTime((new Date() - new Date(item.item.createdDate)) / 1000 - 18000)}</Text>
       </View>
     )
   }

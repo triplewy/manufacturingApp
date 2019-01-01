@@ -167,16 +167,23 @@ module.exports = function(conn, loggedIn, csvUpload, client) {
                     })
                   })
 
-                  multi.exec(function(err, result) {
+                  conn.query('COMMIT', [], function(err, result) {
                     if (err) {
                       console.log(err);
+                      conn.query('ROLLBACK')
                     } else {
-                      serverFunctions.sendNotifications(devices, req.body.message).then(data => {
-                        console.log(data);
-                        if (data.failed == 0) {
-                          res.send({ message: 'All succeeded'})
+                      multi.exec(function(err, result) {
+                        if (err) {
+                          console.log(err);
                         } else {
-                          res.send({ message: data.failed + ' failed'})
+                          serverFunctions.sendNotifications(devices, req.body.message).then(data => {
+                            console.log(data);
+                            if (data.failed == 0) {
+                              res.send({ message: 'All succeeded'})
+                            } else {
+                              res.send({ message: data.failed + ' failed'})
+                            }
+                          })
                         }
                       })
                     }
