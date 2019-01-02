@@ -152,7 +152,7 @@ module.exports = function(conn, loggedIn, csvUpload, client) {
                       if (err) {
                         console.log(err);
                       } else {
-                        if (obj.badge) {
+                        if (obj) {
                           devices.push({token: row.deviceToken, badge: parseInt(obj.badge, 10) + 1})
                           client.HMSET(row.userId, {
                             badge: (parseInt(obj.badge, 10) + 1).toString()
