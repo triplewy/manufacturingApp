@@ -176,6 +176,7 @@ module.exports = function(conn, loggedIn, csvUpload, client) {
                         if (err) {
                           console.log(err);
                         } else {
+                          console.log(result);
                           serverFunctions.sendNotifications(devices, req.body.message).then(data => {
                             console.log(data);
                             if (data.failed == 0) {

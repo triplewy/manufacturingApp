@@ -114,6 +114,7 @@ function serverAlive() {
       if (err) {
         console.log(err);
       } else {
+        console.log('Server alive');
         serverAlive()
       }
     })
@@ -226,7 +227,7 @@ module.exports = {
           keyId: process.env.KEY_ID,
           teamId: process.env.TEAM_ID
         },
-        production: false
+        production: true
       };
 
       var apnProvider = new apn.Provider(options);
@@ -246,6 +247,7 @@ module.exports = {
 
       Promise.all([...promises])
       .then(allData => {
+        console.log(allData);
         apnProvider.shutdown();
         var sent = 0
         var failed = 0
