@@ -1,5 +1,7 @@
 import { handleDowntimeInput, handleDescriptionInput, upload, uploadSuccess, uploadFailure, addImage, deleteImage } from './input.actions'
-import { getRequest, formdataPostRequest } from '../Storage'
+import API from '../api'
+
+const api = new API()
 
 export function handleDowntime(text) {
   return (dispatch) => {
@@ -28,7 +30,6 @@ export function handleDeleteImage(index) {
 export function handleUpload(navigation, images, downtime, description, name) {
   return (dispatch) => {
     var formData = new FormData();
-    console.log(images);
     for (var i = 0; i < images.length; i++) {
       formData.append('image', {uri: images[i].uri, name: "file"})
     }
@@ -38,8 +39,7 @@ export function handleUpload(navigation, images, downtime, description, name) {
     formData.append('description', description);
 
     dispatch(upload())
-    console.log('here');
-    return formdataPostRequest(global.API_URL + '/api/input/submit', formData)
+    return api.submit(formData)
     .then(data => {
       if (data.message === 'success') {
         dispatch(uploadSuccess())

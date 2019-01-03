@@ -1,6 +1,8 @@
 import { getUser, getUserSuccess, getUserFailure, setUsername, setPassword } from './login.actions'
 import { sessionLoginSuccess } from '../Splash/splash.actions'
-import { postRequest } from '../Storage'
+import API from '../api'
+
+const api = new API()
 
 export function username(username){
   return (dispatch) => {
@@ -17,10 +19,7 @@ export function password(password){
 export function loginUser(username, password, navigation) {
   return (dispatch) => {
     dispatch(getUser())
-    return postRequest(global.API_URL + '/api/auth/signin', {
-      username: username,
-      password: password
-    })
+    return api.signIn({ username: username, password: password })
     .then(data => {
       if (data.message === 'not logged in') {
         dispatch(getUserFailure(data.message))

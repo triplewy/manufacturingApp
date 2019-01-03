@@ -70,17 +70,26 @@ class DowntimeStatsVertical extends React.Component {
           <View style={{marginBottom: 5}}>
             <Text style={{color: 'gray', textAlign: 'center'}}>{parsedDowntime}</Text>
           </View>
-          <TouchableOpacity onPress={() => this.props.navigation.navigate('DayStats', {date: item.item.time, downtime: downtime, lineId: this.props.lines[this.props.lineIndex].lineId})}>
-            <View style={{height: height, width: 70, backgroundColor: '#FF8300', borderRadius: 4, alignItems: 'center', justifyContent: 'center'}}>
-              <Animated.View style={{opacity: this.fadeValue}}>
-                <Text style={{color: 'white', fontWeight: 'bold'}}>{Math.round(downtime / availableMin * 100) + '%'}</Text>
-              </Animated.View>
+          {this.props.timePeriod < 3 ?
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('DayStats', {date: item.item.time, downtime: downtime, lineId: this.props.lines[this.props.lineIndex].lineId})}>
+              <View style={{height: height, width: 70, backgroundColor: '#FF8300', borderRadius: 4, alignItems: 'center', justifyContent: 'center'}}>
+                <Animated.View style={{opacity: this.fadeValue}}>
+                  <Text style={{color: 'white', fontWeight: 'bold'}}>{Math.round(downtime / availableMin * 100) + '%'}</Text>
+                </Animated.View>
+              </View>
+            </TouchableOpacity>
+            :
+            <View>
+              <View style={{height: height, width: 70, backgroundColor: '#FF8300', borderRadius: 4, alignItems: 'center', justifyContent: 'center'}}>
+                <View>
+                  <Text style={{color: 'white', fontWeight: 'bold'}}>{Math.round(downtime / availableMin * 100) + '%'}</Text>
+                </View>
+              </View>
             </View>
-          </TouchableOpacity>
+          }
+
           <View style={{alignItems: 'center'}}>
             <Text style={{color: 'gray', marginTop: 10}}>{item.item.dateLabel}</Text>
-            {/* <Text style={{color: 'gray', marginTop: 10}}>{currDate.substring(0,3)}</Text>
-            <Text style={{color: 'gray'}}>{currDate.substring(5)}</Text> */}
           </View>
         </View>
       )

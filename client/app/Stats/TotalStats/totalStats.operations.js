@@ -1,12 +1,13 @@
 import { getStats, getStatsSuccess, getStatsFailure } from './totalStats.actions'
-import { getRequest } from '../../Storage'
+import API from '../../api'
+
+const api = new API()
 
 export function fetchTotalStats(lineId, timePeriod) {
   return (dispatch) => {
     dispatch(getStats())
-    return getRequest(global.API_URL + '/api/stats/totalDowntime/line=' + lineId + '/timePeriod=' + timePeriod)
+    return api.totalDowntime(lineId, timePeriod)
     .then(data => {
-      console.log(data);
       dispatch(getStatsSuccess(data.totalDowntime))
     })
     .catch((error) => {

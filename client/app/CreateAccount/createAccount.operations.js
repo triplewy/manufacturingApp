@@ -1,5 +1,7 @@
 import { signup, signupFailure, setUsername, setPassword, setConfirmPassword } from './createAccount.actions'
-import { postRequest } from '../Storage'
+import API from '../api'
+
+const api = new API()
 
 export function username(username) {
   return (dispatch) => {
@@ -22,10 +24,7 @@ export function confirmPassword(password) {
 export function signupUser(username, password, confirmPassword, navigation) {
   return (dispatch) => {
     dispatch(signup())
-    return postRequest(global.API_URL + '/api/auth/signup', {
-      username: username,
-      password: password
-    })
+    return api.signUp({ username: username, password: password })
     .then(data => {
       if (data.message === 'success') {
         navigation.navigate('Name')

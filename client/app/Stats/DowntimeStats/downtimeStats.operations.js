@@ -1,12 +1,13 @@
 import { getStats, getStatsSuccess, getStatsFailure } from './downtimeStats.actions'
-import { getRequest } from '../../Storage'
+import API from '../../api'
+
+const api = new API()
 
 export function fetchDowntimeStats(lineId, timePeriod) {
   return (dispatch) => {
     dispatch(getStats())
-    return getRequest(global.API_URL + '/api/stats/downtime/line=' + lineId + '/timePeriod=' + timePeriod)
+    return api.statsLine(lineId, timePeriod)
     .then(data => {
-      console.log(data);
       var downtime = []
       var average = 0
       for (var i = 0; i < data.length; i++) {

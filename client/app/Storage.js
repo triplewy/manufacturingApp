@@ -108,12 +108,7 @@ export function getRequest(path) {
       }
 
       fetch(path, fetchParams)
-      .then(res => {
-        // if (res.headers.get('set-cookie')) {
-        //   setCookie(res.headers.get("set-cookie"))
-        // }
-        return res.json()
-      })
+      .then(res => res.json())
       .then(data => {
         return resolve(data)
       })

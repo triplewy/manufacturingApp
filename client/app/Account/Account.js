@@ -41,9 +41,9 @@ class Account extends React.Component {
   linkEmail() {
     Linking.canOpenURL('mailto:admin@streamlineanalytica.com').then(supported => {
       if (!supported) {
-        console.log('Can\'t handle url: ' + url);
+        console.log('Can\'t handle url');
       } else {
-        return Linking.openURL('mailto:help.stream.lineapp@gmail.com');
+        return Linking.openURL('mailto:admin@streamlineanalytica.com');
       }
     }).catch(err => console.log('An error occurred', err));
   }

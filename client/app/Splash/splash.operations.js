@@ -1,11 +1,14 @@
 import { sessionLogin, sessionLoginSuccess, sessionLoginFailure } from './splash.actions'
 import { setNameIndex } from '../Name/name.actions'
-import { getRequest, getNameStorage } from '../Storage'
+import { getNameStorage } from '../Storage'
+import API from '../api'
+
+const api = new API()
 
 export function fetchSessionLogin() {
   return (dispatch) => {
     dispatch(sessionLogin())
-    return getRequest(global.API_URL + '/api/sessionLogin')
+    return api.sessionLogin()
     .then(data => {
       if (data.message === 'not logged in') {
         dispatch(sessionLoginFailure(data.message))
@@ -14,7 +17,6 @@ export function fetchSessionLogin() {
           data.lines[i].name = 'LINE ' + data.lines[i].name
         }
         return getNameStorage().then(index => {
-          console.log('index is', index);
           dispatch(setNameIndex(index))
           dispatch(sessionLoginSuccess(data.lines, data.machines, data.names))
         })

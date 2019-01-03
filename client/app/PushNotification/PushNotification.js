@@ -51,7 +51,7 @@ class PushNotification extends Component {
   }
 
   handleRegistrationError = (error) => {
-    console.log(registrationError, '--')
+    console.log(error, '--')
   }
 
   handleUpdateNotificationBadge = (notification) => {

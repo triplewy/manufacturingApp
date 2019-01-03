@@ -8,3 +8,4 @@ node_modules
 /client/ios/*
 /client/android/*
 /client/third-party/*
+/client/global.js
