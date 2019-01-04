@@ -167,22 +167,6 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
-    // statsRoutes.get('/downtime/lines/:timePeriod/:date', loggedIn, (req, res) => {
-    //   console.log('- Request received:', req.method.cyan, '/api/stats/downtime/lines/' + req.params.timePeriod + '/' + req.params.date);
-    //   const userId = req.user
-    //   const timePeriodQuery = parseTimePeriodDate(req.params.timePeriod * 1)
-    //   conn.query(
-    //     'SELECT a.*, CONCAT(\'Line\', \' \', a.lineId) AS name, SUM(b.downtime) AS totalDowntime FROM assemblyLines AS a ' +
-    //     'JOIN downtime AS b ON b.lineId = a.lineId' + timePeriodQuery +
-    //     'WHERE a.userId = :userId GROUP BY a.lineId ORDER BY totalDowntime DESC', {userId: userId, date: req.params.date}, function(err, result) {
-    //     if (err) {
-    //       console.log(err);
-    //     } else {
-    //       res.send(result)
-    //     }
-    //   })
-    // })
-
     statsRoutes.get('/downtime/line=:lineId/timePeriod=:timePeriod/shifts/date=:date', loggedIn, (req, res) => {
       console.log('- Request received:', req.method.cyan, '/api/stats/downtime/line=' + req.params.lineId + '/timePeriod=' + req.params.timePeriod + '/shifts/date=' + req.params.date);
       const userId = req.user
@@ -208,12 +192,13 @@ module.exports = function(conn, loggedIn) {
       const userId = req.user
       const timePeriodQuery = parseTotalTimePeriod(req.params.timePeriod * 1)
       conn.query(
-      'SELECT SUM(b.downtime) AS totalDowntime, b.lineLeaderName AS name FROM downtime AS b WHERE b.createdDate <= CURRENT_TIMESTAMP' + timePeriodQuery +
-      'AND b.lineId = :lineId GROUP BY b.lineLeaderName ORDER BY totalDowntime DESC', {userId: userId, lineId: req.params.lineId}, function(err, result) {
+      'SELECT SUM(b.downtime) AS totalDowntime, b.lineLeaderName AS name, HOUR(b.createdDate) >= a.morningShift AND HOUR(b.createdDate) < a.eveningShift AS isDayShift ' +
+      'FROM downtime AS b JOIN assemblyLines AS a ON a.lineId = b.lineId WHERE b.createdDate <= CURRENT_TIMESTAMP' + timePeriodQuery +
+      'AND b.lineId = :lineId GROUP BY b.lineLeaderName, isDayShift, DATE(b.createdDate)', {userId: userId, lineId: req.params.lineId}, function(err, result) {
         if (err) {
           console.log(err);
         } else {
-          res.send(result)
+          res.send(parseWorkers(result))
         }
       })
     })
@@ -223,15 +208,45 @@ module.exports = function(conn, loggedIn) {
       const userId = req.user
       const timePeriodQuery = parseTimePeriodDate(req.params.timePeriod * 1)
       conn.query(
-      'SELECT SUM(b.downtime) AS totalDowntime, b.lineLeaderName AS name FROM downtime AS b WHERE b.lineId = :lineId' + timePeriodQuery +
-      'GROUP BY b.lineLeaderName ORDER BY totalDowntime DESC', {userId: userId, date: req.params.date, lineId: req.params.lineId}, function(err, result) {
+      'SELECT b.downtime AS totalDowntime, b.lineLeaderName AS name, HOUR(b.createdDate) >= a.morningShift AND HOUR(b.createdDate) < a.eveningShift AS isDayShift ' +
+      'FROM downtime AS b JOIN assemblyLines AS a ON a.lineId = b.lineId WHERE b.lineId = :lineId' + timePeriodQuery +
+      'GROUP BY b.lineLeaderName, isDayShift, DATE(b.createdDate)', {userId: userId, date: req.params.date, lineId: req.params.lineId}, function(err, result) {
         if (err) {
           console.log(err);
         } else {
-          res.send(result)
+          res.send(parseWorkers(result))
         }
       })
     })
+
+    function parseWorkers(result) {
+      var workers = {}
+      for (var i = 0; i < result.length; i++) {
+        if (workers[result[i].name]) {
+          workers[result[i].name].totalDowntime += result[i].totalDowntime
+          workers[result[i].name].availableMin += 565
+        } else {
+          workers[result[i].name] = { totalDowntime: result[i].totalDowntime, availableMin: 565 }
+        }
+      }
+
+      var resultWorkers = []
+      for (var name in workers) {
+        resultWorkers.push({ name: name, totalDowntime: workers[name].totalDowntime, availableMin: workers[name].availableMin })
+      }
+
+      resultWorkers.sort(function (a, b) {
+        if (a.totalDowntime / a.availableMin < b.totalDowntime / b.availableMin) {
+          return 1;
+        }
+        if (a.totalDowntime / a.availableMin > b.totalDowntime / b.availableMin) {
+          return -1;
+        }
+        return 0;
+      })
+
+      return resultWorkers
+    }
 
     function parseTotalTimePeriod(timePeriod) {
       switch (timePeriod) {

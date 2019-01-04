@@ -10,6 +10,7 @@ var colors = require('colors');
 var cookieParser = require('cookie-parser')
 var mysql = require('mysql')
 var aws = require('aws-sdk')
+var sms = require('./sms.js')
 var multer = require('multer');
 var multerS3 = require('multer-s3')
 var passport = require('passport');
@@ -84,7 +85,7 @@ const db_config = {
   user     : process.env.MYSQL_USER,
   password : process.env.MYSQL_PASSWORD,
   database : process.env.MYSQL_DATABASE,
-  timezone: 'utc'
+  timezone: '+05:00'
 }
 
 var conn = mysql.createConnection(db_config);
@@ -123,8 +124,6 @@ function serverAlive() {
 
 serverAlive()
 
-// sendNotification()
-
 var upload = multer({
   storage: multerS3({
     s3: s3,
@@ -133,7 +132,7 @@ var upload = multer({
       cb(null, uuidv1() + '.jpg')
     }
   }),
-  limits: {fileSize: 10000000, files: 4},
+  limits: {fileSize: 10000000, files: 6},
   fileFilter: function(request, file, callback) {
     var mime = file.mimetype
     if (mime !== 'image/png' && mime !== 'image/jpg' && mime !== 'image/jpeg') {
@@ -141,7 +140,7 @@ var upload = multer({
      }
      callback(null, true)
   }
-}).array('image', 4);
+}).array('image', 6);
 
 var csvUpload = multer({
   storage: multer.memoryStorage(),

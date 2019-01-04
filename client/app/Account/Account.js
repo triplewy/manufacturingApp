@@ -50,8 +50,8 @@ class Account extends React.Component {
 
   logoutAlert() {
     Alert.alert(
-      'Change lines',
-      'Changing lines will log you out. Are you sure?',
+      'Logout',
+      'Are you sure?',
       [
         {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
         {text: 'Logout', onPress: () => this.props.logout(this.props.navigation), style: 'destructive'},
@@ -103,7 +103,7 @@ class Account extends React.Component {
             }
             <TouchableOpacity onPress={this.logoutAlert}>
               <View style={{backgroundColor: '#FF8300', borderRadius: 8, marginVertical: 10}}>
-                <Text style={{fontSize: 18, paddingVertical: 10, paddingHorizontal: 15, color: 'white'}}>Change Lines</Text>
+                <Text style={{fontSize: 18, paddingVertical: 10, paddingHorizontal: 15, color: 'white'}}>Logout</Text>
               </View>
             </TouchableOpacity>
           </View>

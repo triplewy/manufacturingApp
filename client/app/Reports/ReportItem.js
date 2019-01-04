@@ -66,7 +66,7 @@ export default class ReportItem extends React.PureComponent {
             <Text style={{fontSize: 18}}>{this.props.description}</Text>
             <FlatList
               horizontal
-              scrollEnabled={false}
+              scrollEnabled
               data={this.props.images}
               renderItem={this.renderItem}
               keyExtractor={(item, index) => index.toString()}

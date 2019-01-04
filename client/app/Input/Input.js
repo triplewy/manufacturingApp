@@ -14,7 +14,9 @@ class Input extends React.Component {
     this.state = {
       images: [],
       showModal: false,
-      selectedImage: null
+      selectedImage: null,
+      // timeClicked: null,
+      // currentTime: null
     };
 
     this.addImage = this.addImage.bind(this)
@@ -24,13 +26,24 @@ class Input extends React.Component {
   }
 
   componentDidMount() {
+    // this.setState({ timeExpired: Date.now() + 1200000, currentTime: Date.now() }, () => {
+    //   console.log(this.state.timeClicked);
+    //   setInterval(() => {
+    //     this.setState({ currentTime: Date.now() })
+    //   }, 1000)
+    //   setTimeout(() => {
+    //     if (!this.props.submitted) {
+    //       console.log('here');
+    //     }
+    //   }, 100000)
+    // })
   }
 
   addImage() {
-     if (this.state.images.length > 3) {
+     if (this.state.images.length > 5) {
        Alert.alert(
          'Exceeded photos limit',
-         'Max 4 photos',
+         'Max 6 photos',
          [
            {text: 'OK', onPress: () => console.log('OK Pressed')},
          ],

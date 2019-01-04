@@ -41,6 +41,14 @@ CREATE TABLE IF NOT EXISTS names (
   UNIQUE(name, companyId)
 );
 
+CREATE TABLE IF NOT EXISTS mechanics (
+  mechanicId INTEGER AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  phone VARCHAR(255) NOT NULL,
+  startHour INTEGER NOT NULL,
+  endHour INTEGER NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS assemblyLines (
   lineId INTEGER AUTO_INCREMENT PRIMARY KEY,
   companyId INTEGER NOT NULL,
@@ -58,6 +66,14 @@ CREATE TABLE IF NOT EXISTS assemblyLineUsers (
   FOREIGN KEY(lineId) REFERENCES assemblyLines(lineId),
   FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE,
   UNIQUE(lineId, userId)
+);
+
+CREATE TABLE IF NOT EXISTS assemblyLineMechanics (
+  lineId INTEGER NOT NULL,
+  mechanicId INTEGER NOT NULL,
+  FOREIGN KEY(lineId) REFERENCES assemblyLines(lineId),
+  FOREIGN KEY(mechanicId) REFERENCES mechanics(mechanicId) ON DELETE CASCADE,
+  UNIQUE(lineId, mechanicId)
 );
 
 CREATE TABLE IF NOT EXISTS machines (
