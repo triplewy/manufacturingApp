@@ -30,7 +30,7 @@ module.exports = function(conn, loggedIn) {
       'JOIN machines AS b ON b.machineId = a.machineId ' +
       'JOIN assemblyLines AS c ON c.lineId = b.lineId ' +
       'LEFT JOIN downtimeImages AS d ON d.downtimeId = a.downtimeId ' +
-      'WHERE a.lineId = :lineId AND DATE(a.createdDate) = DATE(:date) ORDER BY reportedDate DESC LIMIT ' + page + ',10',
+      'WHERE a.lineId = :lineId AND DATE(DATE_SUB(a.createdDate, INTERVAL 5 HOUR)) = DATE(:date) ORDER BY reportedDate DESC LIMIT ' + page + ',10',
       {userId: userId, lineId: req.params.lineId, date: req.params.date}, function(err, result) {
         if (err) {
           console.log(err);
@@ -68,7 +68,7 @@ module.exports = function(conn, loggedIn) {
       'JOIN machines AS b ON b.machineId = a.machineId ' +
       'JOIN assemblyLines AS c ON c.lineId = b.lineId ' +
       'LEFT JOIN downtimeImages AS d ON d.downtimeId = a.downtimeId ' +
-      'WHERE a.machineId = :machineId AND DATE(a.createdDate) = DATE(:date) ORDER BY reportedDate DESC LIMIT ' + page + ',10',
+      'WHERE a.machineId = :machineId AND DATE(DATE_SUB(a.createdDate, INTERVAL 5 HOUR)) = DATE(:date) ORDER BY reportedDate DESC LIMIT ' + page + ',10',
       {userId: userId, lineId: req.params.lineId, machineId: req.params.machineId, date: req.params.date}, function(err, result) {
         if (err) {
           console.log(err);

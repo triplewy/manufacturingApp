@@ -12,7 +12,6 @@ export function fetchReports(lineId, machineId, date) {
     dispatch(getReports)
     return api.reports(lineId, machineId, date, 0)
     .then(data => {
-      console.log(data);
       dispatch(getReportsSuccess(data))
     })
     .catch(err => {
