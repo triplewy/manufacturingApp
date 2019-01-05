@@ -210,9 +210,9 @@ module.exports = function(conn, loggedIn) {
       const userId = req.user
       const timePeriodQuery = parseTimePeriodDate(req.params.timePeriod * 1)
       conn.query(
-      'SELECT b.downtime AS totalDowntime, b.lineLeaderName AS name, HOUR(b.createdDate) >= a.morningShift AND HOUR(b.createdDate) < a.eveningShift AS isDayShift ' +
+      'SELECT SUM(b.downtime) AS totalDowntime, b.lineLeaderName AS name, HOUR(b.createdDate) >= a.morningShift AND HOUR(b.createdDate) < a.eveningShift AS isDayShift ' +
       'FROM downtime AS b JOIN assemblyLines AS a ON a.lineId = b.lineId WHERE b.lineId = :lineId' + timePeriodQuery +
-      'GROUP BY b.lineLeaderName, isDayShift, DATE(b.createdDate)', {userId: userId, date: req.params.date, lineId: req.params.lineId}, function(err, result) {
+      'GROUP BY b.lineLeaderName, isDayShift', {userId: userId, date: req.params.date, lineId: req.params.lineId}, function(err, result) {
         if (err) {
           console.log(err);
         } else {
