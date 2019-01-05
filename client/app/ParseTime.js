@@ -5,8 +5,9 @@ export function parseTime(timePeriod, time) {
       options = {timeZone: 'UTC', hour: 'numeric', hour12: true}
       return currDate = new Date(time).toLocaleString('en-US', options)
     case 1:
+      console.log(time);
       options = {timeZone: 'UTC', weekday: 'short', month: 'numeric', day: 'numeric'}
-      return currDate = new Date(time).toLocaleDateString('en-US', options)
+      return currDate = new Date(new Date(time) + 1000 * 60 * 60 * 5).toLocaleDateString('en-US', options)
     case 2:
       options = {timeZone: 'UTC', weekday: 'short', month: 'numeric', day: 'numeric'}
       return currDate = new Date(time).toLocaleDateString('en-US', options)

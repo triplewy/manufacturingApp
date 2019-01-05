@@ -6,10 +6,6 @@ const api = new API()
 export function fetchMachineStats(lineId, timePeriod, date) {
   return (dispatch) => {
     dispatch(getStats())
-    // var url = '/api/stats/downtime/line=' + lineId + '/timePeriod=' + timePeriod + '/machines'
-    // if (date) {
-    //   url += '/date=' + date
-    // }
     return api.statsMachines(lineId, timePeriod, date)
     .then(data => {
       var totalDowntime = 0

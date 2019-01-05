@@ -207,7 +207,7 @@ module.exports = {
 
   getNames: function(userId) {
     return new Promise(function(resolve, reject) {
-      conn.query('SELECT * FROM names WHERE companyId = (SELECT companyId FROM users WHERE userId = :userId)', {userId: userId}, function(err, result) {
+      conn.query('SELECT * FROM names WHERE companyId = (SELECT companyId FROM users WHERE userId = :userId) ORDER BY name', {userId: userId}, function(err, result) {
         if (err) {
           return reject(err);
         } else {

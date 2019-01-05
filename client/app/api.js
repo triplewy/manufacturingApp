@@ -3,7 +3,6 @@ import { getRequest, postRequest, formdataPostRequest } from './Storage'
 
 export default class API {
 
-
   signIn(body) {
     return postRequest(`${global.API_GATEWAY_URL}/auth/signin`, body)
   }
@@ -40,6 +39,10 @@ export default class API {
     return formdataPostRequest(`${global.API_GATEWAY_URL}/input/submit`, formdata)
   }
 
+  // submit(formdata) {
+  //   return formdataPostRequest(`${global.AWS_URL}/input/submit`, formdata)
+  // }
+
   reports(lineId, machineId, date, page) {
     if (machineId) {
       if (date) {
@@ -61,27 +64,47 @@ export default class API {
   }
 
   statsLine(lineId, timePeriod) {
-    return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}`)
+    return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line=${lineId}/timePeriod=${timePeriod}`)
   }
+  // statsLine(lineId, timePeriod) {
+  //   return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}`)
+  // }
 
   statsMachines(lineId, timePeriod, date) {
     if (date) {
-      return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}/machines/date/${date}`)
+      return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line=${lineId}/timePeriod=${timePeriod}/machines/date=${date}`)
     } else {
-      return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}/machines`)
+      return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line=${lineId}/timePeriod=${timePeriod}/machines`)
     }
   }
+  // statsMachines(lineId, timePeriod, date) {
+  //   if (date) {
+  //     return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}/machines/date/${date}`)
+  //   } else {
+  //     return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}/machines`)
+  //   }
+  // }
 
   statsWorkers(lineId, timePeriod, date) {
     if (date) {
-      return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}/workers/date/${date}`)
+      return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line=${lineId}/timePeriod=${timePeriod}/workers/date=${date}`)
     } else {
-      return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}/workers`)
+      return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line=${lineId}/timePeriod=${timePeriod}/workers`)
     }
   }
+  // statsWorkers(lineId, timePeriod, date) {
+  //   if (date) {
+  //     return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}/workers/date/${date}`)
+  //   } else {
+  //     return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}/workers`)
+  //   }
+  // }
 
   statsShifts(lineId, timePeriod, date) {
-    return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}/shifts/date/${date}`)
+    return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line=${lineId}/timePeriod=${timePeriod}/shifts/date=${date}`)
   }
+  // statsShifts(lineId, timePeriod, date) {
+  //   return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}/shifts/date/${date}`)
+  // }
 
 }

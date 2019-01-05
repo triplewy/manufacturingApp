@@ -44,6 +44,7 @@ module.exports = function(conn, loggedIn) {
               var downtime = []
               for (var i = 0; i < result.length; i++) {
                 var row = result[i]
+                row.time.setTime(row.time.getTime() + (5*60*60*1000))
                 if (downtime[row.time]) {
                   downtime[row.time].availableMin += row.availableMin
                   downtime[row.time].totalDowntime += row.totalDowntime
@@ -64,6 +65,7 @@ module.exports = function(conn, loggedIn) {
               var downtime = []
               for (var i = 0; i < result.length; i++) {
                 var row = result[i]
+                row.time.setTime(row.time.getTime() + (5*60*60*1000))
                 if (downtime[row.time]) {
                   downtime[row.time].availableMin += row.availableMin
                   downtime[row.time].totalDowntime += row.totalDowntime
@@ -270,9 +272,9 @@ module.exports = function(conn, loggedIn) {
         case 0:
           return ' AND b.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(b.createdDate) = :date '
         case 1:
-          return ' AND DATE(b.createdDate) = DATE(:date) '
+          return ' AND DATE(DATE_SUB(b.createdDate, INTERVAL 5 HOUR)) = DATE(:date) '
         case 2:
-          return ' AND DATE(b.createdDate) = DATE(:date) '
+          return ' AND DATE(DATE_SUB(b.createdDate, INTERVAL 5 HOUR)) = DATE(:date) '
         case 3:
           return ' AND b.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 YEAR) AND MONTH(b.createdDate) = :date '
         case 4:
@@ -287,9 +289,9 @@ module.exports = function(conn, loggedIn) {
         case 0:
           return 'SELECT SUM(a.downtime) AS totalDowntime, b.availableMin, HOUR(a.createdDate) AS downtimeHour FROM downtime AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND a.lineId = :lineId GROUP BY HOUR(a.createdDate) ORDER BY downtimeHour ASC'
         case 1:
-          return 'SELECT SUM(a.downtime) AS totalDowntime, b.availableMin, DATE(a.createdDate) AS time, HOUR(a.createdDate) >= b.morningShift AND HOUR(a.createdDate) < b.eveningShift AS isDayShift FROM downtime AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 WEEK) AND a.lineId = :lineId GROUP BY time, isDayShift ORDER BY time ASC'
+          return 'SELECT SUM(a.downtime) AS totalDowntime, b.availableMin, DATE(DATE_SUB(a.createdDate, INTERVAL 5 HOUR)) AS time, HOUR(a.createdDate) >= b.morningShift AND HOUR(a.createdDate) < b.eveningShift AS isDayShift FROM downtime AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 WEEK) AND a.lineId = :lineId GROUP BY time, isDayShift ORDER BY time ASC'
         case 2:
-          return 'SELECT SUM(a.downtime) AS totalDowntime, b.availableMin, DATE(a.createdDate) AS time, HOUR(a.createdDate) >= b.morningShift AND HOUR(a.createdDate) < b.eveningShift AS isDayShift FROM downtime AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 30 DAY) AND a.lineId = :lineId GROUP BY time, isDayShift ORDER BY time ASC'
+          return 'SELECT SUM(a.downtime) AS totalDowntime, b.availableMin, DATE(DATE_SUB(a.createdDate, INTERVAL 5 HOUR)) AS time, HOUR(a.createdDate) >= b.morningShift AND HOUR(a.createdDate) < b.eveningShift AS isDayShift FROM downtime AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 30 DAY) AND a.lineId = :lineId GROUP BY time, isDayShift ORDER BY time ASC'
         case 3:
           return 'SELECT SUM(a.downtime) AS totalDowntime, MONTH(a.createdDate) AS time, DAY(a.createdDate) AS downtimeDay, b.availableMin, HOUR(a.createdDate) >= b.morningShift AND HOUR(a.createdDate) < b.eveningShift AS isDayShift FROM downtime AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 YEAR) AND a.lineId = :lineId GROUP BY MONTH(a.createdDate), DAY(a.createdDate), isDayShift ORDER BY time ASC'
         case 4:
