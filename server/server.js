@@ -208,8 +208,7 @@ module.exports = {
         if (err) {
           return reject(err)
         } else {
-          const expireDate = parseInt(result[1], 10)
-          if (expireDate > Date.now()) {
+          if (result.length) {
             return resolve({ lineId: parseInt(result[0], 10), expire: parseInt(result[1], 10) })
           } else {
             return resolve()

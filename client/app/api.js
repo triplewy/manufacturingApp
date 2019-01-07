@@ -40,12 +40,8 @@ export default class API {
   }
 
   submit(formdata) {
-    return formdataPostRequest(`${global.API_GATEWAY_URL}/input/submit`, formdata)
+    return formdataPostRequest(`${global.AWS_URL}/input/submit`, formdata)
   }
-
-  // submit(formdata) {
-  //   return formdataPostRequest(`${global.AWS_URL}/input/submit`, formdata)
-  // }
 
   reports(lineId, machineId, date, page) {
     if (machineId) {

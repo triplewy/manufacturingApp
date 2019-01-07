@@ -128,10 +128,12 @@ class Input extends React.Component {
     return (
       <ScrollView>
         <View style={{alignItems: 'center', justifyContent: 'center', margin: 20}}>
-          <Image
-            source={{uri: this.props.navigation.state.params.icon_url}}
-            style={{width: 100, height: 100, borderRadius: 8, borderWidth: 3, borderColor: expire ? '#FF8300' : 'white'}}
-          />
+          <View style={{backgroundColor: 'white', padding: 12, borderRadius: 8, borderWidth: 3, borderColor: expire ? '#FF8300' : 'white'}}>
+            <Image
+              source={{uri: this.props.navigation.state.params.icon_url}}
+              style={{width: 80, height: 80}}
+            />
+          </View>
           <Text style={[styles.inputLabel, {color: '#FF8300', fontWeight: 'bold', marginTop: 10}]}>
             {expire ? parseTimer(expire, this.state.currentTime) : ''}
           </Text>
@@ -158,7 +160,7 @@ class Input extends React.Component {
               returnKeyType='done'
               maxLength={3}
               style={[styles.textInput, {borderColor: this.props.downtime ? '#83D3D6' : '#FF8300'}]}
-              placeholder={Math.floor((Date.now() - (this.props.expire - 1000*60*20)) / 60000).toString()} 
+              placeholder={Math.floor((Date.now() - (this.props.expire - 1000*60*20)) / 60000).toString()}
               value={this.props.downtime}
               onChangeText={(text) => this.props.handleDowntimeInput(text)}
             />
