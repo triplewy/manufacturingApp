@@ -12,7 +12,7 @@ const options = {
     keyId: process.env.KEY_ID,
     teamId: process.env.TEAM_ID
   },
-  production: false
+  production: true
 }
 
 const db_config = {
