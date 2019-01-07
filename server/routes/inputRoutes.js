@@ -98,11 +98,12 @@ module.exports = function(conn, loggedIn, upload, client) {
       const hour = new Date().getHours()
       getAvailableMechanics(lineId, hour).then(mechanics => {
         APN.sendNotification(userId, `Mechanic notified for LINE ${mechanics[0].line}`).then(data => {
-          sms.sendSMS(mechanics[0].phone, `${mechanics[0].company.toUpperCase()}: LINE ${mechanics[0].line} has been down for 20 minutes`).then(smsData => {
-            console.log(smsData);
-          }).catch(err => {
-            console.log(err);
-          })
+          console.log(data);
+        }).catch(err => {
+          console.log(err);
+        })
+        sms.sendSMS(mechanics[0].phone, `${mechanics[0].company.toUpperCase()}: LINE ${mechanics[0].line} has been down for 20 minutes`).then(smsData => {
+          console.log(smsData);
         }).catch(err => {
           console.log(err);
         })
