@@ -43,11 +43,12 @@ class PushNotification extends Component {
   }
 
   handleRegisterDevice = (token) => {
-    getDeviceTokenRegistered().then(value => {
-      if (!value) {
-        postToken(token)
-      }
-    })
+    postToken(token)
+    // getDeviceTokenRegistered().then(value => {
+    //   if (!value) {
+    //     postToken(token)
+    //   }
+    // })
   }
 
   handleRegistrationError = (error) => {

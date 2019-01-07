@@ -1,7 +1,8 @@
 import React from 'react';
-import {ScrollView, View, Platform, Dimensions, StyleSheet, Text, Image, TouchableHighlight, TouchableOpacity} from 'react-native';
+import { connect } from 'react-redux'
+import { ScrollView, View, Platform, Dimensions, StyleSheet, Text, Image, TouchableHighlight, TouchableOpacity } from 'react-native';
 
-export default class GridItem extends React.PureComponent {
+class GridItem extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -14,7 +15,7 @@ export default class GridItem extends React.PureComponent {
     return (
       <TouchableOpacity onPress={() => this.props.navigation.navigate('Input', {...this.props})}>
         <View style={styles.gridItem}>
-          <View style={styles.icon}>
+          <View style={[styles.icon, { borderColor: this.props.activeMachine === this.props.machineId ? '#FF8300' : 'white' }]}>
             <Image
               source={{uri: this.props.icon_url}}
               resizeMode={'contain'}
@@ -46,14 +47,24 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 12,
     borderRadius: 12,
+    borderRadius: 8,
+    borderWidth: 3
   },
   iconTitle: {
-    padding: 10,
-    fontSize: 16,
+    paddingVertical: 10,
+    fontSize: 14,
     alignItems: 'center'
   },
   image: {
     width: win.width / imageWidth,
-    height: win.width / imageWidth,
+    height: win.width / imageWidth
   }
 })
+
+function mapStateToProps(state) {
+  return {
+    ...state.grid
+  }
+}
+
+export default connect(mapStateToProps)(GridItem);

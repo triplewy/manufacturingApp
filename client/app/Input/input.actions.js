@@ -3,8 +3,6 @@ export const HANDLE_DESCRIPTION_INPUT = 'HANDLE_DESCRIPTION_INPUT'
 export const UPLOAD = 'UPLOAD'
 export const UPLOAD_SUCCESS = 'UPLOAD_SUCCESS'
 export const UPLOAD_FAILURE = 'UPLOAD_FAILURE'
-export const ADD_IMAGE = 'ADD_IMAGE'
-export const DELETE_IMAGE = 'DELETE_IMAGE'
 
 export function handleDowntimeInput(text) {
   return {
@@ -36,19 +34,5 @@ export function uploadFailure(error) {
   return {
     type: UPLOAD_FAILURE,
     error: error
-  }
-}
-
-export function addImage(image) {
-  return {
-    type: ADD_IMAGE,
-    image: image
-  }
-}
-
-export function deleteImage(index) {
-  return {
-    type: DELETE_IMAGE,
-    index: index
   }
 }

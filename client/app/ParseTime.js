@@ -21,3 +21,15 @@ export function parseTime(timePeriod, time) {
       return currDate = new Date(time).toLocaleDateString('en-US', options)
   }
 }
+
+export function parseTimer(expire, currentTime) {
+  if (currentTime < expire) {
+    const time = Math.round((expire - currentTime) / 1000)
+    const minute = time > 60 ? Math.floor(time / 60) + 'min ' : ''
+    const seconds = time % 60 + 'sec'
+    return `${minute}${seconds}`
+  } else {
+    return 'MECHANIC NOTIFIED'
+  }
+
+}

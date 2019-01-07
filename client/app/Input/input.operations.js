@@ -1,4 +1,5 @@
-import { handleDowntimeInput, handleDescriptionInput, upload, uploadSuccess, uploadFailure, addImage, deleteImage } from './input.actions'
+import { handleDowntimeInput, handleDescriptionInput, upload, uploadSuccess, uploadFailure } from './input.actions'
+import { removeActiveLine } from '../Grid/grid.actions'
 import API from '../api'
 
 const api = new API()
@@ -12,18 +13,6 @@ export function handleDowntime(text) {
 export function handleDescription(text) {
   return (dispatch) => {
     dispatch(handleDescriptionInput(text))
-  }
-}
-
-export function handleAddImage(image) {
-  return (dispatch) => {
-    dispatch(addImage(image))
-  }
-}
-
-export function handleDeleteImage(index) {
-  return (dispatch) => {
-    dispatch(deleteImage(index))
   }
 }
 
@@ -43,6 +32,7 @@ export function handleUpload(navigation, images, downtime, description, name) {
     .then(data => {
       if (data.message === 'success') {
         dispatch(uploadSuccess())
+        dispatch(removeActiveLine())
         navigation.navigate('Grid')
       } else {
         dispatch(uploadFailure(err))

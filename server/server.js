@@ -18,7 +18,6 @@ var uuidv1 = require('uuid/v1');
 var bcrypt = require('bcrypt');
 var fs = require('fs')
 var cors = require('cors')
-var apn = require('apn')
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 var Redis = require('redis')
@@ -90,25 +89,6 @@ const db_config = {
 
 var conn = mysql.createConnection(db_config);
 
-conn.on('error', function(err) {
-  console.log('db error', err);
-  if(err.code === 'PROTOCOL_CONNECTION_LOST') {
-    handleDisconnect()
-  } else {
-    throw err;
-  }
-})
-
-function handleDisconnect() {
-  conn = mysql.createConnection(db_config);
-  conn.connect(function(err) {
-    if(err) {
-      console.log('error when connecting to db:', err);
-      setTimeout(handleDisconnect, 2000);
-    }
-  });
-}
-
 function serverAlive() {
   setTimeout(function() {
     conn.query('SELECT 1', [], function(err, result) {
@@ -165,8 +145,13 @@ var homeRoutes = require('./routes/homeRoutes')
 
 app.get('/api/sessionLogin', loggedIn, (req, res) => {
   console.log('- Request received:', req.method.cyan, '/api/sessionLogin');
-  Promise.all([module.exports.getLines(req.user), module.exports.getMachines(req.user), module.exports.getNames(req.user)]).then(allData => {
-    res.send({lines: allData[0], machines: allData[1], names: allData[2]})
+  Promise.all([
+    module.exports.getLines(req.user),
+    module.exports.getMachines(req.user),
+    module.exports.getNames(req.user),
+    module.exports.getActiveLine(req.user)
+  ]).then(allData => {
+    res.send({lines: allData[0], machines: allData[1], names: allData[2], activeLine: allData[3]})
   }).catch(err => {
     console.log(err);
   })
@@ -217,55 +202,26 @@ module.exports = {
     })
   },
 
-  sendNotifications: function(devices, alert) {
+  getActiveLine: function(userId) {
     return new Promise(function(resolve, reject) {
-
-      var options = {
-        token: {
-          key: process.env.KEY_PATH,
-          keyId: process.env.KEY_ID,
-          teamId: process.env.TEAM_ID
-        },
-        production: true
-      };
-
-      var apnProvider = new apn.Provider(options);
-
-      var promises = []
-
-      for (var i = 0; i < devices.length; i++) {
-        var notification = new apn.Notification();
-        notification.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
-        notification.badge = devices[i].badge;
-        notification.sound = "ping.aiff";
-        notification.alert = alert
-        notification.payload = {'messageFrom': 'Streamline'};
-        notification.topic = process.env.BUNDLE_ID;
-        promises.push(apnProvider.send(notification, devices[i].token))
-      }
-
-      Promise.all([...promises])
-      .then(allData => {
-        console.log(allData);
-        apnProvider.shutdown();
-        var sent = 0
-        var failed = 0
-        for (var i = 0; i < allData.length; i++) {
-          sent += allData[i].sent.length
-          failed += allData[i].failed.length
+      client.HMGET(userId, 'activeLine', 'expire', function(err, result) {
+        if (err) {
+          return reject(err)
+        } else {
+          const expireDate = parseInt(result[1], 10)
+          if (expireDate > Date.now()) {
+            return resolve({ lineId: parseInt(result[0], 10), expire: parseInt(result[1], 10) })
+          } else {
+            return resolve()
+          }
         }
-        return resolve({ sent: sent, failed: failed })
-      })
-      .catch(err => {
-        apnProvider.shutdown();
-        console.log(err);
       })
     })
   }
 }
 
 
-app.use('/api/input', inputRoutes(conn, loggedIn, upload))
+app.use('/api/input', inputRoutes(conn, loggedIn, upload, client))
 
 app.use('/api/auth', authRoutes(passport, conn, loggedIn, client))
 

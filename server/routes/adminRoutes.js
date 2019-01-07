@@ -3,7 +3,7 @@ module.exports = function(conn, loggedIn, csvUpload, client) {
 
     var adminRoutes = require('express').Router();
     var parse = require('csv-parse')
-    var serverFunctions = require('../server.js')
+    var APN = require('../apn')
 
     adminRoutes.get('/companies', loggedIn, (req, res) => {
       console.log('- Request received:', req.method.cyan, '/api/admin/companies');
@@ -177,7 +177,7 @@ module.exports = function(conn, loggedIn, csvUpload, client) {
                           console.log(err);
                         } else {
                           console.log(result);
-                          serverFunctions.sendNotifications(devices, req.body.message).then(data => {
+                          APN.sendNotifications(devices, req.body.message).then(data => {
                             console.log(data);
                             if (data.failed == 0) {
                               res.send({ message: 'All succeeded'})

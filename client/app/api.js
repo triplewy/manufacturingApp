@@ -35,9 +35,17 @@ export default class API {
     return postRequest(`${global.API_GATEWAY_URL}/account/notifications/read`)
   }
 
-  submit(formdata) {
-    return formdataPostRequest(`${global.AWS_URL}/input/submit`, formdata)
+  handleInput(lineId) {
+    return postRequest(`${global.API_GATEWAY_URL}/input`, { lineId: lineId })
   }
+
+  submit(formdata) {
+    return formdataPostRequest(`${global.API_GATEWAY_URL}/input/submit`, formdata)
+  }
+
+  // submit(formdata) {
+  //   return formdataPostRequest(`${global.AWS_URL}/input/submit`, formdata)
+  // }
 
   reports(lineId, machineId, date, page) {
     if (machineId) {

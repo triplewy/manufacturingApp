@@ -2,6 +2,8 @@ import React from 'react';
 import { ScrollView, View, Image, ImageBackground, FlatList, StyleSheet, Text, TextInput, Alert, ActivityIndicator, TouchableOpacity} from 'react-native';
 import { connect } from 'react-redux'
 import { handleDowntime, handleDescription, handleAddImage, handleDeleteImage, handleUpload } from './input.operations'
+import { insertActiveLine, removeActiveLine, setActiveMachine } from '../Grid/grid.operations'
+import { parseTimer } from '../ParseTime'
 import plusIcon from '../icons/plus-icon.png'
 import ImagePicker from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
@@ -15,9 +17,8 @@ class Input extends React.Component {
       images: [],
       showModal: false,
       selectedImage: null,
-      // timeClicked: null,
-      // currentTime: null
-    };
+      currentTime: Date.now()
+    }
 
     this.addImage = this.addImage.bind(this)
     this.deleteImage = this.deleteImage.bind(this)
@@ -26,17 +27,35 @@ class Input extends React.Component {
   }
 
   componentDidMount() {
-    // this.setState({ timeExpired: Date.now() + 1200000, currentTime: Date.now() }, () => {
-    //   console.log(this.state.timeClicked);
-    //   setInterval(() => {
-    //     this.setState({ currentTime: Date.now() })
-    //   }, 1000)
-    //   setTimeout(() => {
-    //     if (!this.props.submitted) {
-    //       console.log('here');
-    //     }
-    //   }, 100000)
-    // })
+    const lineId = this.props.navigation.state.params.lineId
+    const machineId = this.props.navigation.state.params.machineId
+
+    if (this.props.activeLine && this.props.activeLine == lineId) {
+      this.props.changeActiveMachine(machineId)
+      this.interval = setInterval(() => {
+        if (this.state.currentTime >= this.props.expire) {
+          clearInterval(this.interval)
+        } else {
+          this.setState({ currentTime: Date.now() })
+        }
+      }, 1000)
+    } else {
+      this.props.setActiveLine(lineId, machineId).then(() => {
+        this.interval = setInterval(() => {
+          if (this.state.currentTime >= this.props.expire) {
+            clearInterval(this.interval)
+          } else {
+            this.setState({ currentTime: Date.now() })
+          }
+        }, 1000)
+      }).catch(err => {
+        console.log(err);
+      })
+    }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   addImage() {
@@ -105,13 +124,17 @@ class Input extends React.Component {
   render() {
     var options = { weekday: 'long', month: 'short', day: 'numeric' };
     var currDate = new Date().toLocaleDateString('en-US', options)
+    const expire = this.props.expire
     return (
       <ScrollView>
         <View style={{alignItems: 'center', justifyContent: 'center', margin: 20}}>
           <Image
             source={{uri: this.props.navigation.state.params.icon_url}}
-            style={{width: 100, height: 100, borderRadius: 8}}
+            style={{width: 100, height: 100, borderRadius: 8, borderWidth: 3, borderColor: expire ? '#FF8300' : 'white'}}
           />
+          <Text style={[styles.inputLabel, {color: '#FF8300', fontWeight: 'bold', marginTop: 10}]}>
+            {expire ? parseTimer(expire, this.state.currentTime) : ''}
+          </Text>
         </View>
         <View style={styles.inputView}>
           <View style={{flexDirection: 'row'}}>
@@ -130,7 +153,15 @@ class Input extends React.Component {
         <View style={styles.inputView}>
           <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginVertical: 10}}>
             <Text style={styles.inputLabel}>Downtime:</Text>
-            <TextInput keyboardType='numeric' returnKeyType='done' maxLength={3} style={[styles.textInput, {borderColor: this.props.downtime ? '#83D3D6' : '#FF8300'}]} placeholder='0' value={this.props.downtime} onChangeText={(text) => this.props.handleDowntimeInput(text)}/>
+            <TextInput
+              keyboardType='numeric'
+              returnKeyType='done'
+              maxLength={3}
+              style={[styles.textInput, {borderColor: this.props.downtime ? '#83D3D6' : '#FF8300'}]}
+              placeholder={Math.floor((Date.now() - (this.props.expire - 1000*60*20)) / 60000).toString()} 
+              value={this.props.downtime}
+              onChangeText={(text) => this.props.handleDowntimeInput(text)}
+            />
             <Text style={{marginLeft: 10, fontSize: 18, color: this.state.downtime ? 'black' : '#888888'}}>Minutes</Text>
           </View>
         </View>
@@ -241,12 +272,10 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
   return {
     lines: state.splash.lines,
-    lineIndex: state.grid.lineIndex,
-    downtime: state.input.downtime,
-    description: state.input.description,
     names: state.splash.names,
     nameIndex: state.name.nameIndex,
-    submitted: state.input.submitted
+    ...state.grid,
+    ...state.input
   }
 }
 
@@ -254,7 +283,10 @@ function mapDispatchToProps(dispatch) {
   return {
     handleDowntimeInput: (text) => dispatch(handleDowntime(text)),
     handleDescriptionInput: (text) => dispatch(handleDescription(text)),
-    upload: (navigation, images, downtime, description, name) => dispatch(handleUpload(navigation, images, downtime, description, name))
+    upload: (navigation, images, downtime, description, name) => dispatch(handleUpload(navigation, images, downtime, description, name)),
+    setActiveLine: (lineId, machineId) => dispatch(insertActiveLine(lineId, machineId)),
+    removeActiveLine: (lineId) => dispatch(deleteActiveLine(lineId)),
+    changeActiveMachine: (machineId) => dispatch(setActiveMachine(machineId))
   }
 }
 

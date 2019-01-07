@@ -58,9 +58,6 @@ export default class App extends React.Component {
       {
         Grid: {
           screen: Grid,
-          navigationOptions: {
-            title: 'Inputs'
-          }
         },
         Input: {
           screen: Input,

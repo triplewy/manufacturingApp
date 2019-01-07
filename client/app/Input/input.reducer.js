@@ -1,9 +1,8 @@
-import { HANDLE_DOWNTIME_INPUT, HANDLE_DESCRIPTION_INPUT, UPLOAD, UPLOAD_SUCCESS, UPLOAD_FAILURE, ADD_IMAGE, DELETE_IMAGE } from './input.actions'
+import { HANDLE_DOWNTIME_INPUT, HANDLE_DESCRIPTION_INPUT, UPLOAD, UPLOAD_SUCCESS, UPLOAD_FAILURE } from './input.actions'
 
 const initialState = {
-  downtime: '',
+  downtime: null,
   description: '',
-  images: [],
   submitted: false,
   error: ''
 }
@@ -28,7 +27,7 @@ export function input(state = initialState, action) {
     case UPLOAD_SUCCESS:
       return {
         submitted: false,
-        downtime: '',
+        downtime: null,
         description: '',
         images: [],
         error: ''
@@ -38,19 +37,6 @@ export function input(state = initialState, action) {
         ...state,
         error: action.error
       }
-    case ADD_IMAGE:
-      return {
-        ...state,
-        images: state.images.concat(action.image)
-      }
-    case DELETE_IMAGE: {
-      var temp = state.images
-      temp.splice(action.index, 1)
-      return {
-        ...state,
-        images: temp
-      }
-    }
     default:
       return state
   }

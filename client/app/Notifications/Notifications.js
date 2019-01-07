@@ -63,7 +63,8 @@ const styles = StyleSheet.create({
     flex: 1
   },
   date: {
-
+    fontSize: 12,
+    color: 'gray'
   }
 })
 

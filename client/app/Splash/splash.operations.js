@@ -1,5 +1,6 @@
 import { sessionLogin, sessionLoginSuccess, sessionLoginFailure } from './splash.actions'
 import { setNameIndex } from '../Name/name.actions'
+import { setActiveLine } from '../Grid/grid.actions'
 import { getNameStorage } from '../Storage'
 import API from '../api'
 
@@ -19,6 +20,9 @@ export function fetchSessionLogin() {
         return getNameStorage().then(index => {
           dispatch(setNameIndex(index))
           dispatch(sessionLoginSuccess(data.lines, data.machines, data.names))
+          if (data.activeLine) {
+            dispatch(setActiveLine(data.activeLine.lineId, null, data.activeLine.expire))
+          }
         })
       }
     })
