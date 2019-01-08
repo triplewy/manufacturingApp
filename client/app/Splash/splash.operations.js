@@ -21,7 +21,7 @@ export function fetchSessionLogin() {
           dispatch(setNameIndex(index))
           dispatch(sessionLoginSuccess(data.lines, data.machines, data.names))
           if (data.activeLine) {
-            dispatch(setActiveLine(data.activeLine.lineId, null, data.activeLine.expire))
+            dispatch(setActiveLine(data.activeLine.lineId, data.activeLine.machineId, data.activeLine.expire))
           }
         })
       }

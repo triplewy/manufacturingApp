@@ -109,10 +109,10 @@ function sendNotification(userId, alert) {
       notification.topic = process.env.BUNDLE_ID;
 
       apnProvider.send(notification, allData[1].deviceToken).then(notificationData => {
+        apnProvider.shutdown();
         if (notificationData.failed.length) {
           return reject(notificationData.failed)
         } else {
-          apnProvider.shutdown();
           storeNotification(userId, alert).then(data => {
             if (data.message == 'success') {
               return resolve({ sent: notificationData.sent.length, failed: notificationData.failed.length })
@@ -128,6 +128,7 @@ function sendNotification(userId, alert) {
         return reject(err)
       })
     }).catch(err => {
+      apnProvider.shutdown();
       return reject(err)
     })
   })

@@ -30,8 +30,7 @@ class Input extends React.Component {
     const lineId = this.props.navigation.state.params.lineId
     const machineId = this.props.navigation.state.params.machineId
 
-    if (this.props.activeLine && this.props.activeLine == lineId) {
-      this.props.changeActiveMachine(machineId)
+    this.props.setActiveLine(lineId, machineId).then(() => {
       this.interval = setInterval(() => {
         if (this.state.currentTime >= this.props.expire) {
           clearInterval(this.interval)
@@ -39,19 +38,9 @@ class Input extends React.Component {
           this.setState({ currentTime: Date.now() })
         }
       }, 1000)
-    } else {
-      this.props.setActiveLine(lineId, machineId).then(() => {
-        this.interval = setInterval(() => {
-          if (this.state.currentTime >= this.props.expire) {
-            clearInterval(this.interval)
-          } else {
-            this.setState({ currentTime: Date.now() })
-          }
-        }, 1000)
-      }).catch(err => {
-        console.log(err);
-      })
-    }
+    }).catch(err => {
+      console.log(err);
+    })
   }
 
   componentWillUnmount() {

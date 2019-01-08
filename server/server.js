@@ -204,12 +204,12 @@ module.exports = {
 
   getActiveLine: function(userId) {
     return new Promise(function(resolve, reject) {
-      client.HMGET(userId, 'activeLine', 'expire', function(err, result) {
+      client.HMGET(userId, 'activeLine', 'activeMachine', 'expire', function(err, result) {
         if (err) {
           return reject(err)
         } else {
           if (result.length) {
-            return resolve({ lineId: parseInt(result[0], 10), expire: parseInt(result[1], 10) })
+            return resolve({ lineId: parseInt(result[0], 10), machineId: parseInt(result[1], 10), expire: parseInt(result[2], 10) })
           } else {
             return resolve()
           }

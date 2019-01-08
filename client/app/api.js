@@ -35,13 +35,20 @@ export default class API {
     return postRequest(`${global.API_GATEWAY_URL}/account/notifications/read`)
   }
 
-  handleInput(lineId) {
-    return postRequest(`${global.API_GATEWAY_URL}/input`, { lineId: lineId })
+  setActiveLine(lineId, machineId) {
+    return postRequest(`${global.API_GATEWAY_URL}/input`, { lineId: lineId, machineId: machineId })
+  }
+
+  deleteActiveLine() {
+    return postRequest(`${global.API_GATEWAY_URL}/input/delete`)
   }
 
   submit(formdata) {
-    return formdataPostRequest(`${global.AWS_URL}/input/submit`, formdata)
+    return formdataPostRequest(`${global.API_GATEWAY_URL}/input/submit`, formdata)
   }
+  // submit(formdata) {
+  //   return formdataPostRequest(`${global.AWS_URL}/input/submit`, formdata)
+  // }
 
   reports(lineId, machineId, date, page) {
     if (machineId) {

@@ -14,13 +14,13 @@ export function setLine(index) {
 export function insertActiveLine(lineId, machineId) {
   return (dispatch) => {
     return new Promise(function(resolve, reject) {
-      api.handleInput(lineId, machineId)
+      api.setActiveLine(lineId, machineId)
       .then(data => {
         dispatch(setActiveLine(lineId, machineId, data.expireDate))
         return resolve()
       })
       .catch(err => {
-        console.log(err);
+        return reject(err);
       })
     })
   }
@@ -28,12 +28,17 @@ export function insertActiveLine(lineId, machineId) {
 
 export function deleteActiveLine(lineId) {
   return (dispatch) => {
-    dispatch(removeActiveLine(lineId))
-  }
-}
-
-export function setActiveMachine(machineId) {
-  return (dispatch) => {
-    dispatch(changeActiveMachine(machineId))
+    return new Promise(function(resolve, reject) {
+      api.deleteActiveLine()
+      .then(data => {
+        if (data.message === 'success') {
+          dispatch(removeActiveLine())
+        }
+        return resolve()
+      })
+      .catch(err => {
+        return reject(err)
+      })
+    })
   }
 }

@@ -94,8 +94,8 @@ module.exports = function(conn, loggedIn, csvUpload, client) {
         if (err) {
           conn.query('ROLLBACK')
         } else {
-          conn.query('UPDATE users SET companyId = :companyId, isMechanic = :isMechanic, isAdmin = :isAdmin WHERE userId = :userId',
-          {companyId: req.body.companyId, isMechanic: req.body.isMechanic, isAdmin: req.body.isAdmin, userId: req.body.userId}, function(err, result) {
+          conn.query('UPDATE users SET companyId = :companyId, isAdmin = :isAdmin WHERE userId = :userId',
+          {companyId: req.body.companyId, isAdmin: req.body.isAdmin, userId: req.body.userId}, function(err, result) {
             if (err) {
               conn.query('ROLLBACK')
             } else {
@@ -204,8 +204,7 @@ module.exports = function(conn, loggedIn, csvUpload, client) {
       for (var i = 0; i < req.body.lineIds.length; i++) {
         assemblyLineUsers.push([req.body.userId, req.body.lineIds[i]])
       }
-      conn.query('UPDATE users SET isMechanic = :isMechanic, isAdmin = :isAdmin WHERE userId = :userId',
-      {isMechanic: req.body.isMechanic, isAdmin: req.body.isAdmin, userId: req.body.userId}, function(err, result) {
+      conn.query('UPDATE users SET isAdmin = :isAdmin WHERE userId = :userId', { isAdmin: req.body.isAdmin, userId: req.body.userId }, function(err, result) {
         if (err) {
           console.log(err);
         } else {

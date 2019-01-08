@@ -270,7 +270,7 @@ module.exports = function(conn, loggedIn) {
     function parseTimePeriodDate(timePeriod) {
       switch (timePeriod) {
         case 0:
-          return ' AND b.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(b.createdDate) = :date '
+          return ' AND b.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND HOUR(DATE_SUB(b.createdDate, INTERVAL 5 HOUR)) = :date '
         case 1:
           return ' AND DATE(DATE_SUB(b.createdDate, INTERVAL 5 HOUR)) = DATE(:date) '
         case 2:
@@ -287,7 +287,7 @@ module.exports = function(conn, loggedIn) {
     function parseTimePeriodLine(timePeriod) {
       switch (timePeriod) {
         case 0:
-          return 'SELECT SUM(a.downtime) AS totalDowntime, b.availableMin, HOUR(a.createdDate) AS downtimeHour FROM downtime AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND a.lineId = :lineId GROUP BY HOUR(a.createdDate) ORDER BY downtimeHour ASC'
+          return 'SELECT SUM(a.downtime) AS totalDowntime, b.availableMin, HOUR(DATE_SUB(a.createdDate, INTERVAL 5 HOUR)) AS downtimeHour FROM downtime AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND a.lineId = :lineId GROUP BY downtimeHour ORDER BY downtimeHour ASC'
         case 1:
           return 'SELECT SUM(a.downtime) AS totalDowntime, b.availableMin, DATE(DATE_SUB(a.createdDate, INTERVAL 5 HOUR)) AS time, HOUR(a.createdDate) >= b.morningShift AND HOUR(a.createdDate) < b.eveningShift AS isDayShift FROM downtime AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 WEEK) AND a.lineId = :lineId GROUP BY time, isDayShift ORDER BY time ASC'
         case 2:

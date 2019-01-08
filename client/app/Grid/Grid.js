@@ -1,7 +1,7 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View, Text, FlatList, Platform } from 'react-native';
+import { ScrollView, StyleSheet, View, Text, FlatList, TouchableOpacity, Platform } from 'react-native';
 import { connect } from 'react-redux'
-import { fetchGrid, fetchLines, setLine } from './grid.operations'
+import { setLine, deleteActiveLine } from './grid.operations'
 import { parseTimer } from '../ParseTime'
 import PushNotification from '../PushNotification/PushNotification'
 import GridItem from './GridItem'
@@ -96,9 +96,16 @@ class Grid extends React.Component {
     return (
       <View>
         <PushNotification />
-        <View style={[styles.expire, {maxHeight: isActiveLine ? 80 : 0 }]}>
-          <Text style={styles.expireText}>{isActiveLine ? parseTimer(expire, this.state.currentTime) : ''}</Text>
-        </View>
+        {isActiveLine ?
+          <View style={styles.expire}>
+            <Text style={styles.expireText}>{isActiveLine ? parseTimer(expire, this.state.currentTime) : ''}</Text>
+            <TouchableOpacity onPress={() => this.props.removeActiveLine()}>
+              <Text style={styles.expireText}>CLEAR</Text>
+            </TouchableOpacity>
+          </View>
+          :
+          null
+        }
         <ScrollView>
           <View style={styles.statsView}>
             {this.props.lines.length > 0 ?
@@ -137,16 +144,17 @@ const styles = StyleSheet.create({
     padding: 5
   },
   expire: {
+    flexDirection: 'row',
     backgroundColor: '#FF8300',
-    justifyContent: 'center',
     alignItems: 'center',
-    overflow: 'hidden',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 16
   },
   expireText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 16,
-    paddingVertical: 10
+    fontSize: 16
   }
 })
 
@@ -160,8 +168,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getGrid: (lineId) => dispatch(fetchGrid(lineId)),
-    setLineIndex: (index) => dispatch(setLine(index))
+    setLineIndex: (index) => dispatch(setLine(index)),
+    removeActiveLine: () => dispatch(deleteActiveLine())
   }
 }
 
