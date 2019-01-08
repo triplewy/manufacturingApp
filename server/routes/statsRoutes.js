@@ -28,12 +28,12 @@ module.exports = function(conn, loggedIn) {
             case 0: {
               for (var i = 0; i < result.length; i++) {
                 var dateLabel = result[i].downtimeHour % 12
-                if (i == 0) {
+                if (dateLabel == 0) {
                   dateLabel = '12 AM'
-                } else if (i == 12) {
+                } else if (dateLabel == 12) {
                   dateLabel = '12 PM'
                 } else {
-                  dateLabel += i < 12 ? ' AM' : ' PM'
+                  dateLabel += result[i].downtimeHour * 1 < 12 ? ' AM' : ' PM'
                 }
                 result[i] = {dateLabel: dateLabel, totalDowntime: result[i].totalDowntime, availableMin: 60}
               }

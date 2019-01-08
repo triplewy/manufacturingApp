@@ -70,7 +70,7 @@ class DowntimeStatsVertical extends React.Component {
           <View style={{marginBottom: 5}}>
             <Text style={{color: 'gray', textAlign: 'center'}}>{parsedDowntime}</Text>
           </View>
-          {this.props.timePeriod < 3 ?
+          {this.props.timePeriod > 0 && this.props.timePeriod < 3  ?
             <TouchableOpacity onPress={() => this.props.navigation.navigate('DayStats', {date: item.item.time, downtime: downtime, lineId: this.props.lines[this.props.lineIndex].lineId})}>
               <View style={{height: height, width: 70, backgroundColor: '#FF8300', borderRadius: 4, alignItems: 'center', justifyContent: 'center'}}>
                 <Animated.View style={{opacity: this.fadeValue}}>
