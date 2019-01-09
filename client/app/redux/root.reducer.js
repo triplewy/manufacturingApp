@@ -13,6 +13,7 @@ import { shiftStats } from '../Stats/ShiftStats/shiftStats.reducer'
 import { workerStats } from '../Stats/WorkerStats/workerStats.reducer'
 import { input } from '../Input/input.reducer'
 import { name } from '../Name/name.reducer'
+import { shifts } from '../Shifts/shifts.reducer'
 import { pushNotification } from '../PushNotification/PushNotification.reducer'
 import { notifications } from '../Notifications/Notifications.reducer'
 
@@ -31,6 +32,7 @@ export default combineReducers({
   workerStats,
   input,
   name,
+  shifts,
   pushNotification,
   notifications
 });

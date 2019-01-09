@@ -70,8 +70,8 @@ module.exports = function(conn, loggedIn, upload, client) {
 
     function uploadDowntimeMetadata(req) {
       return new Promise(function(resolve, reject) {
-        var insertQuery = [req.body.machineId, req.body.lineLeaderName, req.body.downtime, req.body.description];
-        conn.query('INSERT INTO downtime (machineId, lineLeaderName, downtime, description) VALUES (?, ?, ?, ?)', insertQuery, function(err, result) {
+        var insertQuery = [req.body.machineId, req.body.lineLeaderName, req.body.downtime, req.body.description, req.body.availableMin];
+        conn.query('INSERT INTO downtime (machineId, lineLeaderName, downtime, description, availableMin) VALUES (?, ?, ?, ?, ?)', insertQuery, function(err, result) {
           if (err) {
             console.log("upload error");
             return reject(err);

@@ -149,9 +149,10 @@ app.get('/api/sessionLogin', loggedIn, (req, res) => {
     module.exports.getLines(req.user),
     module.exports.getMachines(req.user),
     module.exports.getNames(req.user),
+    module.exports.getShifts(req.user),
     module.exports.getActiveLine(req.user)
   ]).then(allData => {
-    res.send({lines: allData[0], machines: allData[1], names: allData[2], activeLine: allData[3]})
+    res.send({lines: allData[0], machines: allData[1], names: allData[2], shifts: allData[3], activeLine: allData[4]})
   }).catch(err => {
     console.log(err);
   })
@@ -195,6 +196,18 @@ module.exports = {
       conn.query('SELECT * FROM names WHERE companyId = (SELECT companyId FROM users WHERE userId = :userId) ORDER BY name', {userId: userId}, function(err, result) {
         if (err) {
           return reject(err);
+        } else {
+          return resolve(result)
+        }
+      })
+    })
+  },
+
+  getShifts: function(userId) {
+    return new Promise(function(resolve, reject) {
+      conn.query('SELECT minutes FROM shifts WHERE companyId = (SELECT companyId FROM users WHERE userId = :userId) ORDER BY minutes ASC', { userId: userId }, function(err, result) {
+        if (err) {
+          return reject(err)
         } else {
           return resolve(result)
         }

@@ -1,5 +1,6 @@
 export const GET_MACHINE_STATS = 'GET_MACHINE_STATS'
 export const GET_MACHINE_STATS_SUCCESS = 'GET_MACHINE_STATS_SUCCESS'
+export const GET_DAY_MACHINE_STATS_SUCCESS = 'GET_DAY_MACHINE_STATS_SUCCESS'
 export const GET_MACHINE_STATS_FAILURE = 'GET_MACHINE_STATS_FAILURE'
 
 export function getStats() {
@@ -11,6 +12,14 @@ export function getStats() {
 export function getStatsSuccess(downtime, totalDowntime) {
   return{
     type: GET_MACHINE_STATS_SUCCESS,
+    downtime: downtime,
+    totalDowntime: totalDowntime
+  }
+}
+
+export function getDayStatsSuccess(downtime, totalDowntime) {
+  return {
+    type: GET_DAY_MACHINE_STATS_SUCCESS,
     downtime: downtime,
     totalDowntime: totalDowntime
   }

@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 20,
     marginBottom: 40,
-    height: 500,
+    height: 600,
   },
   averageLine: {
     position: 'absolute',

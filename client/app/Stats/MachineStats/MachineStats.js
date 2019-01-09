@@ -20,7 +20,7 @@ class MachineStats extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.lineIndex !== prevProps.lineIndex || this.props.timePeriod !== prevProps.timePeriod || this.props.date !== prevProps.date) {
       if (this.props.lines.length > 0) {
-        this.props.getMachineStats(this.props.lines[this.props.lineIndex].lineId, this.props.timePeriod, this.props.date)  
+        this.props.getMachineStats(this.props.lines[this.props.lineIndex].lineId, this.props.timePeriod, this.props.date)
       }
     }
   }
@@ -28,7 +28,8 @@ class MachineStats extends React.Component {
   renderItem(item) {
     const win = Dimensions.get('window');
     const downtime = item.item.totalDowntime
-    const height = downtime / this.props.totalDowntime * 400
+    const totalDowntime = this.props.date ? this.props.dayTotalDowntime : this.props.totalDowntime
+    const height = downtime / totalDowntime * 400
     const parsedDowntime = downtimeString(downtime)
 
     return (
@@ -38,7 +39,7 @@ class MachineStats extends React.Component {
           <Text style={{color: 'gray', textAlign: 'center'}}>{parsedDowntime}</Text>
         </View>
         <View style={{height: height, width: 70, backgroundColor: '#FF8300', borderRadius: 4, alignItems: 'center', justifyContent: 'center'}}>
-          <Text style={{color: 'white', fontWeight: 'bold'}}>{Math.round(downtime / this.props.totalDowntime * 100) + '%'}</Text>
+          <Text style={{color: 'white', fontWeight: 'bold'}}>{Math.round(downtime / totalDowntime * 100) + '%'}</Text>
         </View>
         <View style={{height: 40}}>
           <Text style={{color: 'gray', marginTop: 10, fontSize: 12}}>{item.item.name}</Text>
@@ -56,7 +57,7 @@ class MachineStats extends React.Component {
         <FlatList
           horizontal
           scrollEnabled
-          data={this.props.downtime}
+          data={this.props.date ? this.props.dayDowntime : this.props.downtime}
           renderItem={this.renderItem}
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={{paddingVertical: 10}}
@@ -87,8 +88,7 @@ function mapStateToProps(state) {
     timePeriod: state.stats.timePeriod,
     lineIndex: state.stats.lineIndex,
     lines: state.splash.lines,
-    downtime: state.machineStats.downtime,
-    totalDowntime: state.machineStats.totalDowntime,
+    ...state.machineStats
   }
 }
 

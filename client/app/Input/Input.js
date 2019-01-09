@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { handleDowntime, handleDescription, handleAddImage, handleDeleteImage, handleUpload } from './input.operations'
 import { insertActiveLine, removeActiveLine, setActiveMachine } from '../Grid/grid.operations'
 import { parseTimer } from '../ParseTime'
+import { getShift } from '../Storage'
 import plusIcon from '../icons/plus-icon.png'
 import ImagePicker from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
@@ -14,6 +15,7 @@ class Input extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      availableMin: 0,
       images: [],
       showModal: false,
       selectedImage: null,
@@ -38,6 +40,12 @@ class Input extends React.Component {
           this.setState({ currentTime: Date.now() })
         }
       }, 1000)
+    }).catch(err => {
+      console.log(err);
+    })
+
+    getShift().then(data => {
+      this.setState({ availableMin: parseInt(data, 10) })
     }).catch(err => {
       console.log(err);
     })
@@ -137,8 +145,12 @@ class Input extends React.Component {
             <Text style={styles.lockedText}>{this.props.lines[this.props.lineIndex].name}</Text>
           </View>
           <View style={{flexDirection: 'row'}}>
-            <Text style={{fontSize: 18, color: '#888888'}}>Line Leader:</Text>
+            <Text style={styles.lockedInputLabel}>Line Leader:</Text>
             <Text style={styles.lockedText}>{this.props.names[this.props.nameIndex].name}</Text>
+          </View>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{fontSize: 18, color: '#888888'}}>Shift:</Text>
+            <Text style={styles.lockedText}>{`${this.state.availableMin / 60} HOURS`}</Text>
           </View>
         </View>
         <View style={styles.inputView}>
@@ -178,7 +190,7 @@ class Input extends React.Component {
           <ImageModal selectedImage={this.state.selectedImage} showModal={this.state.showModal} toggleModal={this.toggleModal} />
         </View>
         <TouchableOpacity
-          onPress={() => this.props.upload(this.props.navigation, this.state.images, this.props.downtime, this.props.description, this.props.names[this.props.nameIndex].name)}
+          onPress={() => this.props.upload(this.props.navigation, this.state.images, this.props.downtime, this.props.description, this.props.names[this.props.nameIndex].name, this.state.availableMin )}
           disabled={!(this.props.downtime && this.props.description) || this.props.submitted}
         >
           <View style={{backgroundColor: (this.props.downtime && this.props.description) ? '#83D3D6' : '#f1f1f1', alignItems: 'center', justifyContent: 'center', height: 80}}>
@@ -274,7 +286,7 @@ function mapDispatchToProps(dispatch) {
   return {
     handleDowntimeInput: (text) => dispatch(handleDowntime(text)),
     handleDescriptionInput: (text) => dispatch(handleDescription(text)),
-    upload: (navigation, images, downtime, description, name) => dispatch(handleUpload(navigation, images, downtime, description, name)),
+    upload: (navigation, images, downtime, description, name, availableMin) => dispatch(handleUpload(navigation, images, downtime, description, name, availableMin)),
     setActiveLine: (lineId, machineId) => dispatch(insertActiveLine(lineId, machineId)),
     removeActiveLine: (lineId) => dispatch(deleteActiveLine(lineId)),
     changeActiveMachine: (machineId) => dispatch(setActiveMachine(machineId))

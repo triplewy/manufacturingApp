@@ -2,11 +2,16 @@ import React from 'react';
 import { ScrollView, View, RefreshControl, StyleSheet, Text, Image, TouchableOpacity, Linking, Alert, ActivityIndicator } from 'react-native';
 import { fetchAccount, fetchLogout, changeName } from './account.operations'
 import { connect } from 'react-redux'
+import { getShift } from '../Storage'
 import notificationIcon from '../icons/notification-icon.png'
 
 class Account extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      shift: ''
+    }
 
     this.linkPhone = this.linkPhone.bind(this)
     this.linkText = this.linkText.bind(this)
@@ -15,6 +20,11 @@ class Account extends React.Component {
   }
 
   componentDidMount() {
+    getShift().then(data => {
+      this.setState({ shift: `${data / 60} HOURS`})
+    }).catch(err => {
+      console.log(err);
+    })
     this.props.getAccount()
   }
 
@@ -77,6 +87,15 @@ class Account extends React.Component {
         <View style={styles.wrapper}>
           <Text style={styles.accountLabel}>Company</Text>
           <Text style={styles.accountText}>{this.props.account.companyName}</Text>
+        </View>
+        <View style={styles.wrapper}>
+          <Text style={styles.accountLabel}>Shift</Text>
+          <Text style={styles.accountText}>{this.state.shift}</Text>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('Shifts')}>
+            <View style={{backgroundColor: '#FF8300', borderRadius: 8, marginVertical: 10}}>
+              <Text style={{fontSize: 18, paddingVertical: 10, paddingHorizontal: 15, color: 'white'}}>Change Shift</Text>
+            </View>
+          </TouchableOpacity>
         </View>
         {this.props.names.length > 0 ?
           <View style={styles.wrapper}>

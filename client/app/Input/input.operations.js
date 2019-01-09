@@ -16,7 +16,7 @@ export function handleDescription(text) {
   }
 }
 
-export function handleUpload(navigation, images, downtime, description, name) {
+export function handleUpload(navigation, images, downtime, description, name, availableMin) {
   return (dispatch) => {
     var formData = new FormData();
     for (var i = 0; i < images.length; i++) {
@@ -26,6 +26,7 @@ export function handleUpload(navigation, images, downtime, description, name) {
     formData.append('machineId', navigation.state.params.machineId);
     formData.append('downtime', downtime);
     formData.append('description', description);
+    formData.append('availableMin', availableMin)
 
     dispatch(upload())
     return api.submit(formData)

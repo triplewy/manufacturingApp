@@ -1,19 +1,16 @@
-SET foreign_key_checks = 0;
-DROP TABLE IF EXISTS notifications;
-DROP TABLE IF EXISTS downtimeImages;
-DROP TABLE IF EXISTS downtime;
-DROP TABLE IF EXISTS machines;
-DROP TABLE IF EXISTS assemblyLineUsers;
-DROP TABLE IF EXISTS assemblyLines;
-DROP TABLE IF EXISTS logins;
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS companies;
-SET foreign_key_checks = 1;
 
 CREATE TABLE IF NOT EXISTS companies (
   companyId INTEGER AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255) NOT NULL UNIQUE,
   createdDate DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS shifts (
+  shiftId INTEGER AUTO_INCREMENT PRIMARY KEY,
+  companyId INTEGER NOT NULL,
+  minutes INTEGER NOT NULL,
+  FOREIGN KEY(companyId) REFERENCES companies(companyId),
+  UNIQUE(companyId, minutes)
 );
 
 CREATE TABLE IF NOT EXISTS users (

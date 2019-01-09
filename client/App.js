@@ -11,6 +11,7 @@ import Splash from './app/Splash/Splash'
 import Login from './app/Login/Login'
 import CreateAccount from './app/CreateAccount/CreateAccount'
 import Name from './app/Name/Name'
+import Shifts from './app/Shifts/Shifts'
 import ForgotPassword from './app/ForgotPassword'
 import Grid from './app/Grid/Grid'
 import Input from './app/Input/Input'
@@ -37,7 +38,7 @@ export default class App extends React.Component {
       {
         Login: Login,
         ForgotPassword: ForgotPassword,
-        CreateAccount: CreateAccount,
+        // CreateAccount: CreateAccount,
       },
       {
         navigationOptions: {
@@ -214,6 +215,7 @@ export default class App extends React.Component {
         Splash: Splash,
         Auth: AuthNavigation,
         Name: Name,
+        Shifts: Shifts,
         Tabs: Tabs,
       }
     )

@@ -36,8 +36,7 @@ export function setNameStorage(index) {
   return new Promise(function(resolve, reject) {
     AsyncStorage.setItem('name', index).then(() => {
       return resolve({message: 'success'})
-    })
-    .catch(err => {
+    }).catch(err => {
       return reject(err);
     })
   })
@@ -51,9 +50,32 @@ export function getNameStorage() {
       } else {
         return resolve(-1)
       }
-    })
-    .catch(err => {
+    }).catch(err => {
       return reject(err)
+    })
+  })
+}
+
+export function getShift() {
+  return new Promise(function(resolve, reject) {
+    AsyncStorage.getItem('shift').then(value => {
+      if (value) {
+        return resolve(parseInt(value, 10))
+      } else {
+        return resolve(null)
+      }
+    }).catch(err => {
+      return reject(err)
+    })
+  })
+}
+
+export function setShift(minutes) {
+  return new Promise(function(resolve, reject) {
+    AsyncStorage.setItem('shift', minutes.toString()).then(() => {
+      return resolve('success')
+    }).catch(err => {
+      return reject(err);
     })
   })
 }

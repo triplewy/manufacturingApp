@@ -1,34 +1,36 @@
 import React from 'react';
 import { Dimensions, FlatList, View, Text, TextInput, StyleSheet, TouchableOpacity, Button } from 'react-native';
-import { setName } from './name.operations'
+import { setShift } from '../Storage'
 import { connect } from 'react-redux'
-import { setNameStorage } from '../Storage'
 
-class Name extends React.Component {
+class Shifts extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      index: -1
     };
 
-    this.postName = this.postName.bind(this)
+    this.setShift = this.setShift.bind(this)
     this.renderItem = this.renderItem.bind(this)
   }
 
-  postName(e) {
-    setNameStorage(this.props.nameIndex.toString()).then(data => {
-      if (data.message === 'success') {
-        this.props.navigation.navigate('Shifts')
+  setShift() {
+    setShift(this.props.shifts[this.state.index].minutes).then(result => {
+      if (result === 'success') {
+        this.props.navigation.navigate('Tabs')
       } else {
-        console.log(data);
+        console.log(result);
       }
+    }).catch(err => {
+      console.log(err);
     })
   }
 
   renderItem(item) {
     return (
-      <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => this.props.setNameIndex(item.index)}>
-        <Text style={{fontSize: 24, padding: 20, color: this.props.nameIndex === item.index ? '#FF8300' : 'gray'}}>{item.item.name}</Text>
+      <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => this.setState({ index: item.index })}>
+        <Text style={{fontSize: 24, padding: 20, color: this.state.index === item.index ? '#FF8300' : 'gray'}}>{`${item.item.minutes / 60} HOURS`}</Text>
       </TouchableOpacity>
     )
   }
@@ -38,19 +40,18 @@ class Name extends React.Component {
     return (
       <View style={{justifyContent: 'center', flex: 1, backgroundColor: '#FF8300'}}>
         <View style={styles.inputView}>
-          <Text style={styles.title}>Name</Text>
+          <Text style={styles.title}>Shift</Text>
           <View style={{backgroundColor: 'white', height: win.height/2, width: win.width * 3 / 4, borderRadius: 8}}>
             <FlatList
-              // key={this.props.nameIndex}
-              extraData={this.props.nameIndex}
-              data={this.props.names}
+              extraData={this.state.index}
+              data={this.props.shifts}
               renderItem={this.renderItem}
               keyExtractor={(item, index) => index.toString()}
             />
           </View>
-          <TouchableOpacity onPress={this.postName} disabled={this.props.nameIndex < 0}>
-            <View style={[styles.loginButton, {backgroundColor: this.props.nameIndex >= 0 ? '#83D3D6' : 'white'}]}>
-              <Text style={[styles.loginButtonText, {color: this.props.nameIndex >= 0 ? 'white' : '#f1f1f1'}]}>Done</Text>
+          <TouchableOpacity onPress={this.setShift} disabled={this.state.index < 0}>
+            <View style={[styles.loginButton, {backgroundColor: this.state.index >= 0 ? '#83D3D6' : 'white'}]}>
+              <Text style={[styles.loginButtonText, {color: this.state.index >= 0 ? 'white' : '#f1f1f1'}]}>Done</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -98,15 +99,8 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
   return {
-    names: state.splash.names,
-    nameIndex: state.name.nameIndex
+    ...state.shifts
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    setNameIndex: (index) => dispatch(setName(index))
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Name);
+export default connect(mapStateToProps)(Shifts);

@@ -1,5 +1,6 @@
 import { getUser, getUserSuccess, getUserFailure, setUsername, setPassword } from './login.actions'
 import { sessionLoginSuccess } from '../Splash/splash.actions'
+import { setShifts } from '../Shifts/shifts.actions'
 import API from '../api'
 
 const api = new API()
@@ -28,6 +29,7 @@ export function loginUser(username, password, navigation) {
           data.lines[i].name = 'LINE ' + data.lines[i].name
         }
         dispatch(sessionLoginSuccess(data.lines, data.machines, data.names))
+        dispatch(setShifts(data.shifts))
         dispatch(getUserSuccess())
         navigation.navigate('Name')
       }

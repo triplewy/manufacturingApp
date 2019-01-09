@@ -115,8 +115,14 @@ module.exports = function(passport, conn, loggedIn, client) {
 
     authRoutes.post('/signin', passport.authenticate('local-login'), (req, res) => {
       console.log('- Request received:', req.method.cyan, '/api/auth/signin');
-      Promise.all([sessionFunctions.getLines(req.user), sessionFunctions.getMachines(req.user), sessionFunctions.getNames(req.user)]).then(allData => {
-        res.send({lines: allData[0], machines: allData[1], names: allData[2]})
+      Promise.all([
+        sessionFunctions.getLines(req.user),
+        sessionFunctions.getMachines(req.user),
+        sessionFunctions.getNames(req.user),
+        sessionFunctions.getShifts(req.user),
+        sessionFunctions.getActiveLine(req.user)
+      ]).then(allData => {
+        res.send({lines: allData[0], machines: allData[1], names: allData[2], shifts: allData[3], activeLine: allData[4]})
       }).catch(err => {
         console.log(err);
       })
@@ -133,7 +139,11 @@ module.exports = function(passport, conn, loggedIn, client) {
             if (err) {
               console.log(err);
             } else {
-              Promise.all([sessionFunctions.getLines(req.user), sessionFunctions.getMachines(req.user), sessionFunctions.getNames(req.user)]).then(allData => {
+              Promise.all([
+                sessionFunctions.getLines(req.user),
+                sessionFunctions.getMachines(req.user),
+                sessionFunctions.getNames(req.user)
+              ]).then(allData => {
                 res.send({lines: allData[0], machines: allData[1], names: allData[2]})
               }).catch(err => {
                 console.log(err);

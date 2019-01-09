@@ -59,11 +59,11 @@ class Login extends React.Component {
               <Text style={styles.loginButtonText}>Continue</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.props.navigation.navigate('CreateAccount')}>
+          {/* <TouchableOpacity onPress={() => this.props.navigation.navigate('CreateAccount')}>
             <View style={{margin: 20}}>
               <Text style={{color: 'white', fontSize: 24}}>Create Account</Text>
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <Animated.View style={{marginTop: 30, opacity: this.fadeValue}}>
             <Text style={{color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center'}}>Incorrect username or password</Text>
           </Animated.View>
