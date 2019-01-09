@@ -115,6 +115,18 @@ CREATE TABLE IF NOT EXISTS notifications (
   FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS workOrders (
+  workOrderId INTEGER AUTO_INCREMENT PRIMARY KEY,
+  lineId INTEGER NOT NULL,
+  machineId INTEGER NOT NULL,
+  stars INTEGER NOT NULL,
+  description VARCHAR(255),
+  imageUrl VARCHAR(255),
+  createdDate DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  FOREIGN KEY (lineId) REFERENCES assemblyLines(lineId),
+  FOREIGN KEY (machineId) REFERENCES machines(machineId)
+);
+
 DELIMITER //
 CREATE TRIGGER before_downtime_insert BEFORE INSERT ON downtime FOR EACH ROW
   BEGIN
