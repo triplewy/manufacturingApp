@@ -20,6 +20,7 @@ import DayStats from './app/Stats/DayStats'
 import Account from './app/Account/Account'
 import Notifications from './app/Notifications/Notifications'
 import NotificationBadge from './app/NotificationBadge/NotificationBadge'
+import WorkOrder from './app/WorkOrder/WorkOrder'
 import Reports from './app/Reports/Reports'
 import './global.js'
 
@@ -139,6 +140,12 @@ export default class App extends React.Component {
           screen: Notifications,
           navigationOptions: {
             title: 'Notifications'
+          }
+        },
+        WorkOrder: {
+          screen: WorkOrder,
+          navigationOptions: {
+            title: 'Work Order'
           }
         }
       },

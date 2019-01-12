@@ -1,9 +1,10 @@
 import React from 'react';
 import { ScrollView, View, RefreshControl, StyleSheet, Text, Image, TouchableOpacity, Linking, Alert, ActivityIndicator } from 'react-native';
-import { fetchAccount, fetchLogout, changeName } from './account.operations'
+import { handleAccount, handleLogout, changeName } from './account.operations'
 import { connect } from 'react-redux'
 import { getShift } from '../Storage'
 import notificationIcon from '../icons/notification-icon.png'
+import maintenanceIcon from '../icons/maintenance.png'
 
 class Account extends React.Component {
   constructor(props) {
@@ -73,17 +74,23 @@ class Account extends React.Component {
   render() {
     return (
       <ScrollView>
-        <TouchableOpacity style={[styles.wrapper, {flexDirection: 'row'}]} onPress={() => this.props.navigation.navigate('Notifications')}>
-          <Image source={notificationIcon} style={{height: 40, width: 40, marginRight: 10}} />
-          <Text style={{fontWeight: 'bold', fontSize: 16, flex: 1}}>Notifications</Text>
-          {this.props.badge ?
-            <View style={styles.badgeWrapper}>
-              <Text style={styles.badge}>{this.props.badge}</Text>
-            </View>
-            :
-            null
-          }
-        </TouchableOpacity>
+        <View style={{marginBottom: 40}}>
+          <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('Notifications')}>
+            <Image source={notificationIcon} style={{height: 40, width: 40, marginRight: 10}} />
+            <Text style={{fontWeight: 'bold', fontSize: 16, flex: 1}}>Notifications</Text>
+            {this.props.badge ?
+              <View style={styles.badgeWrapper}>
+                <Text style={styles.badge}>{this.props.badge}</Text>
+              </View>
+              :
+              null
+            }
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('WorkOrder')}>
+            <Image source={maintenanceIcon} style={{height: 40, width: 40, marginRight: 10}} />
+            <Text style={{fontWeight: 'bold', fontSize: 16}}>Work Order</Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.wrapper}>
           <Text style={styles.accountLabel}>Company</Text>
           <Text style={styles.accountText}>{this.props.account.companyName}</Text>
@@ -148,6 +155,12 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center'
   },
+  button: {
+    backgroundColor: 'white',
+    padding: 20,
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
   accountLabel: {
     fontSize: 24,
     margin: 10,
@@ -184,8 +197,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getAccount: () => dispatch(fetchAccount()),
-    logout: (navigation) => dispatch(fetchLogout(navigation)),
+    getAccount: () => dispatch(handleAccount()),
+    logout: (navigation) => dispatch(handleLogout(navigation)),
     setName: (navigation) => dispatch(changeName(navigation))
   }
 }

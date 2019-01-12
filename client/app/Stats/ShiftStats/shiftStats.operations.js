@@ -1,12 +1,10 @@
 import { getStats, getStatsSuccess, getStatsFailure } from './shiftStats.actions'
-import API from '../../api'
-
-const api = new API()
+import { fetchStatsShifts } from '../../api'
 
 export function fetchShiftStats(lineId, timePeriod, date) {
   return (dispatch) => {
     dispatch(getStats())
-    return api.statsShifts(lineId, timePeriod, date)
+    return fetchStatsShifts(lineId, timePeriod, date)
     .then(data => {
       var totalDowntime = 0
       for (var i = 0; i < data.length; i++) {

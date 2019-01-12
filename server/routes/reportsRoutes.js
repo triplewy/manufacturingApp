@@ -2,8 +2,8 @@ module.exports = function(conn, loggedIn) {
     'use strict';
     var reportsRoutes = require('express').Router();
 
-    reportsRoutes.get('/line=:lineId/page=:page', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/reports/line=' + req.params.lineId + '/page=' + req.params.page);
+    reportsRoutes.get('/line/:lineId/page/:page', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/reports/line/' + req.params.lineId + '/page/' + req.params.page);
       const userId = req.user
       const page = req.params.page * 10
       conn.query('SELECT a.*, a.createdDate AS reportedDate, b.*, b.name AS machineName, c.*, d.imageUrl ' +
@@ -21,8 +21,8 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
-    reportsRoutes.get('/line=:lineId/date=:date/page=:page', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/reports/line=' + req.params.lineId + '/date=' + req.params.date + '/page=' + req.params.page);
+    reportsRoutes.get('/line/:lineId/date/:date/page/:page', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/reports/line/' + req.params.lineId + '/date/' + req.params.date + '/page/' + req.params.page);
       const userId = req.user
       const page = req.params.page * 10
       conn.query('SELECT a.*, a.createdDate AS reportedDate, b.*, b.name AS machineName, c.*, d.imageUrl ' +
@@ -40,8 +40,8 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
-    reportsRoutes.get('/machine=:machineId/page=:page', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/reports/machine=' + req.params.machineId + '/page=' + req.params.page);
+    reportsRoutes.get('/machine/:machineId/page/:page', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/reports/machine/' + req.params.machineId + '/page/' + req.params.page);
       const userId = req.user
       const page = req.params.page * 10
       conn.query('SELECT a.*, a.createdDate AS reportedDate, b.*, b.name AS machineName, c.*, d.imageUrl ' +
@@ -59,8 +59,8 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
-    reportsRoutes.get('/machine=:machineId/date=:date/page=:page', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/reports/machine=' + req.params.machineId + '/date=' + req.params.date + '/page=' + req.params.page);
+    reportsRoutes.get('/machine/:machineId/date/:date/page/:page', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/reports/machine/' + req.params.machineId + '/date/' + req.params.date + '/page/' + req.params.page);
       const userId = req.user
       const page = req.params.page * 10
       conn.query('SELECT a.*, a.createdDate AS reportedDate, b.*, b.name AS machineName, c.*, d.imageUrl ' +

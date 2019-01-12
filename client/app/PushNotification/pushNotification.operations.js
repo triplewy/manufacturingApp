@@ -1,12 +1,10 @@
 import { PushNotificationIOS } from 'react-native'
 import { getBadge, setBadge } from './PushNotification.actions'
 import { setDeviceTokenRegistered } from '../Storage'
-import API from '../api'
-
-const api = new API()
+import { fetchDeviceToken, fetchReadNotifications } from '../api'
 
 export function postToken(token) {
-  return api.deviceToken({ token: token })
+  return fetchDeviceToken({ token: token })
   .then(data => {
     if (data.message == 'success') {
       setDeviceTokenRegistered()
@@ -39,7 +37,7 @@ export function applyBadge(badge) {
 
 export function readNotifications() {
   return (dispatch) => {
-    return api.readNotifications()
+    return fetchReadNotifications()
     .then(data => {
       if (data.message === 'success') {
         dispatch(applyBadge(0))

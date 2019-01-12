@@ -1,12 +1,10 @@
 import { getStats, getStatsSuccess, getDayStatsSuccess, getStatsFailure } from './machineStats.actions'
-import API from '../../api'
-
-const api = new API()
+import { fetchStatsMachines } from '../../api'
 
 export function fetchMachineStats(lineId, timePeriod, date) {
   return (dispatch) => {
     dispatch(getStats())
-    return api.statsMachines(lineId, timePeriod, date)
+    return fetchStatsMachines(lineId, timePeriod, date)
     .then(data => {
       var totalDowntime = 0
       for (var i = 0; i < data.length; i++) {

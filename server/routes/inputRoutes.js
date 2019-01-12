@@ -1,7 +1,8 @@
 module.exports = function(conn, loggedIn, upload, client) {
     'use strict';
     var inputRoutes = require('express').Router();
-    var sms = require('../sms.js')
+    var sms = require('../sms')
+    var ses = require('../ses')
     var APN = require('../apn')
     var expireFunctions = {}
 
@@ -58,10 +59,32 @@ module.exports = function(conn, loggedIn, upload, client) {
             console.log("Records added successfully");
             clearTimeout(expireFunctions[req.user])
             client.HDEL(req.user, 'expire', 'activeLine', 'activeMachine')
+            console.log('Expire function deleted');
             res.send({message: 'success'})
           })
           .catch(e => {
             console.log(e);
+            res.send({message: 'fail'})
+          })
+        }
+      })
+    })
+
+    inputRoutes.post('/submit/workorder', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/input/submit/workorder');
+      upload(req, res, function(err) {
+        if (err) {
+          console.log(req);
+          console.log(err);
+          res.send({message: err.message})
+        } else {
+          uploadWorkOrder(req).then(data => {
+            if (data.message == 'success') {
+              console.log("Records added successfully");
+              res.send({message: 'success'})
+            }
+          }).catch(err => {
+            console.log(err);
             res.send({message: 'fail'})
           })
         }
@@ -76,8 +99,8 @@ module.exports = function(conn, loggedIn, upload, client) {
             console.log("upload error");
             return reject(err);
           } else {
-            Promise.all([insertDowntimeImages(result.insertId, req)])
-            .then(function() {
+            insertDowntimeImages(result.insertId, req)
+            .then(() => {
               return resolve({message: 'success'})
             }).catch(e => {
               return reject(e);
@@ -113,24 +136,82 @@ module.exports = function(conn, loggedIn, upload, client) {
       })
     }
 
+    function uploadWorkOrder(req) {
+      return new Promise(function(resolve, reject) {
+        const body = req.body
+        conn.query('START TRANSACTION', [], function(err, result) {
+          if (err) {
+            conn.query('ROLLBACK')
+            return reject(err)
+          } else {
+            conn.query('INSERT INTO workOrders (lineId, machineId, stars, description) VALUES (?,?,?,?)', [body.lineId, body.machineId, body.rating, body.description], function(err, result) {
+              if (err) {
+                conn.query('ROLLBACK')
+                return reject(err)
+              } else {
+                if (req.files.length) {
+                  const workOrderImages = req.files.map(item => [result.insertId, item.location])
+                  conn.query('INSERT INTO workOrderImages (workOrderId, imageUrl) VALUES ?', [workOrderImages], function(err, result) {
+                    if (err) {
+                      conn.query('ROLLBACK')
+                      return reject(err)
+                    } else {
+                      conn.query('COMMIT', [], function(err, result) {
+                        if (err) {
+                          conn.query('ROLLBACK')
+                          return reject(err)
+                        } else {
+                          ses.sendEmail('admin@streamlineanalytica.com', body, req.files.map(item => item.key))
+                          return resolve({ message: 'success' })
+                        }
+                      })
+                    }
+                  })
+                } else {
+                  conn.query('COMMIT', [], function(err, result) {
+                    if (err) {
+                      conn.query('ROLLBACK')
+                      return reject(err)
+                    } else {
+                      return resolve({ message: 'success' })
+                    }
+                  })
+                }
+              }
+            })
+          }
+        })
+
+      })
+    }
+
     function notifyMechanic(lineId, machineId, userId) {
       const hour = new Date().getHours()
-      getAvailableMechanics(lineId, machineId, hour).then(mechanics => {
-        APN.sendNotification(userId, `Mechanic notified for ${mechanics[0].machine} on LINE ${mechanics[0].line}`).then(data => {
-          console.log(data);
-        }).catch(err => {
+      client.HMGET(userId, 'expire', function(err, result) {
+        if (err) {
           console.log(err);
-        })
-        var promises = mechanics.map(mechanic => {
-          sms.sendSMS(mechanic.phone, `${mechanic.company.toUpperCase()}: ${mechanic.machine} on LINE ${mechanic.line} has been down 20 minutes`)
-        })
-        Promise.all(promises).then(allData => {
+        } else {
+          console.log(result);
+          if (result[0]) {
+            getAvailableMechanics(lineId, machineId, hour).then(mechanics => {
+              APN.sendNotification(userId, `Mechanic notified for ${mechanics[0].machine} on LINE ${mechanics[0].line}`).then(data => {
+                console.log(data);
+              }).catch(err => {
+                console.log(err);
+              })
+              var promises = mechanics.map(mechanic => {
+                sms.sendSMS(mechanic.phone, `${mechanic.company.toUpperCase()}: ${mechanic.machine} on LINE ${mechanic.line} has been down 20 minutes`)
+              })
+              Promise.all(promises).then(allData => {
 
-        }).catch(err => {
-          console.log(err);
-        })
-      }).catch(err => {
-        console.log(err);
+              }).catch(err => {
+                console.log(err);
+              })
+            }).catch(err => {
+              console.log(err);
+            })
+          }
+        }
       })
     }
 

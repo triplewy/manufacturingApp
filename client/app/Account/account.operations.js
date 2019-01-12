@@ -7,28 +7,23 @@ import {
 import { setNameIndex } from '../Name/name.actions'
 import { sessionLoginSuccess } from '../Splash/splash.actions'
 import { setNameStorage } from '../Storage'
-import API from '../api'
+import { fetchAccount, fetchLogout } from '../api'
 
-const api = new API()
-
-export function fetchAccount() {
+export function handleAccount() {
   return (dispatch) => {
     dispatch(getAccount())
-    return api.account()
-    .then(data => {
+    return fetchAccount().then(data => {
       dispatch(getAccountSuccess(data))
-    })
-    .catch((error) => {
+    }).catch((error) => {
       dispatch(getAccountFailure(error))
     })
   }
 }
 
-export function fetchLogout(navigation) {
+export function handleLogout(navigation) {
   return (dispatch) => {
     dispatch(logout())
-    return api.logout()
-    .then(data => {
+    return fetchLogout().then(data => {
       if (data.message === 'success') {
         return setNameStorage('-1').then(data => {
           if (data.message === 'success') {

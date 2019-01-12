@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, RefreshControl, FlatList, StyleSheet, Text, Dimensions, TouchableWithoutFeedback, TouchableOpacity, ActivityIndicator, Animated } from 'react-native';
-import { fetchReports, fetchUpdateReports, setPage, setDate, setLine, setMachine, setName } from './reports.operations'
+import { handleReports, handleUpdateReports, setPage, setDate, setLine, setMachine, setName } from './reports.operations'
 import { NavigationEvents } from 'react-navigation';
 import { connect } from 'react-redux'
 import ReportItem from './ReportItem'
@@ -164,9 +164,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getReports: (lineId, machineId, date) => dispatch(fetchReports(lineId, machineId, date)),
+    getReports: (lineId, machineId, date) => dispatch(handleReports(lineId, machineId, date)),
     updatePage: (page) => dispatch(setPage(page)),
-    updateReports: (lineId, machineId, date, page) => dispatch(fetchUpdateReports(lineId, machineId, date, page)),
+    updateReports: (lineId, machineId, date, page) => dispatch(handleUpdateReports(lineId, machineId, date, page)),
     setLineIndex: (index) => dispatch(setLine(index)),
     setMachineIndex: (index) => dispatch(setMachine(index)),
     setNameIndex: (index) => dispatch(setName(index)),

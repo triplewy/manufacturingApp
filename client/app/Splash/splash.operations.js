@@ -3,14 +3,12 @@ import { setNameIndex } from '../Name/name.actions'
 import { setShifts } from '../Shifts/shifts.actions'
 import { setActiveLine } from '../Grid/grid.actions'
 import { getNameStorage } from '../Storage'
-import API from '../api'
+import { fetchSessionLogin } from '../api'
 
-const api = new API()
-
-export function fetchSessionLogin() {
+export function handleSessionLogin() {
   return (dispatch) => {
     dispatch(sessionLogin())
-    return api.sessionLogin()
+    return fetchSessionLogin()
     .then(data => {
       if (data.message === 'not logged in') {
         dispatch(sessionLoginFailure(data.message))

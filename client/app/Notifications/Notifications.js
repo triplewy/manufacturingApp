@@ -1,7 +1,7 @@
 import React from 'react';
 import { FlatList, View, RefreshControl, StyleSheet, Text, Image, TouchableOpacity, Linking, Alert, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux'
-import { fetchNotifications } from './Notifications.operations'
+import { handleNotifications } from './Notifications.operations'
 import { readNotifications } from '../PushNotification/PushNotification.operations'
 
 class Notifications extends React.Component {
@@ -76,7 +76,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getNotifications: () => dispatch(fetchNotifications()),
+    getNotifications: () => dispatch(handleNotifications()),
     setBadge: (badge) => dispatch(readNotifications(badge))
   }
 }

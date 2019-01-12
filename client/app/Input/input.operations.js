@@ -1,8 +1,6 @@
 import { handleDowntimeInput, handleDescriptionInput, upload, uploadSuccess, uploadFailure } from './input.actions'
 import { removeActiveLine } from '../Grid/grid.actions'
-import API from '../api'
-
-const api = new API()
+import { fetchSubmit } from '../api'
 
 export function handleDowntime(text) {
   return (dispatch) => {
@@ -29,7 +27,7 @@ export function handleUpload(navigation, images, downtime, description, name, av
     formData.append('availableMin', availableMin)
 
     dispatch(upload())
-    return api.submit(formData)
+    return fetchSubmit(formData)
     .then(data => {
       if (data.message === 'success') {
         dispatch(uploadSuccess())

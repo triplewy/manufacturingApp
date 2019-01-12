@@ -3,6 +3,7 @@ module.exports = function(conn, loggedIn, csvUpload, client) {
 
     var adminRoutes = require('express').Router();
     var parse = require('csv-parse')
+    var Json2csvParser = require('json2csv').Parser;
     var APN = require('../apn')
 
     adminRoutes.get('/companies', loggedIn, (req, res) => {
@@ -392,6 +393,22 @@ module.exports = function(conn, loggedIn, csvUpload, client) {
 
           parser.write(req.file.buffer)
           parser.end()
+        }
+      })
+    })
+
+    adminRoutes.get('/company/:companyId/export/csv', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/admin/company/' + req.params.companyId + '/export/csv');
+      conn.query('SELECT * FROM downtime WHERE lineId IN (SELECT lineId FROM assemblyLines WHERE companyId = :companyId)', { companyId: req.params.companyId }, function(err, result) {
+        if (err) {
+          console.log(err);
+        } else {
+          const fields = ['machineId', 'lineId', 'lineLeaderName', 'downtime', 'description', 'createdDate'];
+          const json2csvParser = new Json2csvParser({ fields });
+          const csv = json2csvParser.parse(result);
+          console.log(csv);
+          res.attachment('downtime.csv');
+          res.status(200).send(csv);
         }
       })
     })

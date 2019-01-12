@@ -1,12 +1,10 @@
 import { getStats, getStatsSuccess, getStatsFailure } from './workerStats.actions'
-import API from '../../api'
-
-const api = new API()
+import { fetchStatsWorkers } from '../../api'
 
 export function fetchWorkerStats(lineId, timePeriod, date) {
   return (dispatch) => {
     dispatch(getStats())
-    return api.statsWorkers(lineId, timePeriod, date)
+    return fetchStatsWorkers(lineId, timePeriod, date)
     .then(data => {
       var totalDowntime = 0
       for (var i = 0; i < data.length; i++) {

@@ -34,12 +34,23 @@ class DayStats extends React.Component {
   render() {
     const params = this.props.navigation.state.params
     const downtime = this.props.navigation.state.params.downtime
+    const availableMin = this.props.navigation.state.params.availableMin
     const parsedDowntime = downtimeString(downtime)
     return (
       <ScrollView>
         <View style={styles.statsView}>
-          <Text style={{marginBottom: 20, color: 'gray', fontSize: 18}}>Total Downtime</Text>
-          <Text style={{fontSize: 24, fontWeight: '600', color: '#FF8300'}}>{parsedDowntime}</Text>
+          <View style={{flexDirection: 'row', marginBottom: 20}}>
+            <Text style={{color: 'gray', fontSize: 18, flex: 1}}>Total Downtime</Text>
+            <View style={{justifyContent: 'flex-end'}}>
+              <Text style={{fontSize: 18, fontWeight: 'bold', color: '#73C9D0'}}>{`${Math.round(downtime / availableMin * 100)}%`}</Text>
+            </View>
+          </View>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{fontSize: 24, fontWeight: '600', color: '#FF8300', flex: 1}}>{parsedDowntime}</Text>
+            <View style={{justifyContent: 'center'}}>
+              <Text style={{fontSize: 12, color: 'gray'}}>{`/ ${availableMin / 60} HOURS`}</Text>
+            </View>
+          </View>
         </View>
         <View>
           <MachineStats date={params.date} />

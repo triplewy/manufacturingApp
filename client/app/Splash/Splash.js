@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import { fetchSessionLogin } from './splash.operations'
+import { handleSessionLogin } from './splash.operations'
 import { connect } from 'react-redux'
 import { getNameStorage } from '../Storage'
 
@@ -54,7 +54,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    sessionLogin: () => dispatch(fetchSessionLogin()),
+    sessionLogin: () => dispatch(handleSessionLogin()),
   }
 }
 

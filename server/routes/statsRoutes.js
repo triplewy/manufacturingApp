@@ -3,8 +3,8 @@ module.exports = function(conn, loggedIn) {
     var statsRoutes = require('express').Router();
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-    statsRoutes.get('/totalDowntime/line=:lineId/timePeriod=:timePeriod', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/stats/totalDowntime/line=' + req.params.lineId + '/timePeriod=' + req.params.timePeriod);
+    statsRoutes.get('/totalDowntime/line/:lineId/timePeriod/:timePeriod', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/stats/totalDowntime/line/' + req.params.lineId + '/timePeriod/' + req.params.timePeriod);
       const userId = req.user
       const timePeriodQuery = parseTotalTimePeriod(req.params.timePeriod * 1)
       conn.query('SELECT SUM(b.downtime) AS totalDowntime FROM downtime AS b WHERE b.lineId = :lineId AND b.createdDate <= CURRENT_TIMESTAMP' + timePeriodQuery, {userId: userId, lineId: req.params.lineId}, function(err, result) {
@@ -16,8 +16,8 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
-    statsRoutes.get('/downtime/line=:lineId/timePeriod=:timePeriod', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/line=' + req.params.lineId + '/timePeriod=' + req.params.timePeriod);
+    statsRoutes.get('/downtime/line/:lineId/timePeriod/:timePeriod', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/line/' + req.params.lineId + '/timePeriod/' + req.params.timePeriod);
       const userId = req.user
       const timePeriodQuery = parseTimePeriodLine(req.params.timePeriod * 1)
       conn.query(timePeriodQuery, {userId: userId, lineId: req.params.lineId}, function(err, result) {
@@ -41,7 +41,7 @@ module.exports = function(conn, loggedIn) {
               break;
             }
             case 1: {
-              var downtime = []
+              var downtime = {}
               for (var i = 0; i < result.length; i++) {
                 var row = result[i]
                 row.time.setTime(row.time.getTime() + (5*60*60*1000))
@@ -62,7 +62,7 @@ module.exports = function(conn, loggedIn) {
               break;
             }
             case 2: {
-              var downtime = []
+              var downtime = {}
               for (var i = 0; i < result.length; i++) {
                 var row = result[i]
                 row.time.setTime(row.time.getTime() + (5*60*60*1000))
@@ -137,8 +137,8 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
-    statsRoutes.get('/downtime/line=:lineId/timePeriod=:timePeriod/machines', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/line=' + req.params.lineId + '/timePeriod=' + req.params.timePeriod + '/machines');
+    statsRoutes.get('/downtime/line/:lineId/timePeriod/:timePeriod/machines', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/line/' + req.params.lineId + '/timePeriod/' + req.params.timePeriod + '/machines');
       const userId = req.user
       const timePeriodQuery = parseTotalTimePeriod(req.params.timePeriod * 1)
       conn.query(
@@ -153,8 +153,8 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
-    statsRoutes.get('/downtime/line=:lineId/timePeriod=:timePeriod/machines/date=:date', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/line=' + req.params.lineId + '/timePeriod=' + req.params.timePeriod + '/machines/date=' + req.params.date);
+    statsRoutes.get('/downtime/line/:lineId/timePeriod/:timePeriod/machines/date/:date', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/line/' + req.params.lineId + '/timePeriod/' + req.params.timePeriod + '/machines/date/' + req.params.date);
       const userId = req.user
       const timePeriodQuery = parseTimePeriodDate(req.params.timePeriod * 1)
       conn.query(
@@ -169,8 +169,8 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
-    statsRoutes.get('/downtime/line=:lineId/timePeriod=:timePeriod/shifts/date=:date', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/line=' + req.params.lineId + '/timePeriod=' + req.params.timePeriod + '/shifts/date=' + req.params.date);
+    statsRoutes.get('/downtime/line/:lineId/timePeriod/:timePeriod/shifts/date/:date', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/line/' + req.params.lineId + '/timePeriod/' + req.params.timePeriod + '/shifts/date/' + req.params.date);
       const userId = req.user
       const timePeriodQuery = parseTimePeriodDate(req.params.timePeriod * 1)
       conn.query(
@@ -189,14 +189,14 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
-    statsRoutes.get('/downtime/line=:lineId/timePeriod=:timePeriod/workers', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/line=' + req.params.lineId + '/timePeriod=' + req.params.timePeriod + '/workers');
+    statsRoutes.get('/downtime/line/:lineId/timePeriod/:timePeriod/workers', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/line/' + req.params.lineId + '/timePeriod/' + req.params.timePeriod + '/workers');
       const userId = req.user
       const timePeriodQuery = parseTotalTimePeriod(req.params.timePeriod * 1)
       conn.query(
-      'SELECT SUM(b.downtime) AS totalDowntime, b.lineLeaderName AS name, HOUR(b.createdDate) >= a.morningShift AND HOUR(b.createdDate) < a.eveningShift AS isDayShift ' +
+      'SELECT SUM(b.downtime) AS totalDowntime, b.availableMin, b.lineLeaderName AS name, HOUR(b.createdDate) >= a.morningShift AND HOUR(b.createdDate) < a.eveningShift AS isDayShift ' +
       'FROM downtime AS b JOIN assemblyLines AS a ON a.lineId = b.lineId WHERE b.createdDate <= CURRENT_TIMESTAMP' + timePeriodQuery +
-      'AND b.lineId = :lineId GROUP BY b.lineLeaderName, isDayShift, DATE(b.createdDate)', {userId: userId, lineId: req.params.lineId}, function(err, result) {
+      'AND b.lineId = :lineId GROUP BY b.lineLeaderName, availableMin, isDayShift, DATE(b.createdDate)', {userId: userId, lineId: req.params.lineId}, function(err, result) {
         if (err) {
           console.log(err);
         } else {
@@ -205,14 +205,14 @@ module.exports = function(conn, loggedIn) {
       })
     })
 
-    statsRoutes.get('/downtime/line=:lineId/timePeriod=:timePeriod/workers/date=:date', loggedIn, (req, res) => {
-      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/line=' + req.params.lineId + '/timePeriod=' + req.params.timePeriod + '/workers/date=' + req.params.date);
+    statsRoutes.get('/downtime/line/:lineId/timePeriod/:timePeriod/workers/date/:date', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/stats/downtime/line/' + req.params.lineId + '/timePeriod/' + req.params.timePeriod + '/workers/date/' + req.params.date);
       const userId = req.user
       const timePeriodQuery = parseTimePeriodDate(req.params.timePeriod * 1)
       conn.query(
-      'SELECT SUM(b.downtime) AS totalDowntime, b.lineLeaderName AS name, HOUR(b.createdDate) >= a.morningShift AND HOUR(b.createdDate) < a.eveningShift AS isDayShift ' +
+      'SELECT SUM(b.downtime) AS totalDowntime, b.availableMin, b.lineLeaderName AS name, HOUR(b.createdDate) >= a.morningShift AND HOUR(b.createdDate) < a.eveningShift AS isDayShift ' +
       'FROM downtime AS b JOIN assemblyLines AS a ON a.lineId = b.lineId WHERE b.lineId = :lineId' + timePeriodQuery +
-      'GROUP BY b.lineLeaderName, isDayShift', {userId: userId, date: req.params.date, lineId: req.params.lineId}, function(err, result) {
+      'GROUP BY b.lineLeaderName, availableMin, isDayShift', {userId: userId, date: req.params.date, lineId: req.params.lineId}, function(err, result) {
         if (err) {
           console.log(err);
         } else {
@@ -226,9 +226,9 @@ module.exports = function(conn, loggedIn) {
       for (var i = 0; i < result.length; i++) {
         if (workers[result[i].name]) {
           workers[result[i].name].totalDowntime += result[i].totalDowntime
-          workers[result[i].name].availableMin += 565
+          workers[result[i].name].availableMin += result[i].availableMin
         } else {
-          workers[result[i].name] = { totalDowntime: result[i].totalDowntime, availableMin: 565 }
+          workers[result[i].name] = { totalDowntime: result[i].totalDowntime, availableMin: result[i].availableMin }
         }
       }
 
@@ -287,17 +287,17 @@ module.exports = function(conn, loggedIn) {
     function parseTimePeriodLine(timePeriod) {
       switch (timePeriod) {
         case 0:
-          return 'SELECT SUM(a.downtime) AS totalDowntime, b.availableMin, HOUR(DATE_SUB(a.createdDate, INTERVAL 5 HOUR)) AS downtimeHour FROM downtime AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND a.lineId = :lineId GROUP BY downtimeHour ORDER BY downtimeHour ASC'
+          return 'SELECT SUM(a.downtime) AS totalDowntime, a.availableMin, HOUR(DATE_SUB(a.createdDate, INTERVAL 5 HOUR)) AS downtimeHour FROM downtime AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND a.lineId = :lineId GROUP BY downtimeHour, availableMin ORDER BY downtimeHour ASC'
         case 1:
-          return 'SELECT SUM(a.downtime) AS totalDowntime, b.availableMin, DATE(DATE_SUB(a.createdDate, INTERVAL 5 HOUR)) AS time, HOUR(a.createdDate) >= b.morningShift AND HOUR(a.createdDate) < b.eveningShift AS isDayShift FROM downtime AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 WEEK) AND a.lineId = :lineId GROUP BY time, isDayShift ORDER BY time ASC'
+          return 'SELECT SUM(a.downtime) AS totalDowntime, a.availableMin, DATE(DATE_SUB(a.createdDate, INTERVAL 5 HOUR)) AS time, HOUR(a.createdDate) >= b.morningShift AND HOUR(a.createdDate) < b.eveningShift AS isDayShift FROM downtime AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 WEEK) AND a.lineId = :lineId GROUP BY time, availableMin, isDayShift ORDER BY time ASC'
         case 2:
-          return 'SELECT SUM(a.downtime) AS totalDowntime, b.availableMin, DATE(DATE_SUB(a.createdDate, INTERVAL 5 HOUR)) AS time, HOUR(a.createdDate) >= b.morningShift AND HOUR(a.createdDate) < b.eveningShift AS isDayShift FROM downtime AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 30 DAY) AND a.lineId = :lineId GROUP BY time, isDayShift ORDER BY time ASC'
+          return 'SELECT SUM(a.downtime) AS totalDowntime, a.availableMin, DATE(DATE_SUB(a.createdDate, INTERVAL 5 HOUR)) AS time, HOUR(a.createdDate) >= b.morningShift AND HOUR(a.createdDate) < b.eveningShift AS isDayShift FROM downtime AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 30 DAY) AND a.lineId = :lineId GROUP BY time, availableMin, isDayShift ORDER BY time ASC'
         case 3:
-          return 'SELECT SUM(a.downtime) AS totalDowntime, MONTH(a.createdDate) AS time, DAY(a.createdDate) AS downtimeDay, b.availableMin, HOUR(a.createdDate) >= b.morningShift AND HOUR(a.createdDate) < b.eveningShift AS isDayShift FROM downtime AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 YEAR) AND a.lineId = :lineId GROUP BY MONTH(a.createdDate), DAY(a.createdDate), isDayShift ORDER BY time ASC'
+          return 'SELECT SUM(a.downtime) AS totalDowntime, MONTH(a.createdDate) AS time, DAY(a.createdDate) AS downtimeDay, a.availableMin, HOUR(a.createdDate) >= b.morningShift AND HOUR(a.createdDate) < b.eveningShift AS isDayShift FROM downtime AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 YEAR) AND a.lineId = :lineId GROUP BY MONTH(a.createdDate), DAY(a.createdDate), availableMin, isDayShift ORDER BY time ASC'
         case 4:
-          return 'SELECT SUM(a.downtime) AS totalDowntime, YEAR(a.createdDate) AS time, MONTH(a.createdDate) AS downtimeMonth, DAY(a.createdDate) AS downtimeDay, b.availableMin, HOUR(a.createdDate) >= b.morningShift AND HOUR(a.createdDate) < b.eveningShift AS isDayShift FROM downtime AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 2 YEAR) AND a.lineId = :lineId GROUP BY YEAR(a.createdDate), MONTH(a.createdDate), DAY(a.createdDate), isDayShift ORDER BY time ASC'
+          return 'SELECT SUM(a.downtime) AS totalDowntime, YEAR(a.createdDate) AS time, MONTH(a.createdDate) AS downtimeMonth, DAY(a.createdDate) AS downtimeDay, a.availableMin, HOUR(a.createdDate) >= b.morningShift AND HOUR(a.createdDate) < b.eveningShift AS isDayShift FROM downtime AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 2 YEAR) AND a.lineId = :lineId GROUP BY YEAR(a.createdDate), MONTH(a.createdDate), DAY(a.createdDate), availableMin, isDayShift ORDER BY time ASC'
         default:
-          return 'SELECT SUM(a.downtime) AS totalDowntime, b.availableMin, DATE(a.createdDate) AS time, HOUR(a.createdDate) >= b.morningShift AND HOUR(a.createdDate) < b.eveningShift AS isDayShift FROM downtime AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 WEEK) AND a.lineId = :lineId GROUP BY time, isDayShift ORDER BY time ASC'
+          return 'SELECT SUM(a.downtime) AS totalDowntime, a.availableMin, DATE(DATE_SUB(a.createdDate, INTERVAL 5 HOUR)) AS time, HOUR(a.createdDate) >= b.morningShift AND HOUR(a.createdDate) < b.eveningShift AS isDayShift FROM downtime AS a JOIN assemblyLines AS b ON b.lineId = a.lineId WHERE a.createdDate >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 WEEK) AND a.lineId = :lineId GROUP BY time, availableMin, isDayShift ORDER BY time ASC'
       }
     }
 

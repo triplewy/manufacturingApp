@@ -3,14 +3,12 @@ import {
   updateReports, updateReportsSuccess, updateReportsFailure, updatePage, updateDate,
   setLineIndex, setMachineIndex, setNameIndex
 } from './reports.actions'
-import API from '../api'
+import { fetchReports } from '../api'
 
-const api = new API()
-
-export function fetchReports(lineId, machineId, date) {
+export function handleReports(lineId, machineId, date) {
   return (dispatch) => {
     dispatch(getReports)
-    return api.reports(lineId, machineId, date, 0)
+    return fetchReports(lineId, machineId, date, 0)
     .then(data => {
       dispatch(getReportsSuccess(data))
     })
@@ -20,10 +18,10 @@ export function fetchReports(lineId, machineId, date) {
   }
 }
 
-export function fetchUpdateReports(lineId, machineId, date, page) {
+export function handleUpdateReports(lineId, machineId, date, page) {
   return (dispatch) => {
     dispatch(updateReports)
-    return api.reports(lineId, machineId, date, page)
+    return fetchReports(lineId, machineId, date, page)
     .then(data => {
       dispatch(updateReportsSuccess(data))
     })

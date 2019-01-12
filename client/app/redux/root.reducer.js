@@ -16,6 +16,8 @@ import { name } from '../Name/name.reducer'
 import { shifts } from '../Shifts/shifts.reducer'
 import { pushNotification } from '../PushNotification/PushNotification.reducer'
 import { notifications } from '../Notifications/Notifications.reducer'
+import { workOrder } from '../WorkOrder/workOrder.reducer'
+import { addImages } from '../AddImages/addImages.reducer'
 
 export default combineReducers({
   login,
@@ -34,5 +36,7 @@ export default combineReducers({
   name,
   shifts,
   pushNotification,
-  notifications
+  notifications,
+  workOrder,
+  addImages
 });

@@ -1,94 +1,96 @@
 import { getRequest, postRequest, formdataPostRequest } from './Storage'
 
+export function fetchSignin(body) {
+  return postRequest(`${global.API_GATEWAY_URL}/auth/signin`, body)
+}
 
-export default class API {
+export function fetchSignup(body) {
+  return postRequest(`${global.API_GATEWAY_URL}/auth/signup`, body)
+}
 
-  signIn(body) {
-    return postRequest(`${global.API_GATEWAY_URL}/auth/signin`, body)
-  }
+export function fetchLogout() {
+  return postRequest(`${global.API_GATEWAY_URL}/auth/logout`)
+}
 
-  signUp(body) {
-    return postRequest(`${global.API_GATEWAY_URL}/auth/signup`, body)
-  }
+export function fetchSessionLogin() {
+  return getRequest(`${global.API_GATEWAY_URL}/sessionlogin`)
+}
 
-  logout() {
-    return postRequest(`${global.API_GATEWAY_URL}/auth/logout`)
-  }
+export function fetchAccount() {
+  return getRequest(`${global.API_GATEWAY_URL}/account`)
+}
 
-  sessionLogin() {
-    return getRequest(`${global.API_GATEWAY_URL}/sessionlogin`)
-  }
+export function fetchDeviceToken(body) {
+  return postRequest(`${global.API_GATEWAY_URL}/account/token`, body)
+}
 
-  account() {
-    return getRequest(`${global.API_GATEWAY_URL}/account`)
-  }
+export function fetchNotifications() {
+  return getRequest(`${global.API_GATEWAY_URL}/account/notifications`)
+}
 
-  deviceToken(body) {
-    return postRequest(`${global.API_GATEWAY_URL}/account/token`, body)
-  }
+export function fetchReadNotifications() {
+  return postRequest(`${global.API_GATEWAY_URL}/account/notifications/read`)
+}
 
-  notifications() {
-    return getRequest(`${global.API_GATEWAY_URL}/account/notifications`)
-  }
+export function fetchSetActiveLine(lineId, machineId) {
+  return postRequest(`${global.API_GATEWAY_URL}/input`, { lineId: lineId, machineId: machineId })
+}
 
-  readNotifications() {
-    return postRequest(`${global.API_GATEWAY_URL}/account/notifications/read`)
-  }
+export function fetchDeleteActiveLine() {
+  return postRequest(`${global.API_GATEWAY_URL}/input/delete`)
+}
 
-  setActiveLine(lineId, machineId) {
-    return postRequest(`${global.API_GATEWAY_URL}/input`, { lineId: lineId, machineId: machineId })
-  }
+export function fetchSubmit(formdata) {
+  return formdataPostRequest(`${global.AWS_URL}/input/submit`, formdata)
+}
 
-  deleteActiveLine() {
-    return postRequest(`${global.API_GATEWAY_URL}/input/delete`)
-  }
+export function fetchSubmitWorkOrder(formdata) {
+  return formdataPostRequest(`${global.API_GATEWAY_URL}/input/submit/workorder`, formdata)
+}
+  // submitWorkOrder(formdata) {
+  //   return formdataPostRequest(`${global.AWS_URL}/input/submit/workorder`, formdata)
+  // }
 
-  submit(formdata) {
-    return formdataPostRequest(`${global.AWS_URL}/input/submit`, formdata)
-  }
-
-  reports(lineId, machineId, date, page) {
-    if (machineId) {
-      if (date) {
-        return getRequest(`${global.API_GATEWAY_URL}/reports/machine/${machineId}/date/${date}/page/${page}`)
-      } else {
-        return getRequest(`${global.API_GATEWAY_URL}/reports/machine/${machineId}/page/${page}`)
-      }
-    } else {
-      if (date) {
-        return getRequest(`${global.API_GATEWAY_URL}/reports/line/${lineId}/date/${date}/page/${page}`)
-      } else {
-        return getRequest(`${global.API_GATEWAY_URL}/reports/line/${lineId}/page/${page}`)
-      }
-    }
-  }
-
-  totalDowntime(lineId, timePeriod) {
-    return getRequest(`${global.API_GATEWAY_URL}/stats/totaldowntime/line/${lineId}/timePeriod/${timePeriod}`)
-  }
-
-  statsLine(lineId, timePeriod) {
-    return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}`)
-  }
-
-  statsMachines(lineId, timePeriod, date) {
+export function fetchReports(lineId, machineId, date, page) {
+  if (machineId) {
     if (date) {
-      return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}/machines/date/${date}`)
+      return getRequest(`${global.API_GATEWAY_URL}/reports/machine/${machineId}/date/${date}/page/${page}`)
     } else {
-      return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}/machines`)
+      return getRequest(`${global.API_GATEWAY_URL}/reports/machine/${machineId}/page/${page}`)
     }
-  }
-
-  statsWorkers(lineId, timePeriod, date) {
+  } else {
     if (date) {
-      return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}/workers/date/${date}`)
+      return getRequest(`${global.API_GATEWAY_URL}/reports/line/${lineId}/date/${date}/page/${page}`)
     } else {
-      return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}/workers`)
+      return getRequest(`${global.API_GATEWAY_URL}/reports/line/${lineId}/page/${page}`)
     }
   }
+}
 
-  statsShifts(lineId, timePeriod, date) {
-    return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}/shifts/date/${date}`)
+export function fetchTotalDowntime(lineId, timePeriod) {
+  return getRequest(`${global.API_GATEWAY_URL}/stats/totaldowntime/line/${lineId}/timePeriod/${timePeriod}`)
+}
+
+export function fetchStatsLine(lineId, timePeriod) {
+  return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}`)
+}
+
+export function fetchStatsMachines(lineId, timePeriod, date) {
+  if (date) {
+    return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}/machines/date/${date}`)
+  } else {
+    return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}/machines`)
   }
+}
 
+export function fetchStatsWorkers(lineId, timePeriod, date) {
+  if (date) {
+    return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}/workers/date/${date}`)
+  } else {
+    return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}/workers`)
+  }
+}
+
+export function fetchStatsShifts(lineId, timePeriod, date) {
+  return getRequest(`${global.API_GATEWAY_URL}/stats/downtime/line/${lineId}/timePeriod/${timePeriod}/shifts/date/${date}`)
 }
