@@ -40,16 +40,17 @@ export function fetchDeleteActiveLine() {
   return postRequest(`${global.API_GATEWAY_URL}/input/delete`)
 }
 
+export function fetchNotifyMechanic() {
+  return postRequest(`${global.API_GATEWAY_URL}/input/notify`)
+}
+
 export function fetchSubmit(formdata) {
   return formdataPostRequest(`${global.AWS_URL}/input/submit`, formdata)
 }
 
 export function fetchSubmitWorkOrder(formdata) {
-  return formdataPostRequest(`${global.API_GATEWAY_URL}/input/submit/workorder`, formdata)
+  return formdataPostRequest(`${global.AWS_URL}/input/submit/workorder`, formdata)
 }
-  // submitWorkOrder(formdata) {
-  //   return formdataPostRequest(`${global.AWS_URL}/input/submit/workorder`, formdata)
-  // }
 
 export function fetchReports(lineId, machineId, date, page) {
   if (machineId) {

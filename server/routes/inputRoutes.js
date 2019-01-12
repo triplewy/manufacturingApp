@@ -30,6 +30,28 @@ module.exports = function(conn, loggedIn, upload, client) {
       })
     })
 
+    inputRoutes.post('/notify', loggedIn, (req, res) => {
+      console.log('- Request received:', req.method.cyan, '/api/input/notify');
+      const userId = req.user
+      client.HMSET(userId, {
+        expire: Date.now()
+      }, function(err, result) {
+        if (err) {
+          console.log(err);
+        } else {
+          if (result == 'OK') {
+            client.HGETALL(userId, function(err, result) {
+              clearTimeout(expireFunctions[userId])
+              notifyMechanic(result.activeLine, result.activeMachine, userId)
+              res.send({ expireDate: result.expire })
+            })
+          } else {
+            res.send({ message: 'failed' })
+          }
+        }
+      })
+    })
+
     inputRoutes.post('/delete', loggedIn, (req, res) => {
       console.log('- Request received:', req.method.cyan, '/api/input/delete');
       const userId = req.user

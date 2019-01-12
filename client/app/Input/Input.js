@@ -2,7 +2,7 @@ import React from 'react';
 import { ScrollView, View, Image, ImageBackground, FlatList, StyleSheet, Text, TextInput, Alert, ActivityIndicator, TouchableOpacity} from 'react-native';
 import { connect } from 'react-redux'
 import { handleDowntime, handleDescription, handleAddImage, handleDeleteImage, handleUpload } from './input.operations'
-import { insertActiveLine, removeActiveLine, setActiveMachine } from '../Grid/grid.operations'
+import { insertActiveLine, removeActiveLine, setActiveMachine, notifyMechanic } from '../Grid/grid.operations'
 import { parseTimer } from '../ParseTime'
 import { getShift } from '../Storage'
 import plusIcon from '../icons/plus-icon.png'
@@ -32,7 +32,19 @@ class Input extends React.Component {
     const lineId = this.props.navigation.state.params.lineId
     const machineId = this.props.navigation.state.params.machineId
 
-    this.props.setActiveLine(lineId, machineId).then(() => {
+    if (machineId !== this.props.activeMachine) {
+      this.props.setActiveLine(lineId, machineId).then(() => {
+        this.interval = setInterval(() => {
+          if (this.state.currentTime >= this.props.expire) {
+            clearInterval(this.interval)
+          } else {
+            this.setState({ currentTime: Date.now() })
+          }
+        }, 1000)
+      }).catch(err => {
+        console.log(err);
+      })
+    } else {
       this.interval = setInterval(() => {
         if (this.state.currentTime >= this.props.expire) {
           clearInterval(this.interval)
@@ -40,9 +52,7 @@ class Input extends React.Component {
           this.setState({ currentTime: Date.now() })
         }
       }, 1000)
-    }).catch(err => {
-      console.log(err);
-    })
+    }
 
     getShift().then(data => {
       this.setState({ availableMin: parseInt(data, 10) })
@@ -134,6 +144,15 @@ class Input extends React.Component {
           <Text style={[styles.inputLabel, {color: '#FF8300', fontWeight: 'bold', marginTop: 10}]}>
             {expire ? parseTimer(expire, this.state.currentTime) : ''}
           </Text>
+          {expire > Date.now() ?
+            <TouchableOpacity onPress={() => this.props.notifyMechanic()}>
+              <View style={{backgroundColor: '#FF8300', borderRadius: 8, padding: 12, marginTop: 10}}>
+                <Text style={{color: 'white', fontWeight: 'bold'}}>NOTIFY MECHANIC</Text>
+              </View>
+            </TouchableOpacity>
+            :
+            null
+          }
         </View>
         <View style={styles.inputView}>
           <View style={{flexDirection: 'row'}}>
@@ -289,7 +308,8 @@ function mapDispatchToProps(dispatch) {
     upload: (navigation, images, downtime, description, name, availableMin) => dispatch(handleUpload(navigation, images, downtime, description, name, availableMin)),
     setActiveLine: (lineId, machineId) => dispatch(insertActiveLine(lineId, machineId)),
     removeActiveLine: (lineId) => dispatch(deleteActiveLine(lineId)),
-    changeActiveMachine: (machineId) => dispatch(setActiveMachine(machineId))
+    changeActiveMachine: (machineId) => dispatch(setActiveMachine(machineId)),
+    notifyMechanic: () => dispatch(notifyMechanic())
   }
 }
 
