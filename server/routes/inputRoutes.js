@@ -20,7 +20,7 @@ module.exports = function(conn, loggedIn, upload, client) {
         } else {
           if (result == 'OK') {
             expireFunctions[userId] = setTimeout(function() {
-              notifyMechanic(req.body.lineId, req.body.machineId, userId)
+              notifyMechanic(userId)
             }, expireDate - Date.now())
             res.send({ expireDate: expireDate })
           } else {
@@ -42,7 +42,7 @@ module.exports = function(conn, loggedIn, upload, client) {
           if (result == 'OK') {
             client.HGETALL(userId, function(err, result) {
               clearTimeout(expireFunctions[userId])
-              notifyMechanic(result.activeLine, result.activeMachine, userId)
+              notifyMechanic(userId)
               res.send({ expireDate: result.expire })
             })
           } else {
@@ -207,15 +207,15 @@ module.exports = function(conn, loggedIn, upload, client) {
       })
     }
 
-    function notifyMechanic(lineId, machineId, userId) {
+    function notifyMechanic(userId) {
       const hour = new Date().getHours()
-      client.HMGET(userId, 'expire', function(err, result) {
+      client.HGETALL(userId, function(err, result) {
         if (err) {
           console.log(err);
         } else {
           console.log(result);
-          if (result[0]) {
-            getAvailableMechanics(lineId, machineId, hour).then(mechanics => {
+          if (result.expire <= Date.now()) {
+            getAvailableMechanics(result.activeLine, result.activeMachine, hour).then(mechanics => {
               APN.sendNotification(userId, `Mechanic notified for ${mechanics[0].machine} on LINE ${mechanics[0].line}`).then(data => {
                 console.log(data);
               }).catch(err => {
