@@ -21,7 +21,6 @@ export default class ImageModal extends React.Component {
         onSwipe={this.props.toggleModal}
         swipeDirection='up'
       >
-
         <View style={{alignItems: 'center', justifyContent: 'center'}}>
           <ImageBackground
             resizeMode={'contain'}
@@ -29,15 +28,13 @@ export default class ImageModal extends React.Component {
             imageStyle={{borderRadius: 8}}
             style={{width: win.width - 40, height: (win.width - 40) * 4 / 3}}
           >
-            <TouchableOpacity onPress={this.props.toggleModal}>
-              <View style={{position: 'absolute', top: 10, left: 10}}>
-                <Image
-                  source={closeIcon}
-                  style={{width: 50, height: 50}}
-                />
-              </View>
-            </TouchableOpacity>
           </ImageBackground>
+          <TouchableOpacity onPress={this.props.toggleModal} style={{position: 'absolute', top: 10, left: 10}}>
+            <Image
+              source={closeIcon}
+              style={{width: 60, height: 60}}
+            />
+          </TouchableOpacity>
         </View>
       </Modal>
     )

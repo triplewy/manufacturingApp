@@ -16,20 +16,20 @@
         "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\27.1.1\\res\\layout\\abc_dialog_title_material.xml"
     },
     {
-        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_menu_layout.xml",
-        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\27.1.1\\res\\layout\\abc_action_menu_layout.xml"
-    },
-    {
-        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout\\notification_action_tombstone.xml",
-        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\exploded-aar\\com.android.support\\support-compat\\27.1.1\\res\\layout\\notification_action_tombstone.xml"
+        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/res/merged/debug/layout/abc_action_menu_item_layout.xml",
+        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/27.1.1/res/layout/abc_action_menu_item_layout.xml"
     },
     {
         "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/res/merged/debug/layout/fps_view.xml",
         "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/com.facebook.react/react-native/0.57.7/res/layout/fps_view.xml"
     },
     {
-        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/res/merged/debug/layout/abc_action_menu_item_layout.xml",
-        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/27.1.1/res/layout/abc_action_menu_item_layout.xml"
+        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout\\notification_action_tombstone.xml",
+        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\exploded-aar\\com.android.support\\support-compat\\27.1.1\\res\\layout\\notification_action_tombstone.xml"
+    },
+    {
+        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_menu_layout.xml",
+        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\27.1.1\\res\\layout\\abc_action_menu_layout.xml"
     },
     {
         "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_activity_chooser_view_list_item.xml",

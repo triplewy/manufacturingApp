@@ -33,7 +33,7 @@ export function submit(lineId, machineId, rating, description, images) {
 
       var formData = new FormData();
       for (var i = 0; i < images.length; i++) {
-        formData.append('image', {uri: images[i].uri, name: "file"})
+        formData.append('image', {uri: images[i].uri, type: 'image/jpeg', name: "file"})
       }
       formData.append('lineId', lineId)
       formData.append('machineId', machineId);

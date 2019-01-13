@@ -12,12 +12,12 @@
         "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\27.1.1\\res\\anim\\abc_fade_out.xml"
     },
     {
-        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\abc_slide_in_top.xml",
-        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\27.1.1\\res\\anim\\abc_slide_in_top.xml"
-    },
-    {
         "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\abc_popup_enter.xml",
         "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\27.1.1\\res\\anim\\abc_popup_enter.xml"
+    },
+    {
+        "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\abc_slide_in_top.xml",
+        "source": "/Users/alexyu/reactProjects/manufacturingApp/client/android/E:\\React Native\\Streamline\\manufacturingApp\\client\\android\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\27.1.1\\res\\anim\\abc_slide_in_top.xml"
     },
     {
         "merged": "/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/res/merged/debug/anim/abc_fade_out.xml",

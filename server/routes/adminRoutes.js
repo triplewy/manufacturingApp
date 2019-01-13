@@ -406,7 +406,6 @@ module.exports = function(conn, loggedIn, csvUpload, client) {
           const fields = ['machineId', 'lineId', 'lineLeaderName', 'downtime', 'description', 'createdDate'];
           const json2csvParser = new Json2csvParser({ fields });
           const csv = json2csvParser.parse(result);
-          console.log(csv);
           res.attachment('downtime.csv');
           res.status(200).send(csv);
         }

@@ -56,22 +56,21 @@ class AddImages extends React.Component {
    }
 
   renderItem(item) {
-    console.log(item.item);
     return (
-      <TouchableOpacity onPress={() => this.setState({selectedImage: item.item.uri, showModal: true})}>
-        <ImageBackground
-          source={{uri: item.item.uri}}
-          style={{width: 100, height: 100, margin: 20}}
-          imageStyle={{borderRadius: 8}}
-        >
-          <TouchableOpacity onPress={() => this.props.deleteImage(item.index)}>
-            <Image
-              source={deleteIcon}
-              style={{position: 'absolute', width: 40, height: 40, right: -20, top: -20}}
-            />
-          </TouchableOpacity>
-        </ImageBackground>
-      </TouchableOpacity>
+      <View style={{margin: 20}}>
+        <TouchableOpacity onPress={() => this.setState({selectedImage: item.item.uri, showModal: true})}>
+          <Image
+            source={{uri: item.item.uri}}
+            style={{width: 100, height: 100, borderRadius: 8}}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => this.props.deleteImage(item.index)} style={{position: 'absolute', right: -25, top: -25}}>
+          <Image
+            source={deleteIcon}
+            style={{width: 50, height: 50}}
+          />
+        </TouchableOpacity>
+      </View>
     )
   }
 

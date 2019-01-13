@@ -18,7 +18,7 @@ export function handleUpload(navigation, images, downtime, description, name, av
   return (dispatch) => {
     var formData = new FormData();
     for (var i = 0; i < images.length; i++) {
-      formData.append('image', {uri: images[i].uri, name: "file"})
+      formData.append('image', {uri: images[i].uri, type: 'image/jpeg', name: "file"})
     }
     formData.append('lineLeaderName', name)
     formData.append('machineId', navigation.state.params.machineId);
