@@ -1,4 +1,5 @@
 import { setLineIndex, setMachineIndex, setDescription, setRating, workOrder, workOrderSuccess, workOrderFailure } from './workOrder.actions'
+import { resetImages } from '../AddImages/addImages.actions'
 import { fetchSubmitWorkOrder } from '../api'
 
 export function lineIndex(index) {
@@ -42,6 +43,7 @@ export function submit(lineId, machineId, rating, description, images) {
       fetchSubmitWorkOrder(formData).then(data => {
         if (data.message === 'success') {
           dispatch(workOrderSuccess())
+          dispatch(resetImages())
           return resolve()
         } else {
           dispatch(workOrderFailure('Failed to submit'))

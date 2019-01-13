@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, Image, ImageBackground, Platform } from 'react-native';
 import { createBottomTabNavigator, createMaterialTopTabNavigator, createSwitchNavigator, createStackNavigator, NavigationActions } from 'react-navigation'
 import { connect } from 'react-redux'
 import SplashScreen from 'react-native-splash-screen';
@@ -68,17 +68,6 @@ export default class App extends React.Component {
           }),
         },
       },
-      {
-        navigationOptions: {
-          headerStyle: {
-            height: 40
-          },
-          headerTitleStyle: {
-            fontSize: 18,
-            fontWeight: '400'
-          }
-        }
-      }
     )
 
     const ReportsNavigator = createStackNavigator(
@@ -90,17 +79,6 @@ export default class App extends React.Component {
           }
         }
       },
-      {
-        navigationOptions: {
-          headerStyle: {
-            height: 40
-          },
-          headerTitleStyle: {
-            fontSize: 18,
-            fontWeight: '400'
-          }
-        }
-      }
     )
 
     const StatsNavigator = createStackNavigator(
@@ -115,17 +93,6 @@ export default class App extends React.Component {
           screen: DayStats,
         }
       },
-      {
-        navigationOptions: {
-          headerStyle: {
-            height: 40
-          },
-          headerTitleStyle: {
-            fontSize: 18,
-            fontWeight: '400'
-          }
-        }
-      }
     )
 
     const AccountNavigator = createStackNavigator(
@@ -149,17 +116,6 @@ export default class App extends React.Component {
           }
         }
       },
-      {
-        navigationOptions: {
-          headerStyle: {
-            height: 40
-          },
-          headerTitleStyle: {
-            fontSize: 18,
-            fontWeight: '400'
-          }
-        }
-      }
     )
 
     const Tabs = createBottomTabNavigator(
@@ -212,6 +168,15 @@ export default class App extends React.Component {
             fontSize: 14,
             marginLeft: 0,
             padding: 0
+          }
+        },
+        navigationOptions: {
+          headerStyle: {
+            height: 60
+          },
+          headerTitleStyle: {
+            fontSize: 18,
+            fontWeight: '400'
           }
         }
       }

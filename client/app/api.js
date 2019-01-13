@@ -45,11 +45,8 @@ export function fetchNotifyMechanic() {
 }
 
 export function fetchSubmit(formdata) {
-  return formdataPostRequest(`${global.API_GATEWAY_URL}/input/submit`, formdata)
+  return formdataPostRequest(`${global.AWS_URL}/input/submit`, formdata)
 }
-// export function fetchSubmit(formdata) {
-//   return formdataPostRequest(`${global.AWS_URL}/input/submit`, formdata)
-// }
 
 export function fetchSubmitWorkOrder(formdata) {
   return formdataPostRequest(`${global.AWS_URL}/input/submit/workorder`, formdata)

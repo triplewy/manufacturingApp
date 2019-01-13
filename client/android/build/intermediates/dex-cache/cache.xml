@@ -21,138 +21,30 @@
     </item>
     <item
         is-multidex="false"
-        jar="/Users/alexyu/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/3.11.0/75966e05a49046ca2ae734e5626f28837a8d1e82/okhttp-3.11.0.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="27.0.3"
-        sha1="75966e05a49046ca2ae734e5626f28837a8d1e82">
-        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/okhttp-3.11.0_b432c88b8e911307f9753cd1ed158a4bca049664.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/alexyu/.gradle/caches/modules-2/files-2.1/com.facebook.infer.annotation/infer-annotation/0.11.2/f514ff4ca022a579d9cf7524846988b646ae4491/infer-annotation-0.11.2.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="27.0.3"
-        sha1="f514ff4ca022a579d9cf7524846988b646ae4491">
-        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/infer-annotation-0.11.2_15d7aea1a36783f8a7d5435329f093d9a25a7ba3.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/27.1.1/jars/classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="27.0.3"
-        sha1="d968b9bd0011800e0d333d1571b8d34bcb8a0b6e">
-        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/com.android.support-appcompat-v7-27.1.1_4041e1270999643dc00823f6c3916445e1a1f54f.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/com.facebook.fresco/imagepipeline-base/1.10.0/jars/classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="27.0.3"
-        sha1="2648a2080054daa5ff07cbce9fded91153be4b11">
-        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/com.facebook.fresco-imagepipeline-base-1.10.0_4c5fe0f0f8c5ba9f2f91a379c16ea0e154b760f1.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/alexyu/.gradle/caches/modules-2/files-2.1/com.android.support/support-annotations/27.1.1/39ded76b5e1ce1c5b2688e1d25cdc20ecee32007/support-annotations-27.1.1.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="27.0.3"
-        sha1="39ded76b5e1ce1c5b2688e1d25cdc20ecee32007">
-        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/support-annotations-27.1.1_97cad60f5c46a9c79431dee92e07c9da1c51fad2.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/alexyu/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp-urlconnection/3.11.0/54ec442e9c0fac51265110cf0cb44dfe5ad1ea05/okhttp-urlconnection-3.11.0.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="27.0.3"
-        sha1="54ec442e9c0fac51265110cf0cb44dfe5ad1ea05">
-        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/okhttp-urlconnection-3.11.0_34cf496eb1970795f0e6e3e3856ffd741eab573b.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/android.arch.lifecycle/viewmodel/1.1.0/jars/classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="27.0.3"
-        sha1="1fd3ceac7f415975323d52c6c6057db409a907f6">
-        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/android.arch.lifecycle-viewmodel-1.1.0_6a80e65325ecdbb65e56f63d200b6d8aef8243c8.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/manufacturingApp/react-native-cookies/unspecified/jars/classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="27.0.3"
-        sha1="a3cd70e2c212af50b9f2f452f17a15446f86721c">
-        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/manufacturingApp-react-native-cookies-unspecified_54820fdcb0c44f4a3d64c5d13b5c7ccd10225e9a.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/alexyu/.gradle/caches/modules-2/files-2.1/android.arch.lifecycle/common/1.1.0/edf3f7bfb84a7521d0599efa3b0113a0ee90f85/common-1.1.0.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="27.0.3"
-        sha1="0edf3f7bfb84a7521d0599efa3b0113a0ee90f85">
-        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/common-1.1.0_71cfd320fe777b392a946f6204b06ce29fe0cc93.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/com.facebook.fresco/fresco/1.10.0/jars/classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="27.0.3"
-        sha1="bf98d9bbac6d175c40d9a3d1d8da77fbbcf0a81c">
-        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/com.facebook.fresco-fresco-1.10.0_5709e963346e206617ca038ae0a2f2f3d8d267da.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/27.1.1/jars/classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="27.0.3"
-        sha1="c9a721adcd7dbae7a197b0ef81102336539f63ff">
-        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/com.android.support-support-vector-drawable-27.1.1_2798cb14f19e27ce937849631a4b5c6d45146d17.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/android.arch.core/runtime/1.1.0/jars/classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="27.0.3"
-        sha1="71d380aeac037e63bab7bda2ba211777e16a2f42">
-        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/android.arch.core-runtime-1.1.0_a27fd9346ed992687f172b93257643e4317e271f.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/manufacturingApp/react-native-splash-screen/unspecified/jars/classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="27.0.3"
-        sha1="81545e78a5aef654b2e0aac62b2be5ad8ad7b908">
-        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/manufacturingApp-react-native-splash-screen-unspecified_586fe07e93a9cfac9e3ffc332d1f9088cddb919d.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/alexyu/.gradle/caches/modules-2/files-2.1/javax.inject/javax.inject/1/6975da39a7040257bd51d21a231b76c915872d38/javax.inject-1.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="27.0.3"
-        sha1="6975da39a7040257bd51d21a231b76c915872d38">
-        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/javax.inject-1_d76bd80b7b25b254f9993b79a543739bd9f2f0e5.jar" />
-    </item>
-    <item
-        is-multidex="false"
         jar="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/27.1.1/jars/classes.jar"
         jumboMode="false"
         optimize="true"
         revision="27.0.3"
         sha1="2feadd535770271ca57b7b431f42151aa4af324a">
         <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/com.android.support-animated-vector-drawable-27.1.1_abfbc95481db01bbf62314f6c82029c6b213fc34.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/manufacturingApp/react-native-image-resizer/unspecified/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="27.0.3"
+        sha1="e46632b4023175f3619d2e8cbb827acf3c404c62">
+        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/manufacturingApp-react-native-image-resizer-unspecified_da8aaaa665250ca1ce7648d71949e61b6186dea9.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/alexyu/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/3.11.0/75966e05a49046ca2ae734e5626f28837a8d1e82/okhttp-3.11.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="27.0.3"
+        sha1="75966e05a49046ca2ae734e5626f28837a8d1e82">
+        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/okhttp-3.11.0_b432c88b8e911307f9753cd1ed158a4bca049664.jar" />
     </item>
     <item
         is-multidex="false"
@@ -183,6 +75,24 @@
     </item>
     <item
         is-multidex="false"
+        jar="/Users/alexyu/.gradle/caches/modules-2/files-2.1/com.facebook.infer.annotation/infer-annotation/0.11.2/f514ff4ca022a579d9cf7524846988b646ae4491/infer-annotation-0.11.2.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="27.0.3"
+        sha1="f514ff4ca022a579d9cf7524846988b646ae4491">
+        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/infer-annotation-0.11.2_15d7aea1a36783f8a7d5435329f093d9a25a7ba3.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/27.1.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="27.0.3"
+        sha1="d968b9bd0011800e0d333d1571b8d34bcb8a0b6e">
+        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/com.android.support-appcompat-v7-27.1.1_4041e1270999643dc00823f6c3916445e1a1f54f.jar" />
+    </item>
+    <item
+        is-multidex="false"
         jar="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/com.android.support/support-compat/27.1.1/jars/classes.jar"
         jumboMode="false"
         optimize="true"
@@ -198,6 +108,15 @@
         revision="27.0.3"
         sha1="61741c492af29679431ed009915fe0538dd6b1ce">
         <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/com.facebook.fresco-imagepipeline-1.10.0_419f526d271d63f67edf71eb337afc45d9ff429f.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/com.facebook.fresco/imagepipeline-base/1.10.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="27.0.3"
+        sha1="2648a2080054daa5ff07cbce9fded91153be4b11">
+        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/com.facebook.fresco-imagepipeline-base-1.10.0_4c5fe0f0f8c5ba9f2f91a379c16ea0e154b760f1.jar" />
     </item>
     <item
         is-multidex="false"
@@ -219,6 +138,24 @@
     </item>
     <item
         is-multidex="false"
+        jar="/Users/alexyu/.gradle/caches/modules-2/files-2.1/com.android.support/support-annotations/27.1.1/39ded76b5e1ce1c5b2688e1d25cdc20ecee32007/support-annotations-27.1.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="27.0.3"
+        sha1="39ded76b5e1ce1c5b2688e1d25cdc20ecee32007">
+        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/support-annotations-27.1.1_97cad60f5c46a9c79431dee92e07c9da1c51fad2.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/alexyu/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp-urlconnection/3.11.0/54ec442e9c0fac51265110cf0cb44dfe5ad1ea05/okhttp-urlconnection-3.11.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="27.0.3"
+        sha1="54ec442e9c0fac51265110cf0cb44dfe5ad1ea05">
+        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/okhttp-urlconnection-3.11.0_34cf496eb1970795f0e6e3e3856ffd741eab573b.jar" />
+    </item>
+    <item
+        is-multidex="false"
         jar="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/com.facebook.fresco/fbcore/1.10.0/jars/classes.jar"
         jumboMode="false"
         optimize="true"
@@ -237,6 +174,24 @@
     </item>
     <item
         is-multidex="false"
+        jar="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/android.arch.lifecycle/viewmodel/1.1.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="27.0.3"
+        sha1="1fd3ceac7f415975323d52c6c6057db409a907f6">
+        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/android.arch.lifecycle-viewmodel-1.1.0_6a80e65325ecdbb65e56f63d200b6d8aef8243c8.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/manufacturingApp/react-native-cookies/unspecified/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="27.0.3"
+        sha1="a3cd70e2c212af50b9f2f452f17a15446f86721c">
+        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/manufacturingApp-react-native-cookies-unspecified_54820fdcb0c44f4a3d64c5d13b5c7ccd10225e9a.jar" />
+    </item>
+    <item
+        is-multidex="false"
         jar="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/android.arch.lifecycle/runtime/1.1.0/jars/classes.jar"
         jumboMode="false"
         optimize="true"
@@ -246,12 +201,48 @@
     </item>
     <item
         is-multidex="false"
+        jar="/Users/alexyu/.gradle/caches/modules-2/files-2.1/android.arch.lifecycle/common/1.1.0/edf3f7bfb84a7521d0599efa3b0113a0ee90f85/common-1.1.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="27.0.3"
+        sha1="0edf3f7bfb84a7521d0599efa3b0113a0ee90f85">
+        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/common-1.1.0_71cfd320fe777b392a946f6204b06ce29fe0cc93.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/com.facebook.fresco/fresco/1.10.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="27.0.3"
+        sha1="bf98d9bbac6d175c40d9a3d1d8da77fbbcf0a81c">
+        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/com.facebook.fresco-fresco-1.10.0_5709e963346e206617ca038ae0a2f2f3d8d267da.jar" />
+    </item>
+    <item
+        is-multidex="false"
         jar="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/com.android.support/support-fragment/27.1.1/jars/classes.jar"
         jumboMode="false"
         optimize="true"
         revision="27.0.3"
         sha1="3304d33470ff64cf83bce9189ff3648a42eb2aa7">
         <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/com.android.support-support-fragment-27.1.1_f2aaff2dcd92739426a0141a13f6e55a4fb53e20.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/27.1.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="27.0.3"
+        sha1="c9a721adcd7dbae7a197b0ef81102336539f63ff">
+        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/com.android.support-support-vector-drawable-27.1.1_2798cb14f19e27ce937849631a4b5c6d45146d17.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/android.arch.core/runtime/1.1.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="27.0.3"
+        sha1="71d380aeac037e63bab7bda2ba211777e16a2f42">
+        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/android.arch.core-runtime-1.1.0_a27fd9346ed992687f172b93257643e4317e271f.jar" />
     </item>
     <item
         is-multidex="false"
@@ -270,6 +261,24 @@
         revision="27.0.3"
         sha1="cc5b65162cf57363b4a924805f16947660918cdf">
         <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/com.facebook.soloader-soloader-0.5.1_c8678c0525eb635e0709fa6497c5fddcf0164bf0.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/exploded-aar/manufacturingApp/react-native-splash-screen/unspecified/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="27.0.3"
+        sha1="81545e78a5aef654b2e0aac62b2be5ad8ad7b908">
+        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/manufacturingApp-react-native-splash-screen-unspecified_586fe07e93a9cfac9e3ffc332d1f9088cddb919d.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/alexyu/.gradle/caches/modules-2/files-2.1/javax.inject/javax.inject/1/6975da39a7040257bd51d21a231b76c915872d38/javax.inject-1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="27.0.3"
+        sha1="6975da39a7040257bd51d21a231b76c915872d38">
+        <dex dex="/Users/alexyu/reactProjects/manufacturingApp/client/android/app/build/intermediates/pre-dexed/debug/javax.inject-1_d76bd80b7b25b254f9993b79a543739bd9f2f0e5.jar" />
     </item>
     <item
         is-multidex="false"

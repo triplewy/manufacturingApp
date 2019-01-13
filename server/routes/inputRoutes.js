@@ -184,7 +184,7 @@ module.exports = function(conn, loggedIn, upload, client) {
                           conn.query('ROLLBACK')
                           return reject(err)
                         } else {
-                          ses.sendEmail('admin@streamlineanalytica.com', body, req.files.map(item => item.key))
+                          ses.sendEmail(body, req.files.map(item => item.key))
                           return resolve({ message: 'success' })
                         }
                       })
@@ -196,6 +196,7 @@ module.exports = function(conn, loggedIn, upload, client) {
                       conn.query('ROLLBACK')
                       return reject(err)
                     } else {
+                      ses.sendEmail(body, req.files.map(item => item.key))
                       return resolve({ message: 'success' })
                     }
                   })

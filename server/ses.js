@@ -91,7 +91,7 @@ function getRecipients(body) {
 }
 
 module.exports = {
-  sendEmail: function(email, body, keys) {
+  sendEmail: function(body, keys) {
     Promise.all([constructMessage(body), getRecipients(body), getS3Files(keys)]).then(allData => {
       var mailOptions = {
         from: 'admin@streamlineanalytica.com',

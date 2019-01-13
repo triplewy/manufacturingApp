@@ -1,5 +1,6 @@
 import React from 'react';
 import {ScrollView, Dimensions, View, Image, ImageBackground, StyleSheet, FlatList, Text, TouchableHighlight, TouchableOpacity} from 'react-native';
+import Moment from 'react-moment'
 import ImageModal from '../ImageModal'
 import { downtimeString } from '../DowntimeString.js'
 
@@ -56,8 +57,8 @@ export default class ReportItem extends React.PureComponent {
             <Text style={{fontSize: 18, marginTop: 5}}>{this.props.machineName}</Text>
           </View>
           <View style={{flex: 1}}>
-            <Text style={{marginBottom: 20, fontSize: 18, textAlign: 'right', color: 'gray'}}>{date}</Text>
-            <Text style={{fontSize: 24, fontWeight: '600', color: '#FF8300', textAlign: 'right'}}>{downtime}</Text>
+            <Moment style={styles.date} element={Text} format='dddd, MMM D, LT'>{this.props.reportedDate}</Moment>
+            <Text style={styles.downtime}>{downtime}</Text>
           </View>
         </View>
         <View style={{paddingHorizontal: 20}}>
@@ -92,5 +93,17 @@ const styles = StyleSheet.create({
   iconTitle: {
     padding: 10,
     alignItems: 'center'
+  },
+  date: {
+    marginBottom: 20,
+    fontSize: 18,
+    textAlign: 'right',
+    color: 'gray'
+  },
+  downtime: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#FF8300',
+    textAlign: 'right'
   }
 })

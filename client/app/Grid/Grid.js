@@ -90,12 +90,16 @@ class Grid extends React.Component {
     const expire = this.props.expire
     const isActiveLine = this.props.activeLine === this.props.lines[this.props.lineIndex].lineId
     var columns = 4
-    if (!Platform.isPad) {
+    if (!Platform.isPad && Platform.OS == 'ios') {
       columns = 3
     }
     return (
       <View>
-        <PushNotification />
+        {Platform.OS === 'ios' ?
+          <PushNotification />
+          :
+          null
+        }
         {isActiveLine ?
           <View style={styles.expire}>
             <Text style={styles.expireText}>{isActiveLine ? parseTimer(expire, this.state.currentTime) : ''}</Text>

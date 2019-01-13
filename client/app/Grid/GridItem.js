@@ -33,7 +33,7 @@ class GridItem extends React.PureComponent {
 const win = Dimensions.get('window');
 var imageWidth = 9
 var gridWidth = 6
-if (!Platform.isPad) {
+if (!Platform.isPad && Platform.OS === 'ios') {
   imageWidth = 6
   gridWidth = 4
 }
