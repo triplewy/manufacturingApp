@@ -102,7 +102,7 @@ module.exports = {
         from: 'admin@streamlineanalytica.com',
         subject: 'NEW WORK ORDER',
         // text: allData[0],
-        html: `${allData[0]}<a href='http://localhost:3001/approve?id=${approvalHash}'>Approve work order</a>`,
+        html: `${allData[0]}<a href='https://app.streamlineanalytica.com/approve?id=${approvalHash}'>Approve work order</a>`,
         to: allData[1].to,
         bcc: allData[1].bcc,
         attachments: allData[2]
