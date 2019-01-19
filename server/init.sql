@@ -123,6 +123,9 @@ CREATE TABLE IF NOT EXISTS workOrders (
   stars INTEGER NOT NULL,
   description VARCHAR(255),
   createdDate DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  approvalHash VARCHAR(255) NOT NULL,
+  approved BOOLEAN NOT NULL DEFAULT FALSE,
+  finishedDate DATETIME,
   FOREIGN KEY (lineId) REFERENCES assemblyLines(lineId),
   FOREIGN KEY (machineId) REFERENCES machines(machineId)
 );

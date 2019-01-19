@@ -31,5 +31,4 @@ export function parseTimer(expire, currentTime) {
   } else {
     return 'MECHANIC NOTIFIED'
   }
-
 }

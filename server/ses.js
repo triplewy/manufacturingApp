@@ -71,7 +71,12 @@ function constructMessage(body) {
         return reject(err)
       } else {
         const reviews = ["Low", "Not Urgent", "Moderate", "Important", "Urgent"]
-        const message = `LINE: ${result[0].line}\nMACHINE: ${result[0].machine}\nIMPORTANCE: ${reviews[body.rating - 1]} ( ${body.rating} / 5 )\nDESCRIPTION: ${body.description}\nDATE: ${new Date()}`
+        const message =
+          `<p>LINE: ${result[0].line}</p></br>` +
+          `<p>MACHINE: ${result[0].machine}</p></br>` +
+          `<p>IMPORTANCE: ${reviews[body.rating - 1]} ( ${body.rating} / 5 )</p></br>` +
+          `<p>DESCRIPTION: ${body.description}</p></br>` +
+          `<p>DATE: ${new Date()}</p></br>`
         return resolve(message)
       }
     })
@@ -91,12 +96,13 @@ function getRecipients(body) {
 }
 
 module.exports = {
-  sendEmail: function(body, keys) {
+  sendEmail: function(body, approvalHash, keys) {
     Promise.all([constructMessage(body), getRecipients(body), getS3Files(keys)]).then(allData => {
       var mailOptions = {
         from: 'admin@streamlineanalytica.com',
         subject: 'NEW WORK ORDER',
-        text: allData[0],
+        // text: allData[0],
+        html: `${allData[0]}<a href='http://localhost:3001/approve?id=${approvalHash}'>Approve work order</a>`,
         to: allData[1].to,
         bcc: allData[1].bcc,
         attachments: allData[2]

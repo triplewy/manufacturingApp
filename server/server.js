@@ -21,7 +21,7 @@ var cors = require('cors')
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 var Redis = require('redis')
-var client = Redis.createClient();
+var client = Redis.createClient(6379, process.env.REDIS_HOST)
 
 var sessionStore = new RedisStore({
   host: process.env.REDIS_HOST,
@@ -142,6 +142,7 @@ var accountRoutes = require('./routes/accountRoutes')
 var gridRoutes = require('./routes/gridRoutes')
 var adminRoutes = require('./routes/adminRoutes')
 var homeRoutes = require('./routes/homeRoutes')
+var workorderRoutes = require('./routes/workorderRoutes')
 
 app.get('/api/sessionLogin', loggedIn, (req, res) => {
   console.log('- Request received:', req.method.cyan, '/api/sessionLogin');
@@ -248,6 +249,8 @@ app.use('/api/grid', gridRoutes(conn, loggedIn))
 app.use('/api/admin', adminRoutes(conn, loggedIn, csvUpload, client))
 
 app.use('/api/home', homeRoutes(conn, loggedIn))
+
+app.use('/api/workorder', workorderRoutes(conn, loggedIn))
 
 server.listen(8082, function(){
     console.log('- Server listening on port 8082');

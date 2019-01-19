@@ -4,6 +4,8 @@ module.exports = function(conn, loggedIn, upload, client) {
     var sms = require('../sms')
     var ses = require('../ses')
     var APN = require('../apn')
+    var bcrypt = require('bcrypt')
+    var randomstring = require('randomstring')
     var expireFunctions = {}
 
     inputRoutes.post('/', loggedIn, (req, res) => {
@@ -162,50 +164,56 @@ module.exports = function(conn, loggedIn, upload, client) {
     function uploadWorkOrder(req) {
       return new Promise(function(resolve, reject) {
         const body = req.body
-        conn.query('START TRANSACTION', [], function(err, result) {
+        bcrypt.hash(randomstring.generate(), 10, function(err, approvalHash) {
           if (err) {
-            conn.query('ROLLBACK')
             return reject(err)
           } else {
-            conn.query('INSERT INTO workOrders (lineId, machineId, stars, description) VALUES (?,?,?,?)', [body.lineId, body.machineId, body.rating, body.description], function(err, result) {
+            conn.query('START TRANSACTION', [], function(err, result) {
               if (err) {
                 conn.query('ROLLBACK')
                 return reject(err)
               } else {
-                if (req.files.length) {
-                  const workOrderImages = req.files.map(item => [result.insertId, item.location])
-                  conn.query('INSERT INTO workOrderImages (workOrderId, imageUrl) VALUES ?', [workOrderImages], function(err, result) {
-                    if (err) {
-                      conn.query('ROLLBACK')
-                      return reject(err)
+                conn.query('INSERT INTO workOrders (lineId, machineId, stars, description, approvalHash) VALUES (?,?,?,?,?)',
+                [body.lineId, body.machineId, body.rating, body.description, approvalHash], function(err, result) {
+                  if (err) {
+                    conn.query('ROLLBACK')
+                    return reject(err)
+                  } else {
+                    if (req.files.length) {
+                      const workOrderImages = req.files.map(item => [result.insertId, item.location])
+                      conn.query('INSERT INTO workOrderImages (workOrderId, imageUrl) VALUES ?', [workOrderImages], function(err, result) {
+                        if (err) {
+                          conn.query('ROLLBACK')
+                          return reject(err)
+                        } else {
+                          conn.query('COMMIT', [], function(err, result) {
+                            if (err) {
+                              conn.query('ROLLBACK')
+                              return reject(err)
+                            } else {
+                              ses.sendEmail(body, approvalHash, req.files.map(item => item.key))
+                              return resolve({ message: 'success' })
+                            }
+                          })
+                        }
+                      })
                     } else {
                       conn.query('COMMIT', [], function(err, result) {
                         if (err) {
                           conn.query('ROLLBACK')
                           return reject(err)
                         } else {
-                          ses.sendEmail(body, req.files.map(item => item.key))
+                          ses.sendEmail(body, approvalHash, req.files.map(item => item.key))
                           return resolve({ message: 'success' })
                         }
                       })
                     }
-                  })
-                } else {
-                  conn.query('COMMIT', [], function(err, result) {
-                    if (err) {
-                      conn.query('ROLLBACK')
-                      return reject(err)
-                    } else {
-                      ses.sendEmail(body, req.files.map(item => item.key))
-                      return resolve({ message: 'success' })
-                    }
-                  })
-                }
+                  }
+                })
               }
             })
           }
         })
-
       })
     }
 

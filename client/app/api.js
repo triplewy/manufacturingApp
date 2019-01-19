@@ -49,7 +49,7 @@ export function fetchSubmit(formdata) {
 }
 
 export function fetchSubmitWorkOrder(formdata) {
-  return formdataPostRequest(`${global.AWS_URL}/input/submit/workorder`, formdata)
+  return formdataPostRequest(`${global.API_GATEWAY_URL}/input/submit/workorder`, formdata)
 }
 
 export function fetchReports(lineId, machineId, date, page) {

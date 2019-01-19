@@ -52,6 +52,7 @@ export function workOrder(state = initialState, action) {
         lineIndex: 0,
         machineIndex: 0,
         description: '',
+        rating: 3,
         error: '',
         submitted: false
       }
