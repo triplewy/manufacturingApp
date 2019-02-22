@@ -143,6 +143,7 @@ var gridRoutes = require('./routes/gridRoutes')
 var adminRoutes = require('./routes/adminRoutes')
 var homeRoutes = require('./routes/homeRoutes')
 var workorderRoutes = require('./routes/workorderRoutes')
+var changeoverRoutes = require('./routes/changeoverRoutes')
 
 app.get('/api/sessionLogin', loggedIn, (req, res) => {
   console.log('- Request received:', req.method.cyan, '/api/sessionLogin');
@@ -251,6 +252,8 @@ app.use('/api/admin', adminRoutes(conn, loggedIn, csvUpload, client))
 app.use('/api/home', homeRoutes(conn, loggedIn))
 
 app.use('/api/workorder', workorderRoutes(conn, loggedIn))
+
+app.use('/api/changeover', changeoverRoutes(conn, loggedIn))
 
 server.listen(8082, function(){
     console.log('- Server listening on port 8082');
